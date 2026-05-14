@@ -549,6 +549,11 @@ function doLogout() {
 function toggleOnline() {
   S.isOnline = !S.isOnline;
   updateStatusUI(); saveState();
+  if (S.isOnline && ADMIN_SOUND_URL) {
+    const a = new Audio(ADMIN_SOUND_URL);
+    a.volume = 0;
+    a.play().catch(() => {});
+  }
   toast(S.isOnline ? 'Ти онлайн — готовий до роботи!' : 'Ти офлайн');
   apiPost('/courier/online', { login: S.user.login, pass: S.user.pass, isOnline: S.isOnline });
 }
