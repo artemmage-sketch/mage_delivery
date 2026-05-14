@@ -349,7 +349,7 @@ const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.ap
 // Завантаж sound.mp3 на GitHub поруч з index.html і встав посилання:
 // const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
 // Якщо null — використовується вбудований синтезований звук
-const ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
+const ADMIN_SOUND_URL = null;
 
 const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
 const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
@@ -547,18 +547,19 @@ function showApp() {
 }
 
 function doLogout() {
-  if (!confirm('Вийти з акаунту?')) return;
+  if (!confirm("Вийти з акаунту?")) return;
   stopTimer();
   saveState();
+  sessionStorage.setItem("logged_out", "1");
   S = { user: null, fullName: null, transport: null, carBrand: null, plate: null, phone: null,
         isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
   selectedTransport = null;
   if (sseSource) { sseSource.close(); sseSource = null; }
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone']
-    .forEach(id => { document.getElementById(id).value = ''; });
-  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
+  document.getElementById("app").style.display = "none";
+  document.getElementById("login-screen").style.display = "flex";
+  ["inp-login","inp-pass","inp-fullname","inp-brand","inp-plate","inp-phone"]
+    .forEach(id => { document.getElementById(id).value = ""; });
+  document.querySelectorAll(".tr-opt").forEach(e => e.classList.remove("sel"));
   goStep(1);
 }
 
@@ -890,9 +891,9 @@ function toast(msg) {
 }
 
 // ── Автологін при старті ─────────────────────────────────────
-(function autoLogin() {
+if (!sessionStorage.getItem("logged_out")) {
   for (const login of Object.keys(USERS)) {
-    const saved = localStorage.getItem('mfd_' + login);
+    const saved = localStorage.getItem("mfd_" + login);
     if (!saved) continue;
     try {
       const d = JSON.parse(saved);
@@ -905,11 +906,11 @@ function toast(msg) {
         S.phone     = d.phone;
         loadState(d);
         showApp();
-        return;
+        break;
       }
     } catch(e) {}
   }
-})();
+}
 
 // ============================================================
 // EXTERNAL API (викликається бекендом через SSE)
