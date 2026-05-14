@@ -878,6 +878,28 @@ function toast(msg) {
   clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+// ── Автологін при старті ─────────────────────────────────────
+(function autoLogin() {
+  for (const login of Object.keys(USERS)) {
+    const saved = localStorage.getItem('mfd_' + login);
+    if (!saved) continue;
+    try {
+      const d = JSON.parse(saved);
+      if (d.fullName && d.transport && d.carBrand && d.plate) {
+        S.user = { login, ...USERS[login] };
+        S.fullName  = d.fullName;
+        S.transport = d.transport;
+        S.carBrand  = d.carBrand;
+        S.plate     = d.plate;
+        S.phone     = d.phone;
+        loadState(d);
+        showApp();
+        return;
+      }
+    } catch(e) {}
+  }
+})();
+
 // ============================================================
 // EXTERNAL API (викликається бекендом через SSE)
 // ============================================================
