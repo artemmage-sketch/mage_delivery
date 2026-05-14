@@ -5,17 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#7C3AED">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MageFood">
 <link rel="apple-touch-icon" href="/mage_delivery/icon-180.png">
 <link rel="manifest" href="/mage_delivery/manifest.json">
-<title>Mage Food Delivery</title>
+<title>Mage Food Delivery — Кур'єр</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--p1:#7C3AED;--p2:#A855F7;--p3:#C084FC;--g1:#10B981;--g2:#34D399;--y1:#F59E0B;--y2:#FCD34D;--r1:#EF4444;--r2:#FCA5A5;--b1:#3B82F6;--b2:#93C5FD;--o1:#F97316;--bg:#0D0D1A;--bg2:#13131F;--bg3:#1A1A2E;--bg4:#22223A;--card:#181828;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#F0F0FF;--muted:#7878A0;--radius:20px;--radius-sm:14px;--radius-xs:10px;font-family:"Nunito",sans-serif;}
+:root{
+  --p1:#7C3AED;--p2:#A855F7;--p3:#C084FC;
+  --g1:#10B981;--g2:#34D399;
+  --y1:#F59E0B;--y2:#FCD34D;
+  --r1:#EF4444;--r2:#FCA5A5;
+  --b1:#3B82F6;--b2:#93C5FD;
+  --o1:#F97316;
+  --bg:#0D0D1A;--bg2:#13131F;--bg3:#1A1A2E;--bg4:#22223A;--card:#181828;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#F0F0FF;--muted:#7878A0;
+  --radius:20px;--radius-sm:14px;--radius-xs:10px;
+  font-family:'Nunito',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* LOGIN */
 #login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;position:relative;overflow:hidden;}
 .lg{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;}
 .lg2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);bottom:-80px;right:-80px;pointer-events:none;}
@@ -24,10 +37,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .login-title{font-size:1.6rem;font-weight:900;margin-bottom:.15rem;letter-spacing:-.02em;text-align:center;}
 .login-title span{background:linear-gradient(90deg,var(--p2),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;text-align:center;}
+
 .step{display:none;width:100%;max-width:340px;}
 .step.active{display:block;}
 .step-title{font-size:1rem;font-weight:800;margin-bottom:1rem;}
 .step-hint{font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;}
+
 .fl{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
 .fw{position:relative;margin-bottom:.9rem;}
 .fi-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;}
@@ -35,15 +50,19 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .fi:focus{border-color:var(--p1);background:var(--bg4);box-shadow:0 0 0 4px rgba(124,58,237,.15);}
 .fi::placeholder{color:var(--muted);font-weight:400;}
 .fi-upper{text-transform:uppercase;}
+
 .transport-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
 .tr-opt{padding:12px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;}
 .tr-opt:active{transform:scale(.96);}
 .tr-opt.sel{border-color:var(--p1);background:rgba(124,58,237,.18);color:var(--p3);}
 .tr-opt .tre{font-size:1.5rem;display:block;margin-bottom:4px;}
+
 .primary-btn{width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-family:inherit;font-size:1rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.4);transition:all .2s;margin-top:.25rem;}
 .primary-btn:active{transform:scale(.97);}
 .secondary-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:all .2s;}
 .err-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xs);padding:10px 14px;color:var(--r2);font-size:.85rem;font-weight:600;margin-top:.65rem;display:none;text-align:center;}
+
+/* APP */
 #app{display:none;flex-direction:column;min-height:100vh;}
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;position:sticky;top:0;z-index:100;}
 .hdr1{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
@@ -62,15 +81,20 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .content{flex:1;padding:1rem 1.1rem 5rem;}
 .tab-pane{display:none;}
 .tab-pane.active{display:block;}
+
 .push-banner{display:none;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(168,85,247,.1));border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:1rem;align-items:center;gap:10px;}
 .push-banner.show{display:flex;}
 .push-banner-text{font-size:.82rem;font-weight:600;flex:1;line-height:1.4;}
 .push-btn{padding:7px 14px;border-radius:100px;background:var(--p1);color:#fff;border:none;font-family:inherit;font-size:.8rem;font-weight:800;cursor:pointer;flex-shrink:0;}
+
 .offline-block{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:1rem;align-items:center;gap:12px;}
 .offline-block.show{display:flex;}
 .offline-text{font-size:.85rem;font-weight:700;color:var(--r2);}
+
+/* ORDER CARD */
 .order-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes popIn{from{opacity:0;transform:scale(.93) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+
 .timer-bar-wrap{padding:.75rem 1.25rem .6rem;background:var(--card);border-bottom:1px solid var(--border);}
 .timer-top{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:5px;}
 .timer-top span:first-child{color:var(--muted);}
@@ -78,7 +102,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .timer-track{height:6px;background:var(--bg4);border-radius:100px;overflow:hidden;}
 .timer-fill{height:100%;background:linear-gradient(90deg,var(--y1),var(--o1));border-radius:100px;transition:width .9s linear;}
 .timer-fill.urgent{background:linear-gradient(90deg,var(--r1),var(--o1));}
+
 .order-top{padding:1rem 1.25rem .85rem;background:linear-gradient(135deg,var(--p1) 0%,var(--b1) 100%);position:relative;overflow:hidden;}
+.order-top::after{content:'🏍';position:absolute;right:-10px;bottom:-15px;font-size:5rem;opacity:.12;}
 .order-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .order-num{font-size:.8rem;font-weight:700;opacity:.8;}
 .status-chip{padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:800;border:1.5px solid;}
@@ -89,6 +115,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .chip-notfound{background:rgba(252,165,165,.2);border-color:rgba(252,165,165,.5);color:var(--r2);}
 .order-amount{font-size:2rem;font-weight:900;letter-spacing:-.02em;}
 .order-amount-label{font-size:.78rem;opacity:.75;margin-top:2px;}
+
 .order-body{padding:0;}
 .orow{display:flex;align-items:baseline;padding:9px 1.25rem;border-bottom:1px solid var(--border);}
 .orow:last-child{border-bottom:none;}
@@ -97,19 +124,23 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .oval.dash{color:var(--muted);font-weight:400;}
 .oval.highlight{color:var(--g2);font-size:1.05rem;}
 .oval a{color:var(--g2);text-decoration:none;}
+
 .addr-sub{display:flex;gap:0;margin-top:4px;}
 .addr-sub-item{flex:1;}
 .addr-sub-label{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px;}
 .addr-sub-val{font-size:.88rem;font-weight:700;}
 .addr-sub-val.dash{color:var(--muted);font-weight:400;}
 .addr-sub-sep{width:1px;background:var(--border);margin:0 10px;flex-shrink:0;}
+
 .cash-warn{margin:.75rem 1.25rem .25rem;background:rgba(245,158,11,.15);border:1.5px solid rgba(245,158,11,.4);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .cash-warn-text{font-size:.85rem;font-weight:700;color:var(--y2);line-height:1.4;}
 .pickup-hint{margin:.75rem 1.25rem .25rem;background:rgba(59,130,246,.12);border:1.5px solid rgba(59,130,246,.35);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .pickup-hint-text{font-size:.85rem;font-weight:700;color:var(--b2);line-height:1.4;}
+
 .earning-row{margin:.75rem 1.25rem 0;background:rgba(16,185,129,.12);border:1.5px solid rgba(16,185,129,.3);border-radius:var(--radius-xs);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
 .earning-label{font-size:.82rem;color:var(--g2);font-weight:700;}
 .earning-amount{font-size:1.2rem;font-weight:900;color:var(--g2);}
+
 .order-actions{padding:.75rem 1.25rem 1.25rem;display:flex;flex-direction:column;gap:9px;}
 .btn{width:100%;padding:14px;border-radius:var(--radius-sm);border:none;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn:active{transform:scale(.96);}
@@ -117,12 +148,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .btn-pickup{background:linear-gradient(135deg,var(--b1),#60A5FA);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35);}
 .btn-done{background:linear-gradient(135deg,var(--g1),var(--g2));color:#052e16;box-shadow:0 4px 16px rgba(16,185,129,.35);}
 .btn-notfound{background:rgba(239,68,68,.12);color:var(--r1);border:1.5px solid rgba(239,68,68,.3);}
+
 .empty{display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;text-align:center;}
 .empty-emoji{font-size:4rem;margin-bottom:1rem;}
 .empty-title{font-size:1.05rem;font-weight:800;margin-bottom:6px;}
 .empty-sub{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+/* BALANCE */
 .balance-card{background:linear-gradient(135deg,#10B981,#059669);border-radius:var(--radius);padding:1.75rem 1.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(16,185,129,.3);}
-.balance-card::before{content:"";position:absolute;right:-15px;top:-15px;font-size:7rem;opacity:.1;}
+.balance-card::before{content:'💰';position:absolute;right:-15px;top:-15px;font-size:7rem;opacity:.1;}
 .bal-label{font-size:.8rem;font-weight:700;opacity:.8;margin-bottom:8px;}
 .bal-amount{font-size:3.2rem;font-weight:900;letter-spacing:-.03em;color:#fff;}
 .bal-currency{font-size:1.3rem;color:rgba(255,255,255,.7);margin-left:4px;}
@@ -137,6 +171,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .horder{font-size:.88rem;font-weight:700;}
 .haddr{font-size:.75rem;color:var(--muted);margin-top:2px;}
 .hsum{font-size:1rem;font-weight:900;color:var(--g2);margin-left:auto;}
+
+/* SETTINGS */
 .settings-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;}
 .sgt{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:14px 16px 8px;}
 .srow{display:flex;align-items:center;padding:13px 16px;border-top:1px solid var(--border);}
@@ -148,346 +184,628 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .srow-sub{font-size:.73rem;color:var(--muted);margin-top:1px;}
 .logout-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.25);color:var(--r1);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
 .logout-btn:active{transform:scale(.97);}
+
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
+
 <div id="login-screen">
   <div class="lg"></div><div class="lg2"></div>
-  <div class="logo-wrap"><img src="/mage_delivery/icon-192.png" alt="Mage Courier"></div>
+  <div class="logo-wrap">
+    <img src="/mage_delivery/icon-192.png" alt="Mage Courier">
+  </div>
   <div class="login-title">Mage Food <span>Delivery</span></div>
-  <div class="login-sub">Panel kuriera</div>
+  <div class="login-sub">Панель кур'єра</div>
+
   <div class="step active" id="step1">
-    <div class="step-title">Uvijdy v akаunt</div>
-    <label class="fl">Login</label>
-    <div class="fw"><span class="fi-icon">&#128100;</span><input class="fi" id="inp-login" type="text" placeholder="Tvij login" autocomplete="username"/></div>
-    <label class="fl">Parol</label>
-    <div class="fw"><span class="fi-icon">&#128274;</span><input class="fi" id="inp-pass" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password"/></div>
-    <button class="primary-btn" onclick="step1Next()">&#1044;&#1072;&#1083;&#1110; &#8594;</button>
-    <div class="err-box" id="err1">&#10060; &#1053;&#1077;&#1074;&#1110;&#1088;&#1085;&#1080;&#1081; &#1083;&#1086;&#1075;&#1110;&#1085; &#1072;&#1073;&#1086; &#1087;&#1072;&#1088;&#1086;&#1083;&#1100;</div>
+    <div class="step-title">Увійди в акаунт</div>
+    <label class="fl">Логін</label>
+    <div class="fw"><span class="fi-icon">👤</span><input class="fi" id="inp-login" type="text" placeholder="Твій логін" autocomplete="username"/></div>
+    <label class="fl">Пароль</label>
+    <div class="fw"><span class="fi-icon">🔒</span><input class="fi" id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+    <button class="primary-btn" onclick="step1Next()">Далі →</button>
+    <div class="err-box" id="err1">❌ Невірний логін або пароль</div>
   </div>
+
   <div class="step" id="step2">
-    <div class="step-title">Step 2</div>
-    <div class="step-hint">&#9888;&#65039; Im'ja zberihaetsia i ne mozhe buty zmineno.</div>
-    <label class="fl">Im'ja ta prizvyshche</label>
-    <div class="fw"><span class="fi-icon">&#128587;</span><input class="fi" id="inp-fullname" type="text" placeholder="Napr: Oleksij Melnyk"/></div>
-    <button class="primary-btn" onclick="goStep2to3()">&#1044;&#1072;&#1083;&#1110; &#8594;</button>
-    <button class="secondary-btn" onclick="goStep(1)">&#8592; &#1053;&#1072;&#1079;&#1072;&#1076;</button>
-    <div class="err-box" id="err2">&#9888;&#65039; Vvedy im'ja ta prizvyshche</div>
+    <div class="step-title">Як тебе звати?</div>
+    <div class="step-hint">⚠️ Це ім'я буде відображатись у системі і не може бути змінено пізніше.</div>
+    <label class="fl">Твоє ім'я та прізвище</label>
+    <div class="fw"><span class="fi-icon">🙋</span><input class="fi" id="inp-fullname" type="text" placeholder="Наприклад: Олексій Мельник"/></div>
+    <button class="primary-btn" onclick="goStep2to3()">Далі →</button>
+    <button class="secondary-btn" onclick="goStep(1)">← Назад</button>
+    <div class="err-box" id="err2">⚠️ Введи своє ім'я та прізвище</div>
   </div>
+
   <div class="step" id="step3">
-    <div class="step-title">Typ transportu</div>
+    <div class="step-title">Тип транспорту</div>
     <div class="transport-grid">
-      <div class="tr-opt" onclick="selTr('car',this)"><span class="tre">&#128663;</span>Avtomobil</div>
-      <div class="tr-opt" onclick="selTr('ecar',this)"><span class="tre">&#9889;&#128663;</span>Elektroavto</div>
-      <div class="tr-opt" onclick="selTr('escooter',this)"><span class="tre">&#128757;&#9889;</span>Elektroskuter</div>
-      <div class="tr-opt" onclick="selTr('scooter',this)"><span class="tre">&#128757;</span>Skuter</div>
+      <div class="tr-opt" onclick="selTr('car',this)"><span class="tre">🚗</span>Автомобіль</div>
+      <div class="tr-opt" onclick="selTr('ecar',this)"><span class="tre">⚡🚗</span>Електроавто</div>
+      <div class="tr-opt" onclick="selTr('escooter',this)"><span class="tre">🛵⚡</span>Електроскутер</div>
+      <div class="tr-opt" onclick="selTr('scooter',this)"><span class="tre">🛵</span>Скутер (бензин)</div>
     </div>
-    <button class="primary-btn" onclick="goStep3to4()">&#1044;&#1072;&#1083;&#1110; &#8594;</button>
-    <button class="secondary-btn" onclick="goStep(2)">&#8592; &#1053;&#1072;&#1079;&#1072;&#1076;</button>
-    <div class="err-box" id="err3">&#9888;&#65039; Oberit typ transportu</div>
+    <button class="primary-btn" onclick="goStep3to4()">Далі →</button>
+    <button class="secondary-btn" onclick="goStep(2)">← Назад</button>
+    <div class="err-box" id="err3">⚠️ Оберіть тип транспорту</div>
   </div>
+
   <div class="step" id="step4">
-    <div class="step-title">Dani transportu</div>
-    <div class="step-hint">&#9888;&#65039; Vvodiatsia odyn raz. Perevirte uvazhno.</div>
-    <label class="fl">Marka ta model</label>
-    <div class="fw"><span class="fi-icon">&#128663;</span><input class="fi" id="inp-brand" type="text" placeholder="Napr: Toyota Camry"/></div>
-    <label class="fl">Nomernyi znak (AA1234BB)</label>
-    <div class="fw"><span class="fi-icon">&#128292;</span><input class="fi fi-upper" id="inp-plate" type="text" placeholder="AA1234BB" maxlength="8"/></div>
-    <label class="fl">Nomer telefonu</label>
-    <div class="fw"><span class="fi-icon">&#128222;</span><input class="fi" id="inp-phone" type="tel" placeholder="+380XXXXXXXXX"/></div>
-    <button class="primary-btn" onclick="step4Done()">Zberehty ta uvijty &#8594;</button>
-    <button class="secondary-btn" onclick="goStep(3)">&#8592; Nazad</button>
-    <div class="err-box" id="err4">&#9888;&#65039; Perevirte vsi polia</div>
+    <div class="step-title">Дані транспорту</div>
+    <div class="step-hint">⚠️ Ці дані вводяться один раз і не можуть бути змінені. Перевір уважно.</div>
+    <label class="fl">Марка та модель</label>
+    <div class="fw"><span class="fi-icon">🚗</span><input class="fi" id="inp-brand" type="text" placeholder="Наприклад: Toyota Camry"/></div>
+    <label class="fl">Номерний знак (АА1234ВВ)</label>
+    <div class="fw"><span class="fi-icon">🔤</span><input class="fi fi-upper" id="inp-plate" type="text" placeholder="АА1234ВВ" maxlength="8"/></div>
+    <label class="fl">Твій номер телефону</label>
+    <div class="fw"><span class="fi-icon">📞</span><input class="fi" id="inp-phone" type="tel" placeholder="+380XXXXXXXXX"/></div>
+    <button class="primary-btn" onclick="step4Done()">Зберегти та увійти →</button>
+    <button class="secondary-btn" onclick="goStep(3)">← Назад</button>
+    <div class="err-box" id="err4">⚠️ Перевір всі поля</div>
   </div>
 </div>
+
 <div id="app">
   <div class="header">
     <div class="hdr1">
       <div class="cinfo">
-        <div class="avatar" id="hdr-av">MD</div>
-        <div><div class="cname" id="hdr-name">Kur'ier</div><div class="cid" id="hdr-id">#001</div></div>
+        <div class="avatar" id="hdr-av">МД</div>
+        <div>
+          <div class="cname" id="hdr-name">Кур'єр</div>
+          <div class="cid" id="hdr-id">#001</div>
+        </div>
       </div>
       <div class="status-pill" id="spill" onclick="toggleOnline()">
         <div class="sdot" id="sdot"></div>
-        <span class="stxt" id="stxt">Oflayn</span>
+        <span class="stxt" id="stxt">Офлайн</span>
       </div>
     </div>
     <div class="tabs">
-      <button class="tab active" id="tab-orders" onclick="goTab('orders')">&#128230; Zamovlennia</button>
-      <button class="tab" id="tab-balance" onclick="goTab('balance')">&#128176; Balans</button>
-      <button class="tab" id="tab-settings" onclick="goTab('settings')">&#9881;&#65039; Nalasht.</button>
+      <button class="tab active" id="tab-orders" onclick="goTab('orders')">📦 Замовлення</button>
+      <button class="tab" id="tab-balance" onclick="goTab('balance')">💰 Баланс</button>
+      <button class="tab" id="tab-settings" onclick="goTab('settings')">⚙️ Налашт.</button>
     </div>
   </div>
   <div class="content">
     <div class="tab-pane active" id="pane-orders">
       <div class="push-banner" id="push-banner">
-        <div class="push-banner-text">&#128276; Dozvol povid., shchob otrymuvaty zamovlennia</div>
-        <button class="push-btn" onclick="askPush()">Dozvolyty</button>
+        <div class="push-banner-text">🔔 Дозволь сповіщення, щоб отримувати нові замовлення</div>
+        <button class="push-btn" onclick="askPush()">Дозволити</button>
       </div>
       <div class="offline-block" id="offline-block">
-        <span>&#128244;</span><span class="offline-text">Ty oflayn. Peremkny status.</span>
+        <span>📴</span><span class="offline-text">Ти офлайн. Перемкни статус, щоб отримувати замовлення.</span>
       </div>
       <div id="order-area"></div>
     </div>
     <div class="tab-pane" id="pane-balance">
       <div class="balance-card">
-        <div class="bal-label">&#128181; Balans za sohodni</div>
-        <div><span class="bal-amount" id="bal-amount">0.00</span><span class="bal-currency">hrn</span></div>
-        <div class="bal-reset">&#128339; Skyd o 4:00</div>
+        <div class="bal-label">💵 Баланс за сьогодні</div>
+        <div><span class="bal-amount" id="bal-amount">0.00</span><span class="bal-currency">грн</span></div>
+        <div class="bal-reset">🕓 Автоматичний скид о 4:00</div>
       </div>
       <div class="bal-stat">
-        <div class="stat-item"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Dostavok sohodni</div></div>
-        <div class="stat-item"><div class="stat-num" style="color:var(--g2)">+110</div><div class="stat-label">hrn za dostavku</div></div>
+        <div class="stat-item"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Доставок сьогодні</div></div>
+        <div class="stat-item"><div class="stat-num" style="color:var(--g2)">+110</div><div class="stat-label">грн за доставку</div></div>
       </div>
-      <div class="section-title">Istoriia</div>
+      <div class="section-title">Історія</div>
       <div id="history-area"></div>
     </div>
     <div class="tab-pane" id="pane-settings">
       <div class="settings-card">
-        <div class="sgt">Dani pro transport ta kurier</div>
-        <div class="srow"><div class="sico si-p" id="set-tr-ico">&#128663;</div><div class="srow-text"><div class="srow-title" id="set-tr-name">-</div><div class="srow-sub">Typ transportu</div></div></div>
-        <div class="srow"><div class="sico si-p">&#128278;</div><div class="srow-text"><div class="srow-title" id="set-plate">-</div><div class="srow-sub" id="set-brand">-</div></div></div>
-        <div class="srow"><div class="sico si-g">&#128222;</div><div class="srow-text"><div class="srow-title" id="set-phone">-</div><div class="srow-sub">Nomer telefonu</div></div></div>
-        <div class="srow"><div class="sico si-p">&#128587;</div><div class="srow-text"><div class="srow-title" id="set-fullname">-</div><div class="srow-sub">Povne imia</div></div></div>
+        <div class="sgt">Дані про транспорт та кур'єра</div>
+        <div class="srow"><div class="sico si-p" id="set-tr-ico">🚗</div><div class="srow-text"><div class="srow-title" id="set-tr-name">—</div><div class="srow-sub">Тип транспорту</div></div></div>
+        <div class="srow"><div class="sico si-p">🔖</div><div class="srow-text"><div class="srow-title" id="set-plate">—</div><div class="srow-sub" id="set-brand">—</div></div></div>
+        <div class="srow"><div class="sico si-g">📞</div><div class="srow-text"><div class="srow-title" id="set-phone">—</div><div class="srow-sub">Номер телефону</div></div></div>
+        <div class="srow"><div class="sico si-p">🙋</div><div class="srow-text"><div class="srow-title" id="set-fullname">—</div><div class="srow-sub">Повне ім'я</div></div></div>
       </div>
       <div class="settings-card">
-        <div class="sgt">Akаunt</div>
-        <div class="srow"><div class="sico si-p">&#129371;</div><div class="srow-text"><div class="srow-title" id="set-name">-</div><div class="srow-sub" id="set-id">-</div></div></div>
+        <div class="sgt">👤 Акаунт</div>
+        <div class="srow"><div class="sico si-p">🪪</div><div class="srow-text"><div class="srow-title" id="set-name">—</div><div class="srow-sub" id="set-id">—</div></div></div>
       </div>
-      <button class="logout-btn" onclick="doLogout()">&#128682; Vyjty z akаuntu</button>
+      <button class="logout-btn" onclick="doLogout()">🚪 Вийти з акаунту</button>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-var USERS = {
-  ArtemMage: {pass:"LolKek228", id:"001"},
-  courier2:  {pass:"pass2",     id:"002"},
-  courier3:  {pass:"pass3",     id:"003"},
-  courier4:  {pass:"pass4",     id:"004"},
-  courier5:  {pass:"pass5",     id:"005"},
-  courier6:  {pass:"pass6",     id:"006"},
-  courier7:  {pass:"pass7",     id:"007"},
-  courier8:  {pass:"pass8",     id:"008"},
-  courier9:  {pass:"pass9",     id:"009"},
-  courier10: {pass:"pass10",    id:"010"}
+// ============================================================
+// СПИСОК КУР'ЄРІВ
+// Щоб додати нового: скопіюй рядок, заміни логін, пароль та id
+// ============================================================
+const USERS = {
+  ArtemMage: { pass: 'LolKek228', id: '001' },
+  courier2:  { pass: 'pass2',     id: '002' },
+  courier3:  { pass: 'pass3',     id: '003' },
+  courier4:  { pass: 'pass4',     id: '004' },
+  courier5:  { pass: 'pass5',     id: '005' },
+  courier6:  { pass: 'pass6',     id: '006' },
+  courier7:  { pass: 'pass7',     id: '007' },
+  courier8:  { pass: 'pass8',     id: '008' },
+  courier9:  { pass: 'pass9',     id: '009' },
+  courier10: { pass: 'pass10',    id: '010' },
 };
-var BACKEND_URL = "https://mage-food-delivery-backend-production.up.railway.app";
-var ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
-var RESTRICTED_SHOPS = ["temari sushi тернопіль", "temari sushi тернопіль 2"];
-var RESTRICTED_TRANSPORTS = ["scooter","escooter"];
-var REWARD = 110;
-var TR = {
-  car:      {label:"Avtomobil"},
-  ecar:     {label:"Elektroavto"},
-  escooter: {label:"Elektroskuter"},
-  scooter:  {label:"Skuter"}
+
+// ============================================================
+// CONFIG
+// ============================================================
+const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
+
+// Кастомний звук при новому замовленні.
+// Завантаж sound.mp3 на GitHub і встав посилання:
+// const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
+// Якщо null — буде вбудований синтезований звук.
+const ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
+
+const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
+const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
+const REWARD = 110;
+
+const TR = {
+  car:      { emoji: '🚗',  label: 'Автомобіль'    },
+  ecar:     { emoji: '⚡🚗', label: 'Електроавто'   },
+  escooter: { emoji: '🛵⚡', label: 'Електроскутер' },
+  scooter:  { emoji: '🛵',  label: 'Скутер (бензин)'},
 };
-var S = {user:null,fullName:null,transport:null,carBrand:null,plate:null,phone:null,isOnline:false,order:null,balance:0,history:[],deliveries:0};
-var selectedTransport=null, timerInterval=null, timerSec=0, sseSource=null;
 
-function goStep(n){document.querySelectorAll(".step").forEach(function(s){s.classList.remove("active");});document.getElementById("step"+n).classList.add("active");}
-function show(id){document.getElementById(id).style.display="block";}
-function hide(id){document.getElementById(id).style.display="none";}
-function toast(msg){var el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove("show");},3000);}
+let S = {
+  user: null, fullName: null, transport: null,
+  carBrand: null, plate: null, phone: null,
+  isOnline: false, order: null,
+  balance: 0, history: [], deliveries: 0
+};
+let selectedTransport = null;
+let timerInterval = null, timerSec = 0;
+let sseSource = null;
 
-function step1Next(){
-  var login=document.getElementById("inp-login").value.trim();
-  var pass=document.getElementById("inp-pass").value;
-  var u=USERS[login];
-  if(!u||u.pass!==pass){show("err1");document.getElementById("inp-pass").value="";return;}
-  hide("err1");
-  S.user={login:login,pass:u.pass,id:u.id};
-  var saved=getSaved();
-  if(saved&&saved.fullName&&saved.transport&&saved.carBrand&&saved.plate){
-    S.fullName=saved.fullName;S.transport=saved.transport;S.carBrand=saved.carBrand;S.plate=saved.plate;S.phone=saved.phone;
-    loadState(saved);showApp();
-  } else {goStep(2);}
-}
-document.getElementById("inp-pass").addEventListener("keydown",function(e){if(e.key==="Enter")step1Next();});
-
-function goStep2to3(){var name=document.getElementById("inp-fullname").value.trim();if(name.length<3){show("err2");return;}hide("err2");S.fullName=name;goStep(3);}
-function selTr(val,el){document.querySelectorAll(".tr-opt").forEach(function(e){e.classList.remove("sel");});el.classList.add("sel");selectedTransport=val;}
-function goStep3to4(){if(!selectedTransport){show("err3");return;}hide("err3");S.transport=selectedTransport;goStep(4);}
-function validatePlate(p){return /^[A-Za-zА-яІЇє]{2}\d{4}[A-Za-zА-яІЇє]{2}$/.test(p.replace(/\s/g,""));}
-function step4Done(){
-  var brand=document.getElementById("inp-brand").value.trim();
-  var plate=document.getElementById("inp-plate").value.trim().toUpperCase().replace(/\s/g,"");
-  var phone=document.getElementById("inp-phone").value.trim();
-  var err=document.getElementById("err4");
-  if(!brand){err.textContent="Vkazy marku ta model";show("err4");return;}
-  if(!validatePlate(plate)){err.textContent="Format: AA1234BB";show("err4");return;}
-  if(phone.length<10){err.textContent="Vkazy nomer telefonu";show("err4");return;}
-  hide("err4");
-  S.carBrand=brand;S.plate=plate;S.phone=phone;
-  apiPost("/courier/register",{login:S.user.login,pass:S.user.pass,fullName:S.fullName,transport:S.transport,carBrand:brand,plate:plate,phone:phone});
-  loadState(getSaved());showApp();
+// ============================================================
+// STEPS
+// ============================================================
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
 }
 
-function stateKey(){return "mfd_"+S.user.login;}
-function getSaved(){try{return JSON.parse(localStorage.getItem(stateKey()));}catch(e){return null;}}
-function saveState(){localStorage.setItem(stateKey(),JSON.stringify({fullName:S.fullName,transport:S.transport,carBrand:S.carBrand,plate:S.plate,phone:S.phone,isOnline:S.isOnline,order:S.order,balance:S.balance,history:S.history,deliveries:S.deliveries,date:new Date().toDateString()}));}
-function loadState(d){
-  if(!d)return;
-  var at4=new Date();at4.setHours(4,0,0,0);
-  var lr=parseInt(localStorage.getItem("reset_"+S.user.login)||"0");
-  var needReset=d.date!==new Date().toDateString()||(new Date()>=at4&&lr<at4.getTime());
-  S.balance=needReset?0:(d.balance||0);S.history=needReset?[]:(d.history||[]);S.deliveries=needReset?0:(d.deliveries||0);
-  S.order=d.order||null;S.isOnline=d.isOnline||false;
+function step1Next() {
+  const login = document.getElementById('inp-login').value.trim();
+  const pass  = document.getElementById('inp-pass').value;
+  const u     = USERS[login];
+  if (!u || u.pass !== pass) { show('err1'); document.getElementById('inp-pass').value = ''; return; }
+  hide('err1');
+  S.user = { login, pass: u.pass, id: u.id };
+  const saved = getSaved();
+  if (saved && saved.fullName && saved.transport && saved.carBrand && saved.plate) {
+    S.fullName  = saved.fullName;
+    S.transport = saved.transport;
+    S.carBrand  = saved.carBrand;
+    S.plate     = saved.plate;
+    S.phone     = saved.phone;
+    loadState(saved);
+    showApp();
+  } else {
+    goStep(2);
+  }
 }
-function apiPost(path,body){fetch(BACKEND_URL+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}).catch(function(e){console.warn("[API]",e);});}
+document.getElementById('inp-pass').addEventListener('keydown', e => { if (e.key === 'Enter') step1Next(); });
 
-function connectSSE(){
-  if(sseSource)sseSource.close();
-  sseSource=new EventSource(BACKEND_URL+"/sse/"+S.user.login+"?pass="+encodeURIComponent(S.user.pass));
-  sseSource.addEventListener("connected",function(){console.log("[SSE] ok");});
-  sseSource.addEventListener("new_order",function(e){
-    var order=JSON.parse(e.data);if(S.order)return;
-    S.order=Object.assign({},order,{status:"new",assignedAt:new Date().toISOString()});
-    saveState();renderOrder();goTab("orders");playSound();
-    pushNotif("Nove zamovlennia!",order.address+" "+order.clientName);
-    toast("Nove zamovlennia!");
+function goStep2to3() {
+  const name = document.getElementById('inp-fullname').value.trim();
+  if (name.length < 3) { show('err2'); return; }
+  hide('err2');
+  S.fullName = name;
+  goStep(3);
+}
+
+function selTr(val, el) {
+  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedTransport = val;
+}
+
+function goStep3to4() {
+  if (!selectedTransport) { show('err3'); return; }
+  hide('err3');
+  S.transport = selectedTransport;
+  goStep(4);
+}
+
+function validatePlate(p) {
+  return /^[А-ЯІЇЄа-яіїєA-Za-z]{2}\d{4}[А-ЯІЇЄа-яіїєA-Za-z]{2}$/.test(p.replace(/\s/g, ''));
+}
+
+function step4Done() {
+  const brand = document.getElementById('inp-brand').value.trim();
+  const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
+  const phone = document.getElementById('inp-phone').value.trim();
+  const err   = document.getElementById('err4');
+  if (!brand) { err.textContent = '⚠️ Вкажи марку та модель'; show('err4'); return; }
+  if (!validatePlate(plate)) { err.textContent = '⚠️ Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
+  if (phone.length < 10) { err.textContent = '⚠️ Вкажи номер телефону'; show('err4'); return; }
+  hide('err4');
+  S.carBrand = brand; S.plate = plate; S.phone = phone;
+  apiPost('/courier/register', {
+    login: S.user.login, pass: S.user.pass,
+    fullName: S.fullName, transport: S.transport,
+    carBrand: brand, plate, phone
   });
-  sseSource.addEventListener("order_cancelled",function(e){
-    var data=JSON.parse(e.data);
-    if(data.reason==="timeout"&&S.order&&S.order.status==="new"){S.order=null;saveState();renderOrder();toast("Chas vyjshov");}
+  loadState(getSaved());
+  showApp();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+function stateKey() { return 'mfd_' + S.user.login; }
+function getSaved() { try { return JSON.parse(localStorage.getItem(stateKey())); } catch(e) { return null; } }
+
+function saveState() {
+  localStorage.setItem(stateKey(), JSON.stringify({
+    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand, plate: S.plate, phone: S.phone,
+    isOnline: S.isOnline, order: S.order,
+    balance: S.balance, history: S.history, deliveries: S.deliveries,
+    date: new Date().toDateString()
+  }));
+}
+
+function loadState(d) {
+  if (!d) return;
+  const at4 = new Date(); at4.setHours(4, 0, 0, 0);
+  const lr = parseInt(localStorage.getItem('reset_' + S.user.login) || '0');
+  const needReset = d.date !== new Date().toDateString() || (new Date() >= at4 && lr < at4.getTime());
+  S.balance    = needReset ? 0  : (d.balance    || 0);
+  S.history    = needReset ? [] : (d.history    || []);
+  S.deliveries = needReset ? 0  : (d.deliveries || 0);
+  S.order      = d.order    || null;
+  S.isOnline   = d.isOnline || false;
+}
+
+async function apiPost(path, body) {
+  try {
+    const r = await fetch(BACKEND_URL + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return r.ok ? r.json() : null;
+  } catch(e) { console.warn('[API]', path, e.message); return null; }
+}
+
+// ── SSE ──────────────────────────────────────────────────────
+function connectSSE() {
+  if (sseSource) sseSource.close();
+  const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
+  sseSource = new EventSource(url);
+  sseSource.addEventListener('connected', () => { console.log('[SSE] Connected'); });
+  sseSource.addEventListener('new_order', e => {
+    const order = JSON.parse(e.data);
+    if (S.order) return;
+    S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
+    saveState(); renderOrder(); goTab('orders');
+    playSound();
+    pushNotif('🆕 Нове замовлення!', order.address + ' · ' + order.clientName);
+    toast('📦 Нове замовлення призначено!');
   });
-  sseSource.onerror=function(){setTimeout(connectSSE,5000);};
+  sseSource.addEventListener('order_cancelled', e => {
+    const { reason } = JSON.parse(e.data);
+    if (reason === 'timeout' && S.order && S.order.status === 'new') {
+      S.order = null; saveState(); renderOrder();
+      toast('⏱ Час вийшов — замовлення передано');
+    }
+  });
+  sseSource.onerror = () => { setTimeout(connectSSE, 5000); };
 }
 
-function initials(name){var p=name.trim().split(/\s+/);return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():name.slice(0,2).toUpperCase();}
-function showApp(){
-  document.getElementById("login-screen").style.display="none";
-  document.getElementById("app").style.display="flex";
-  var tr=TR[S.transport]||{label:"-"};
-  document.getElementById("hdr-av").textContent=initials(S.fullName||"??");
-  document.getElementById("hdr-name").textContent=S.fullName||"Kurier";
-  document.getElementById("hdr-id").textContent="#"+S.user.id;
-  document.getElementById("set-name").textContent=S.fullName||"-";
-  document.getElementById("set-id").textContent="#"+S.user.id;
-  document.getElementById("set-tr-ico").textContent=S.transport==="car"?"C":S.transport==="ecar"?"E":"S";
-  document.getElementById("set-tr-name").textContent=tr.label;
-  document.getElementById("set-plate").textContent=S.plate||"-";
-  document.getElementById("set-brand").textContent=S.carBrand||"-";
-  document.getElementById("set-phone").textContent=S.phone||"-";
-  document.getElementById("set-fullname").textContent=S.fullName||"-";
-  updateStatusUI();renderOrder();renderBalance();checkPushBanner();scheduleReset();connectSSE();
+// ============================================================
+// SHOW APP
+// ============================================================
+function initials(name) {
+  const parts = name.trim().split(/\s+/);
+  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
 }
 
-function doLogout(){
-  if(!confirm("Vyjty?"))return;
-  stopTimer();saveState();sessionStorage.setItem("logged_out","1");
-  S={user:null,fullName:null,transport:null,carBrand:null,plate:null,phone:null,isOnline:false,order:null,balance:0,history:[],deliveries:0};
-  selectedTransport=null;if(sseSource){sseSource.close();sseSource=null;}
-  document.getElementById("app").style.display="none";
-  document.getElementById("login-screen").style.display="flex";
-  ["inp-login","inp-pass","inp-fullname","inp-brand","inp-plate","inp-phone"].forEach(function(id){document.getElementById(id).value="";});
-  document.querySelectorAll(".tr-opt").forEach(function(e){e.classList.remove("sel");});
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  const tr = TR[S.transport] || { emoji: '🚗', label: '—' };
+  document.getElementById('hdr-av').textContent       = initials(S.fullName || '??');
+  document.getElementById('hdr-name').textContent     = S.fullName || 'Кур\'єр';
+  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id + ' · ' + tr.emoji;
+  document.getElementById('set-name').textContent     = S.fullName || '—';
+  document.getElementById('set-id').textContent       = 'Кур\'єр #' + S.user.id;
+  document.getElementById('set-tr-ico').textContent   = tr.emoji;
+  document.getElementById('set-tr-name').textContent  = tr.label;
+  document.getElementById('set-plate').textContent    = S.plate || '—';
+  document.getElementById('set-brand').textContent    = S.carBrand || '—';
+  document.getElementById('set-phone').textContent    = S.phone || '—';
+  document.getElementById('set-fullname').textContent = S.fullName || '—';
+  updateStatusUI();
+  renderOrder();
+  renderBalance();
+  checkPushBanner();
+  scheduleReset();
+  connectSSE();
+}
+
+function doLogout() {
+  if (!confirm('Вийти з акаунту?')) return;
+  stopTimer();
+  saveState();
+  sessionStorage.setItem('logged_out', '1');
+  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null,
+        phone: null, isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
+  selectedTransport = null;
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
   goStep(1);
 }
 
-function toggleOnline(){S.isOnline=!S.isOnline;updateStatusUI();saveState();toast(S.isOnline?"Online":"Oflayn");apiPost("/courier/online",{login:S.user.login,pass:S.user.pass,isOnline:S.isOnline});}
-function updateStatusUI(){document.getElementById("sdot").classList.toggle("on",S.isOnline);document.getElementById("stxt").textContent=S.isOnline?"Online":"Oflayn";document.getElementById("spill").classList.toggle("online",S.isOnline);document.getElementById("offline-block").classList.toggle("show",!S.isOnline);}
-function goTab(t){["orders","balance","settings"].forEach(function(x){document.getElementById("tab-"+x).classList.toggle("active",x===t);document.getElementById("pane-"+x).classList.toggle("active",x===t);});if(t==="balance")renderBalance();}
-function startTimer(cb){timerSec=15;renderTimer();timerInterval=setInterval(function(){timerSec--;renderTimer();if(timerSec<=0){stopTimer();cb();}},1000);}
-function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
-function renderTimer(){var bar=document.getElementById("timer-bar"),cnt=document.getElementById("timer-count");if(!bar||!cnt)return;bar.style.width=(timerSec/15*100)+"%";bar.className="timer-fill"+(timerSec<=5?" urgent":"");cnt.textContent=timerSec+"s";}
+// ============================================================
+// STATUS
+// ============================================================
+function toggleOnline() {
+  S.isOnline = !S.isOnline;
+  updateStatusUI(); saveState();
+  toast(S.isOnline ? '✅ Ти онлайн — готовий до роботи!' : '⏸ Ти офлайн');
+  apiPost('/courier/online', { login: S.user.login, pass: S.user.pass, isOnline: S.isOnline });
+}
+function updateStatusUI() {
+  document.getElementById('sdot').classList.toggle('on', S.isOnline);
+  document.getElementById('stxt').textContent = S.isOnline ? 'Онлайн' : 'Офлайн';
+  document.getElementById('spill').classList.toggle('online', S.isOnline);
+  document.getElementById('offline-block').classList.toggle('show', !S.isOnline);
+}
 
-function isCash(p){if(!p)return false;var l=p.toLowerCase().trim();return /^готівк/i.test(l)||l==="готівка";}
-function dv(v){return(v===undefined||v===null||String(v).trim()==="")?"-":v;}
-function d(v){return(v===undefined||v===null||String(v).trim()==="")?'<span class="dash">-</span>':v;}
+// ============================================================
+// TABS
+// ============================================================
+function goTab(t) {
+  ['orders','balance','settings'].forEach(x => {
+    document.getElementById('tab-' + x).classList.toggle('active', x === t);
+    document.getElementById('pane-' + x).classList.toggle('active', x === t);
+  });
+  if (t === 'balance') renderBalance();
+}
 
-var ST={
-  new:{text:"Nove zamovlennia",chip:"chip-new",emoji:"NEW"},
-  accepted:{text:"Pryiniato",chip:"chip-accepted",emoji:"OK"},
-  delivering:{text:"Dostavliaietsia",chip:"chip-delivering",emoji:"GO"},
-  done:{text:"Dostavleno",chip:"chip-done",emoji:"DONE"},
-  notfound:{text:"Ne znajdeno",chip:"chip-notfound",emoji:"ERR"}
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer(onExpire) {
+  timerSec = 15; renderTimer();
+  timerInterval = setInterval(() => { timerSec--; renderTimer(); if (timerSec <= 0) { stopTimer(); onExpire(); } }, 1000);
+}
+function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+function renderTimer() {
+  const bar = document.getElementById('timer-bar'), cnt = document.getElementById('timer-count');
+  if (!bar || !cnt) return;
+  bar.style.width = (timerSec / 15 * 100) + '%';
+  bar.className = 'timer-fill' + (timerSec <= 5 ? ' urgent' : '');
+  cnt.textContent = timerSec + 'с';
+}
+
+// ============================================================
+// ORDER RENDER
+// ============================================================
+const ST = {
+  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: '🆕' },
+  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: '✅' },
+  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: '🏍' },
+  done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: '🎉' },
+  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: '❌' },
 };
 
-function renderOrder(){
-  var el=document.getElementById("order-area");
-  if(!S.order){stopTimer();el.innerHTML="<div class="empty"><div class="empty-emoji">&#128205;</div><div class="empty-title">Zamovlen nemaie</div><div class="empty-sub">But online</div></div>";return;}
-  var o=S.order,st=ST[o.status],cash=isCash(o.payment);
-  var timerH=o.status==="new"?"<div class="timer-bar-wrap"><div class="timer-top"><span>Chas</span><span class="timer-count" id="timer-count">"+timerSec+"s</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>":"";
-  var ent=dv(o.entrance),flr=dv(o.floor),flt=dv(o.flat);
-  var cw="";
-  if(cash){if(o.status==="new"||o.status==="accepted")cw="<div class="cash-warn"><span>$</span><div class="cash-warn-text">Vykupy za hotivku!</div></div>";else if(o.status==="delivering")cw="<div class="cash-warn"><span>$</span><div class="cash-warn-text">Vizmy hotivku!</div></div>";}
-  var ph=o.status==="accepted"?"<div class="pickup-hint"><span>M</span><div class="pickup-hint-text">Ydy do zakladu</div></div>":"";
-  var act="";
-  if(o.status==="new")act="<button class="btn btn-accept" onclick="acceptOrder()">Pryiniaty</button>";
-  else if(o.status==="accepted")act="<button class="btn btn-pickup" onclick="setStatus('delivering')">Zabrав</button>";
-  else if(o.status==="delivering")act="<button class="btn btn-done" onclick="finishOrder('done')">Dostavleno</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">Ne znajdeno</button>";
-  var phoneH=o.phone?"<a href="tel:"+o.phone+"">"+o.phone+"</a>":d("");
-  var comH=o.comment?"<div class="orow"><span class="olabel">Komentar</span><span class="oval">"+o.comment+"</span></div>":"";
-  el.innerHTML="<div class="order-card">"+timerH+"<div class="order-top"><div class="order-top-row"><span class="order-num">#"+(o.checkNum||o.id)+"</span><span class="status-chip "+st.chip+"">"+st.text+"</span></div><div class="order-amount">"+o.sum+" <span style="font-size:1.1rem;opacity:.7">hrn</span></div><div class="order-amount-label">"+( o.payment||"-")+"</div></div><div class="order-body"><div class="orow"><span class="olabel">Zaklad</span><span class="oval">"+d(o.shop)+"</span></div><div class="orow"><span class="olabel">Chek</span><span class="oval">"+d(o.checkNum)+"</span></div><div class="orow"><span class="olabel">Kasyr</span><span class="oval">"+d(o.cashier)+"</span></div><div class="orow"><span class="olabel">Klient</span><span class="oval">"+d(o.clientName)+"</span></div><div class="orow"><span class="olabel">Tel</span><span class="oval">"+phoneH+"</span></div><div class="orow"><span class="olabel">Adresa</span><span class="oval">"+d(o.address)+"</span></div><div class="orow"><span class="olabel">Detali</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Pid</div><div class="addr-sub-val">"+ent+"</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Pov</div><div class="addr-sub-val">"+flr+"</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Kv</div><div class="addr-sub-val">"+flt+"</div></div></div></span></div><div class="orow"><span class="olabel">Suma</span><span class="oval highlight">"+d(o.sum)+" hrn</span></div><div class="orow"><span class="olabel">Oplata</span><span class="oval">"+d(o.payment)+"</span></div><div class="orow"><span class="olabel">Misto</span><span class="oval">"+d(o.city)+"</span></div>"+comH+"</div>"+ph+cw+"<div class="earning-row"><span class="earning-label">Zarobysh</span><span class="earning-amount">+"+REWARD+" hrn</span></div><div class="order-actions">"+act+"</div></div>";
-  if(o.status==="new"&&timerInterval===null)startTimer(onTimerExpired);
+function isCash(p) {
+  if (!p) return false;
+  const l = p.toLowerCase().trim();
+  return /^готівк/i.test(l) || l === 'готівка' || l === 'за готівку' || l === 'готівковий' || l === 'готівкою';
+}
+function d(v)  { return (v === undefined || v === null || String(v).trim() === '') ? '<span class="dash">—</span>' : v; }
+function dv(v) { return (v === undefined || v === null || String(v).trim() === '') ? '—' : v; }
+
+function renderOrder() {
+  const el = document.getElementById('order-area');
+  if (!S.order) {
+    stopTimer();
+    el.innerHTML = `<div class="empty"><div class="empty-emoji">📭</div><div class="empty-title">Замовлень немає</div><div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div></div>`;
+    return;
+  }
+  const o = S.order, st = ST[o.status], cash = isCash(o.payment);
+  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap"><div class="timer-top"><span>⏱ Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>` : '';
+  const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
+  const entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
+  let cashWarn = '';
+  if (cash) {
+    if (o.status === 'new' || o.status === 'accepted') cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Ти маєш викупити це замовлення за готівку!</div></div>`;
+    else if (o.status === 'delivering') cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>`;
+  }
+  const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>` : '';
+  let actions = '';
+  if (o.status === 'new') actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
+  else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
+  else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
+
+  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.emoji} ${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
+
+  if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
 
-function acceptOrder(){if(!S.order)return;stopTimer();S.order.status="accepted";S.order.acceptedAt=new Date().toISOString();saveState();renderOrder();toast("OK!");apiPost("/courier/status",{login:S.user.login,pass:S.user.pass,event:"order_accepted",order:S.order});}
-function setStatus(st){if(!S.order)return;S.order.status=st;if(st==="delivering")S.order.pickedAt=new Date().toISOString();saveState();renderOrder();apiPost("/courier/status",{login:S.user.login,pass:S.user.pass,event:"status_update",order:S.order});}
-function finishOrder(st){
-  if(!S.order)return;S.order.status=st;S.order.finishedAt=new Date().toISOString();
-  var o=Object.assign({},S.order);
-  apiPost("/courier/status",{login:S.user.login,pass:S.user.pass,event:"order_complete",order:Object.assign({},S.order)});
-  if(st==="done"){S.balance+=REWARD;S.deliveries++;S.history.unshift({id:o.checkNum||o.id,address:o.address,time:new Date().toLocaleTimeString("uk-UA",{hour:"2-digit",minute:"2-digit"}),amount:REWARD});playCoins();toast("+"+REWARD+" hrn!");}
-  else toast("Zakryto");
-  S.order=null;stopTimer();saveState();renderOrder();renderBalance();
+// ============================================================
+// ORDER LOGIC
+// ============================================================
+function acceptOrder() {
+  if (!S.order) return;
+  stopTimer(); S.order.status = 'accepted'; S.order.acceptedAt = new Date().toISOString();
+  saveState(); renderOrder(); toast('✅ Замовлення прийнято!');
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_accepted', order: S.order });
 }
-function onTimerExpired(){if(!S.order||S.order.status!=="new")return;S.order=null;saveState();renderOrder();toast("Chas vyjshov");}
-function canReceive(od){if(!S.isOnline||S.order)return false;if(RESTRICTED_TRANSPORTS.indexOf(S.transport)!==-1){if(RESTRICTED_SHOPS.indexOf((od.shop||"").toLowerCase().trim())!==-1)return false;}return true;}
-
-function playSound(){
-  if(ADMIN_SOUND_URL){var a=new Audio(ADMIN_SOUND_URL);a.play().catch(function(){});return;}
-  try{var ctx=new(window.AudioContext||window.webkitAudioContext)();[[880,0],[1046,.18],[1318,.36]].forEach(function(ft){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=ft[0];o.type="sine";g.gain.setValueAtTime(.35,ctx.currentTime+ft[1]);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+ft[1]+.3);o.start(ctx.currentTime+ft[1]);o.stop(ctx.currentTime+ft[1]+.35);});}catch(e){}
+function setStatus(status) {
+  if (!S.order) return;
+  S.order.status = status;
+  if (status === 'delivering') S.order.pickedAt = new Date().toISOString();
+  saveState(); renderOrder();
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'status_update', order: S.order });
 }
-function playCoins(){
-  try{var ctx=new(window.AudioContext||window.webkitAudioContext)();var times=[0,.11,.2,.27,.33,.38,.43,.47,.51,.54];var freqs=[2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];times.forEach(function(t,i){var o=ctx.createOscillator(),g=ctx.createGain(),o2=ctx.createOscillator(),g2=ctx.createGain();o.connect(g);g.connect(ctx.destination);o2.connect(g2);g2.connect(ctx.destination);o.type="sine";o.frequency.value=freqs[i];o2.type="sine";o2.frequency.value=freqs[i]*1.5;var vol=i===0?.32:.22;g.gain.setValueAtTime(vol,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.07);g2.gain.setValueAtTime(vol*.4,ctx.currentTime+t);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.05);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.09);o2.start(ctx.currentTime+t);o2.stop(ctx.currentTime+t+.07);});}catch(e){}
+function finishOrder(status) {
+  if (!S.order) return;
+  S.order.status = status; S.order.finishedAt = new Date().toISOString();
+  const o = { ...S.order };
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_complete', order: { ...S.order } });
+  if (status === 'done') {
+    S.balance += REWARD; S.deliveries++;
+    S.history.unshift({ id: o.checkNum||o.id, address: o.address, time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }), amount: REWARD });
+    playCoins(); toast(`💰 +${REWARD} грн до балансу!`);
+  } else { toast('📦 Замовлення закрито'); }
+  S.order = null; stopTimer(); saveState(); renderOrder(); renderBalance();
+}
+function onTimerExpired() {
+  if (!S.order || S.order.status !== 'new') return;
+  S.order = null; saveState(); renderOrder(); toast('⏱ Час вийшов — замовлення передано');
+}
+function canReceive(orderData) {
+  if (!S.isOnline || S.order) return false;
+  if (RESTRICTED_TRANSPORTS.includes(S.transport)) {
+    if (RESTRICTED_SHOPS.includes((orderData.shop || '').toLowerCase().trim())) return false;
+  }
+  return true;
 }
 
-function checkPushBanner(){if("Notification"in window&&Notification.permission==="default")document.getElementById("push-banner").classList.add("show");}
-function askPush(){Notification.requestPermission().then(function(p){document.getElementById("push-banner").classList.remove("show");toast(p==="granted"?"Push OK":"Push blocked");});}
-function pushNotif(title,body){if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body:body,tag:"order",requireInteraction:true});}
-
-function renderBalance(){
-  document.getElementById("bal-amount").textContent=S.balance.toFixed(2);
-  document.getElementById("stat-count").textContent=S.deliveries;
-  var area=document.getElementById("history-area");
-  if(!S.history.length){area.innerHTML="<div class="empty" style="padding:2rem 0"><div class="empty-emoji" style="font-size:2.5rem">&#128203;</div><div class="empty-title">Poky porozhno</div></div>";return;}
-  area.innerHTML=S.history.map(function(h){return "<div class="history-item"><div class="hico">OK</div><div style="flex:1"><div class="horder">#"+h.id+"</div><div class="haddr">"+h.address+" "+h.time+"</div></div><div class="hsum">+"+h.amount+"</div></div>";}).join("");
+// ============================================================
+// SOUND
+// ============================================================
+function playSound() {
+  if (ADMIN_SOUND_URL) {
+    const audio = new Audio(ADMIN_SOUND_URL);
+    audio.play().catch(() => {});
+    return;
+  }
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[880,0],[1046,.18],[1318,.36]].forEach(([f,t]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(.35, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .3);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .35);
+    });
+  } catch(e) {}
+}
+function playCoins() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const times = [0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
+    const freqs = [2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
+    times.forEach((t, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o2.connect(g2); g2.connect(ctx.destination);
+      o.type = 'sine'; o.frequency.value = freqs[i];
+      o2.type = 'sine'; o2.frequency.value = freqs[i] * 1.5;
+      const vol = i === 0 ? .32 : .22;
+      g.gain.setValueAtTime(vol, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .07);
+      g2.gain.setValueAtTime(vol * .4, ctx.currentTime + t);
+      g2.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .05);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .09);
+      o2.start(ctx.currentTime + t); o2.stop(ctx.currentTime + t + .07);
+    });
+  } catch(e) {}
 }
 
-function scheduleReset(){
-  var now=new Date(),next4=new Date();
-  next4.setDate(now.getDate()+(now.getHours()>=4?1:0));next4.setHours(4,0,0,0);
-  setTimeout(function(){S.balance=0;S.history=[];S.deliveries=0;localStorage.setItem("reset_"+S.user.login,Date.now().toString());saveState();renderBalance();toast("Novyj den");scheduleReset();},next4-now);
+// ============================================================
+// PUSH
+// ============================================================
+function checkPushBanner() {
+  if ('Notification' in window && Notification.permission === 'default')
+    document.getElementById('push-banner').classList.add('show');
+}
+function askPush() {
+  Notification.requestPermission().then(p => {
+    document.getElementById('push-banner').classList.remove('show');
+    toast(p === 'granted' ? '🔔 Сповіщення увімкнено!' : '❌ Сповіщення заблоковано');
+  });
+}
+function pushNotif(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted')
+    new Notification(title, { body, tag: 'order', requireInteraction: true });
 }
 
-(function(){
-  if(sessionStorage.getItem("logged_out"))return;
-  var logins=Object.keys(USERS);
-  for(var i=0;i<logins.length;i++){
-    var login=logins[i];
-    var raw=localStorage.getItem("mfd_"+login);
-    if(!raw)continue;
-    try{
-      var dd=JSON.parse(raw);
-      if(dd.fullName&&dd.transport&&dd.carBrand&&dd.plate){
-        S.user={login:login,pass:USERS[login].pass,id:USERS[login].id};
-        S.fullName=dd.fullName;S.transport=dd.transport;S.carBrand=dd.carBrand;S.plate=dd.plate;S.phone=dd.phone;
-        loadState(dd);showApp();return;
+// ============================================================
+// BALANCE
+// ============================================================
+function renderBalance() {
+  document.getElementById('bal-amount').textContent = S.balance.toFixed(2);
+  document.getElementById('stat-count').textContent = S.deliveries;
+  const area = document.getElementById('history-area');
+  if (!S.history.length) {
+    area.innerHTML = `<div class="empty" style="padding:2rem 0"><div class="empty-emoji" style="font-size:2.5rem">🧾</div><div class="empty-title" style="font-size:.9rem">Поки порожньо</div><div class="empty-sub">Виконані замовлення з'являться тут</div></div>`;
+    return;
+  }
+  area.innerHTML = S.history.map(h => `<div class="history-item"><div class="hico">✅</div><div style="flex:1"><div class="horder">Чек #${h.id}</div><div class="haddr">${h.address} · ${h.time}</div></div><div class="hsum">+${h.amount} грн</div></div>`).join('');
+}
+
+// ============================================================
+// DAILY RESET о 4:00
+// ============================================================
+function scheduleReset() {
+  const now = new Date(), next4 = new Date();
+  next4.setDate(now.getDate() + (now.getHours() >= 4 ? 1 : 0));
+  next4.setHours(4, 0, 0, 0);
+  setTimeout(() => {
+    S.balance = 0; S.history = []; S.deliveries = 0;
+    localStorage.setItem('reset_' + S.user.login, Date.now().toString());
+    saveState(); renderBalance(); toast('🌅 Новий день — баланс скинуто');
+    scheduleReset();
+  }, next4 - now);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// АВТОЛОГІН при старті
+// ============================================================
+(function() {
+  if (sessionStorage.getItem('logged_out')) return;
+  for (const login of Object.keys(USERS)) {
+    const raw = localStorage.getItem('mfd_' + login);
+    if (!raw) continue;
+    try {
+      const d = JSON.parse(raw);
+      if (d.fullName && d.transport && d.carBrand && d.plate) {
+        S.user = { login, pass: USERS[login].pass, id: USERS[login].id };
+        S.fullName = d.fullName; S.transport = d.transport;
+        S.carBrand = d.carBrand; S.plate = d.plate; S.phone = d.phone;
+        loadState(d); showApp(); return;
       }
-    }catch(e){}
+    } catch(e) {}
   }
 })();
 
-window.receiveOrder=function(od){
-  if(!canReceive(od))return false;
-  S.order=Object.assign({},od,{status:"new",assignedAt:new Date().toISOString()});
-  saveState();renderOrder();goTab("orders");playSound();
-  pushNotif("Nove zamovlennia!",od.address+" "+od.clientName);
+// ============================================================
+// EXTERNAL API
+// ============================================================
+window.receiveOrder = function(orderData) {
+  if (!canReceive(orderData)) return false;
+  S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
+  saveState(); renderOrder(); goTab('orders');
+  playSound();
+  pushNotif('🆕 Нове замовлення!', orderData.address + ' · ' + orderData.clientName);
   return true;
 };
 </script>
