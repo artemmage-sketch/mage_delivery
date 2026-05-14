@@ -334,21 +334,18 @@ const USERS = {
 // ============================================================
 const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
 
-// Кастомний звук при новому замовленні.
-// Завантаж sound.mp3 на GitHub і встав посилання:
-// const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
-// Якщо null — буде вбудований синтезований звук.
-const ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
+// Кастомний звук. Приклад: https://artemmage-sketch.github.io/mage_delivery/sound.mp3
+const ADMIN_SOUND_URL = null;
 
 const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
 const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
 const REWARD = 110;
 
 const TR = {
-  car:      { emoji: '🚗',  label: 'Автомобіль'    },
-  ecar:     { emoji: '⚡🚗', label: 'Електроавто'   },
-  escooter: { emoji: '🛵⚡', label: 'Електроскутер' },
-  scooter:  { emoji: '🛵',  label: 'Скутер (бензин)'},
+  car:      { label: 'Автомобіль'    },
+  ecar:     { label: 'Електроавто'   },
+  escooter: { label: 'Електроскутер' },
+  scooter:  { label: 'Скутер (бензин)'},
 };
 
 let S = {
@@ -421,9 +418,9 @@ function step4Done() {
   const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
   const phone = document.getElementById('inp-phone').value.trim();
   const err   = document.getElementById('err4');
-  if (!brand) { err.textContent = '⚠️ Вкажи марку та модель'; show('err4'); return; }
-  if (!validatePlate(plate)) { err.textContent = '⚠️ Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
-  if (phone.length < 10) { err.textContent = '⚠️ Вкажи номер телефону'; show('err4'); return; }
+  if (!brand) { err.textContent = 'Вкажи марку та модель'; show('err4'); return; }
+  if (!validatePlate(plate)) { err.textContent = 'Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
+  if (phone.length < 10) { err.textContent = 'Вкажи номер телефону'; show('err4'); return; }
   hide('err4');
   S.carBrand = brand; S.plate = plate; S.phone = phone;
   apiPost('/courier/register', {
@@ -485,8 +482,8 @@ function connectSSE() {
     S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
     saveState(); renderOrder(); goTab('orders');
     playSound();
-    pushNotif('🆕 Нове замовлення!', order.address + ' · ' + order.clientName);
-    toast('📦 Нове замовлення призначено!');
+    pushNotif('Нове замовлення!', order.address + ' ' + order.clientName);
+    toast('Нове замовлення призначено!');
   });
   sseSource.addEventListener('order_cancelled', e => {
     const { reason } = JSON.parse(e.data);
@@ -509,13 +506,13 @@ function initials(name) {
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
-  const tr = TR[S.transport] || { emoji: '🚗', label: '—' };
+  const tr = TR[S.transport] || { label: '—' };
   document.getElementById('hdr-av').textContent       = initials(S.fullName || '??');
   document.getElementById('hdr-name').textContent     = S.fullName || 'Кур\'єр';
-  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id + ' · ' + tr.emoji;
+  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id;
   document.getElementById('set-name').textContent     = S.fullName || '—';
   document.getElementById('set-id').textContent       = 'Кур\'єр #' + S.user.id;
-  document.getElementById('set-tr-ico').textContent   = tr.emoji;
+  document.getElementById('set-tr-ico').textContent   = '';
   document.getElementById('set-tr-name').textContent  = tr.label;
   document.getElementById('set-plate').textContent    = S.plate || '—';
   document.getElementById('set-brand').textContent    = S.carBrand || '—';
@@ -552,7 +549,7 @@ function doLogout() {
 function toggleOnline() {
   S.isOnline = !S.isOnline;
   updateStatusUI(); saveState();
-  toast(S.isOnline ? '✅ Ти онлайн — готовий до роботи!' : '⏸ Ти офлайн');
+  toast(S.isOnline ? 'Ти онлайн — готовий до роботи!' : 'Ти офлайн');
   apiPost('/courier/online', { login: S.user.login, pass: S.user.pass, isOnline: S.isOnline });
 }
 function updateStatusUI() {
@@ -593,11 +590,11 @@ function renderTimer() {
 // ORDER RENDER
 // ============================================================
 const ST = {
-  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: '🆕' },
-  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: '✅' },
-  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: '🏍' },
-  done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: '🎉' },
-  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: '❌' },
+  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: 'NEW' },
+  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: 'OK' },
+  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: 'GO' },
+  done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: 'DONE' },
+  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: 'ERR' },
 };
 
 function isCash(p) {
@@ -641,7 +638,7 @@ function renderOrder() {
 function acceptOrder() {
   if (!S.order) return;
   stopTimer(); S.order.status = 'accepted'; S.order.acceptedAt = new Date().toISOString();
-  saveState(); renderOrder(); toast('✅ Замовлення прийнято!');
+  saveState(); renderOrder(); toast('Замовлення прийнято!');
   apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_accepted', order: S.order });
 }
 function setStatus(status) {
@@ -659,8 +656,8 @@ function finishOrder(status) {
   if (status === 'done') {
     S.balance += REWARD; S.deliveries++;
     S.history.unshift({ id: o.checkNum||o.id, address: o.address, time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }), amount: REWARD });
-    playCoins(); toast(`💰 +${REWARD} грн до балансу!`);
-  } else { toast('📦 Замовлення закрито'); }
+    playCoins(); toast('+' + REWARD + ' грн до балансу!');
+  } else { toast('Замовлення закрито'); }
   S.order = null; stopTimer(); saveState(); renderOrder(); renderBalance();
 }
 function onTimerExpired() {
@@ -729,7 +726,7 @@ function checkPushBanner() {
 function askPush() {
   Notification.requestPermission().then(p => {
     document.getElementById('push-banner').classList.remove('show');
-    toast(p === 'granted' ? '🔔 Сповіщення увімкнено!' : '❌ Сповіщення заблоковано');
+    toast(p === 'granted' ? 'Сповіщення увімкнено!' : 'Сповіщення заблоковано');
   });
 }
 function pushNotif(title, body) {
@@ -761,7 +758,7 @@ function scheduleReset() {
   setTimeout(() => {
     S.balance = 0; S.history = []; S.deliveries = 0;
     localStorage.setItem('reset_' + S.user.login, Date.now().toString());
-    saveState(); renderBalance(); toast('🌅 Новий день — баланс скинуто');
+    saveState(); renderBalance(); toast('Новий день — баланс скинуто');
     scheduleReset();
   }, next4 - now);
 }
@@ -805,7 +802,7 @@ window.receiveOrder = function(orderData) {
   S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
   saveState(); renderOrder(); goTab('orders');
   playSound();
-  pushNotif('🆕 Нове замовлення!', orderData.address + ' · ' + orderData.clientName);
+  pushNotif('Нове замовлення!', orderData.address + ' ' + orderData.clientName);
   return true;
 };
 </script>
