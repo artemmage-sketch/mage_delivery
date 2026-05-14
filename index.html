@@ -27,8 +27,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-
-/* LOGIN */
 #login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;position:relative;overflow:hidden;}
 .lg{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;}
 .lg2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);bottom:-80px;right:-80px;pointer-events:none;}
@@ -37,12 +35,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .login-title{font-size:1.6rem;font-weight:900;margin-bottom:.15rem;letter-spacing:-.02em;text-align:center;}
 .login-title span{background:linear-gradient(90deg,var(--p2),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;text-align:center;}
-
 .step{display:none;width:100%;max-width:340px;}
 .step.active{display:block;}
 .step-title{font-size:1rem;font-weight:800;margin-bottom:1rem;}
 .step-hint{font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;}
-
 .fl{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
 .fw{position:relative;margin-bottom:.9rem;}
 .fi-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;}
@@ -50,19 +46,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .fi:focus{border-color:var(--p1);background:var(--bg4);box-shadow:0 0 0 4px rgba(124,58,237,.15);}
 .fi::placeholder{color:var(--muted);font-weight:400;}
 .fi-upper{text-transform:uppercase;}
-
 .transport-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
 .tr-opt{padding:12px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;}
 .tr-opt:active{transform:scale(.96);}
 .tr-opt.sel{border-color:var(--p1);background:rgba(124,58,237,.18);color:var(--p3);}
 .tr-opt .tre{font-size:1.5rem;display:block;margin-bottom:4px;}
-
 .primary-btn{width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-family:inherit;font-size:1rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.4);transition:all .2s;margin-top:.25rem;}
 .primary-btn:active{transform:scale(.97);}
 .secondary-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:all .2s;}
 .err-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xs);padding:10px 14px;color:var(--r2);font-size:.85rem;font-weight:600;margin-top:.65rem;display:none;text-align:center;}
-
-/* APP */
 #app{display:none;flex-direction:column;min-height:100vh;}
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;position:sticky;top:0;z-index:100;}
 .hdr1{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
@@ -81,20 +73,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .content{flex:1;padding:1rem 1.1rem 5rem;}
 .tab-pane{display:none;}
 .tab-pane.active{display:block;}
-
 .push-banner{display:none;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(168,85,247,.1));border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:1rem;align-items:center;gap:10px;}
 .push-banner.show{display:flex;}
 .push-banner-text{font-size:.82rem;font-weight:600;flex:1;line-height:1.4;}
 .push-btn{padding:7px 14px;border-radius:100px;background:var(--p1);color:#fff;border:none;font-family:inherit;font-size:.8rem;font-weight:800;cursor:pointer;flex-shrink:0;}
-
 .offline-block{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:1rem;align-items:center;gap:12px;}
 .offline-block.show{display:flex;}
 .offline-text{font-size:.85rem;font-weight:700;color:var(--r2);}
-
-/* ORDER CARD */
 .order-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes popIn{from{opacity:0;transform:scale(.93) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
-
 .timer-bar-wrap{padding:.75rem 1.25rem .6rem;background:var(--card);border-bottom:1px solid var(--border);}
 .timer-top{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:5px;}
 .timer-top span:first-child{color:var(--muted);}
@@ -102,7 +89,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .timer-track{height:6px;background:var(--bg4);border-radius:100px;overflow:hidden;}
 .timer-fill{height:100%;background:linear-gradient(90deg,var(--y1),var(--o1));border-radius:100px;transition:width .9s linear;}
 .timer-fill.urgent{background:linear-gradient(90deg,var(--r1),var(--o1));}
-
 .order-top{padding:1rem 1.25rem .85rem;background:linear-gradient(135deg,var(--p1) 0%,var(--b1) 100%);position:relative;overflow:hidden;}
 .order-top::after{content:'🏍';position:absolute;right:-10px;bottom:-15px;font-size:5rem;opacity:.12;}
 .order-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
@@ -115,7 +101,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .chip-notfound{background:rgba(252,165,165,.2);border-color:rgba(252,165,165,.5);color:var(--r2);}
 .order-amount{font-size:2rem;font-weight:900;letter-spacing:-.02em;}
 .order-amount-label{font-size:.78rem;opacity:.75;margin-top:2px;}
-
 .order-body{padding:0;}
 .orow{display:flex;align-items:baseline;padding:9px 1.25rem;border-bottom:1px solid var(--border);}
 .orow:last-child{border-bottom:none;}
@@ -124,23 +109,19 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .oval.dash{color:var(--muted);font-weight:400;}
 .oval.highlight{color:var(--g2);font-size:1.05rem;}
 .oval a{color:var(--g2);text-decoration:none;}
-
 .addr-sub{display:flex;gap:0;margin-top:4px;}
 .addr-sub-item{flex:1;}
 .addr-sub-label{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px;}
 .addr-sub-val{font-size:.88rem;font-weight:700;}
 .addr-sub-val.dash{color:var(--muted);font-weight:400;}
 .addr-sub-sep{width:1px;background:var(--border);margin:0 10px;flex-shrink:0;}
-
 .cash-warn{margin:.75rem 1.25rem .25rem;background:rgba(245,158,11,.15);border:1.5px solid rgba(245,158,11,.4);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .cash-warn-text{font-size:.85rem;font-weight:700;color:var(--y2);line-height:1.4;}
 .pickup-hint{margin:.75rem 1.25rem .25rem;background:rgba(59,130,246,.12);border:1.5px solid rgba(59,130,246,.35);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .pickup-hint-text{font-size:.85rem;font-weight:700;color:var(--b2);line-height:1.4;}
-
 .earning-row{margin:.75rem 1.25rem 0;background:rgba(16,185,129,.12);border:1.5px solid rgba(16,185,129,.3);border-radius:var(--radius-xs);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
 .earning-label{font-size:.82rem;color:var(--g2);font-weight:700;}
 .earning-amount{font-size:1.2rem;font-weight:900;color:var(--g2);}
-
 .order-actions{padding:.75rem 1.25rem 1.25rem;display:flex;flex-direction:column;gap:9px;}
 .btn{width:100%;padding:14px;border-radius:var(--radius-sm);border:none;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn:active{transform:scale(.96);}
@@ -148,13 +129,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .btn-pickup{background:linear-gradient(135deg,var(--b1),#60A5FA);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35);}
 .btn-done{background:linear-gradient(135deg,var(--g1),var(--g2));color:#052e16;box-shadow:0 4px 16px rgba(16,185,129,.35);}
 .btn-notfound{background:rgba(239,68,68,.12);color:var(--r1);border:1.5px solid rgba(239,68,68,.3);}
-
 .empty{display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;text-align:center;}
 .empty-emoji{font-size:4rem;margin-bottom:1rem;}
 .empty-title{font-size:1.05rem;font-weight:800;margin-bottom:6px;}
 .empty-sub{font-size:.82rem;color:var(--muted);line-height:1.6;}
-
-/* BALANCE */
 .balance-card{background:linear-gradient(135deg,#10B981,#059669);border-radius:var(--radius);padding:1.75rem 1.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(16,185,129,.3);}
 .balance-card::before{content:'💰';position:absolute;right:-15px;top:-15px;font-size:7rem;opacity:.1;}
 .bal-label{font-size:.8rem;font-weight:700;opacity:.8;margin-bottom:8px;}
@@ -171,8 +149,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .horder{font-size:.88rem;font-weight:700;}
 .haddr{font-size:.75rem;color:var(--muted);margin-top:2px;}
 .hsum{font-size:1rem;font-weight:900;color:var(--g2);margin-left:auto;}
-
-/* SETTINGS */
 .settings-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;}
 .sgt{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:14px 16px 8px;}
 .srow{display:flex;align-items:center;padding:13px 16px;border-top:1px solid var(--border);}
@@ -184,23 +160,18 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .srow-sub{font-size:.73rem;color:var(--muted);margin-top:1px;}
 .logout-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.25);color:var(--r1);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
 .logout-btn:active{transform:scale(.97);}
-
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
 <div id="login-screen">
   <div class="lg"></div><div class="lg2"></div>
-  <div class="logo-wrap">
-    <img src="/mage_delivery/icon-192.png" alt="Mage Courier">
-  </div>
+  <div class="logo-wrap"><img src="/mage_delivery/icon-192.png" alt="Mage Courier"></div>
   <div class="login-title">Mage Food <span>Delivery</span></div>
   <div class="login-sub">Панель кур'єра</div>
 
-  <!-- Step 1: логін/пароль -->
   <div class="step active" id="step1">
     <div class="step-title">Увійди в акаунт</div>
     <label class="fl">Логін</label>
@@ -211,7 +182,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div class="err-box" id="err1">❌ Невірний логін або пароль</div>
   </div>
 
-  <!-- Step 2: ім'я -->
   <div class="step" id="step2">
     <div class="step-title">Як тебе звати?</div>
     <div class="step-hint">⚠️ Це ім'я буде відображатись у системі і не може бути змінено пізніше.</div>
@@ -222,7 +192,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div class="err-box" id="err2">⚠️ Введи своє ім'я та прізвище</div>
   </div>
 
-  <!-- Step 3: транспорт -->
   <div class="step" id="step3">
     <div class="step-title">Тип транспорту</div>
     <div class="transport-grid">
@@ -236,7 +205,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div class="err-box" id="err3">⚠️ Оберіть тип транспорту</div>
   </div>
 
-  <!-- Step 4: дані авто -->
   <div class="step" id="step4">
     <div class="step-title">Дані транспорту</div>
     <div class="step-hint">⚠️ Ці дані вводяться один раз і не можуть бути змінені. Перевір уважно.</div>
@@ -252,7 +220,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
   </div>
 </div>
 
-<!-- ===== APP ===== -->
 <div id="app">
   <div class="header">
     <div class="hdr1">
@@ -269,14 +236,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
       </div>
     </div>
     <div class="tabs">
-      <button class="tab active" id="tab-orders"   onclick="goTab('orders')">📦 Замовлення</button>
-      <button class="tab"        id="tab-balance"  onclick="goTab('balance')">💰 Баланс</button>
-      <button class="tab"        id="tab-settings" onclick="goTab('settings')">⚙️ Налашт.</button>
+      <button class="tab active" id="tab-orders" onclick="goTab('orders')">📦 Замовлення</button>
+      <button class="tab" id="tab-balance" onclick="goTab('balance')">💰 Баланс</button>
+      <button class="tab" id="tab-settings" onclick="goTab('settings')">⚙️ Налашт.</button>
     </div>
   </div>
-
   <div class="content">
-    <!-- Orders -->
     <div class="tab-pane active" id="pane-orders">
       <div class="push-banner" id="push-banner">
         <div class="push-banner-text">🔔 Дозволь сповіщення, щоб отримувати нові замовлення</div>
@@ -287,8 +252,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
       </div>
       <div id="order-area"></div>
     </div>
-
-    <!-- Balance -->
     <div class="tab-pane" id="pane-balance">
       <div class="balance-card">
         <div class="bal-label">💵 Баланс за сьогодні</div>
@@ -302,8 +265,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
       <div class="section-title">Історія</div>
       <div id="history-area"></div>
     </div>
-
-    <!-- Settings -->
     <div class="tab-pane" id="pane-settings">
       <div class="settings-card">
         <div class="sgt">Дані про транспорт та кур'єра</div>
@@ -327,67 +288,69 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 // ============================================================
 // СПИСОК КУР'ЄРІВ
 // ============================================================
-const USERS = {
-  ArtemMage: { pass: 'LolKek228',  id: '001' },
-  courier2:  { pass: 'pass2',      id: '002' },
-  courier3:  { pass: 'pass3',      id: '003' },
-  courier4:  { pass: 'pass4',      id: '004' },
-  courier5:  { pass: 'pass5',      id: '005' },
-  courier6:  { pass: 'pass6',      id: '006' },
-  courier7:  { pass: 'pass7',      id: '007' },
-  courier8:  { pass: 'pass8',      id: '008' },
-  courier9:  { pass: 'pass9',      id: '009' },
-  courier10: { pass: 'pass10',     id: '010' },
+var USERS = {
+  ArtemMage: { pass: 'LolKek228', id: '001' },
+  courier2:  { pass: 'pass2',     id: '002' },
+  courier3:  { pass: 'pass3',     id: '003' },
+  courier4:  { pass: 'pass4',     id: '004' },
+  courier5:  { pass: 'pass5',     id: '005' },
+  courier6:  { pass: 'pass6',     id: '006' },
+  courier7:  { pass: 'pass7',     id: '007' },
+  courier8:  { pass: 'pass8',     id: '008' },
+  courier9:  { pass: 'pass9',     id: '009' },
+  courier10: { pass: 'pass10',    id: '010' }
 };
 
 // ============================================================
 // CONFIG
 // ============================================================
-const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
+var BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
 
-// ── Кастомний звук для нового замовлення ────────────────────
-// Завантаж sound.mp3 на GitHub поруч з index.html і встав посилання:
-// const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
-// Якщо null — використовується вбудований синтезований звук
-const ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
+// Кастомний звук: вкажи посилання на MP3 або залиш null
+// Приклад: var ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
+var ADMIN_SOUND_URL = https://soundcloud.com/artem-sukach-797512430/sound;
 
-const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
-const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
+var RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
+var RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
+var REWARD = 110;
 
-const REWARD = 110;
-
-const TR = {
-  car:     { emoji: '🚗',  label: 'Автомобіль'    },
-  ecar:    { emoji: '⚡🚗', label: 'Електроавто'   },
-  escooter:{ emoji: '🛵⚡', label: 'Електроскутер' },
-  scooter: { emoji: '🛵',  label: 'Скутер (бензин)'},
+var TR = {
+  car:      { emoji: '🚗',  label: 'Автомобіль'     },
+  ecar:     { emoji: '⚡🚗', label: 'Електроавто'    },
+  escooter: { emoji: '🛵⚡', label: 'Електроскутер'  },
+  scooter:  { emoji: '🛵',  label: 'Скутер (бензин)' }
 };
 
-let S = {
+var S = {
   user: null, fullName: null, transport: null,
   carBrand: null, plate: null, phone: null,
   isOnline: false, order: null,
   balance: 0, history: [], deliveries: 0
 };
-let selectedTransport = null;
-let timerInterval = null, timerSec = 0;
+var selectedTransport = null;
+var timerInterval = null, timerSec = 0;
+var sseSource = null;
 
 // ============================================================
 // STEPS
 // ============================================================
 function goStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('step' + n).classList.add('active');
 }
 
 function step1Next() {
-  const login = document.getElementById('inp-login').value.trim();
-  const pass  = document.getElementById('inp-pass').value;
-  const u     = USERS[login];
-  if (!u || u.pass !== pass) { show('err1'); document.getElementById('inp-pass').value = ''; return; }
+  var login = document.getElementById('inp-login').value.trim();
+  var pass  = document.getElementById('inp-pass').value;
+  var u     = USERS[login];
+  if (!u || u.pass !== pass) {
+    show('err1');
+    document.getElementById('inp-pass').value = '';
+    return;
+  }
   hide('err1');
-  S.user = { login, ...u };
-  const saved = getSaved();
+  S.user = { login: login, pass: u.pass, id: u.id };
+  var saved = getSaved();
   if (saved && saved.fullName && saved.transport && saved.carBrand && saved.plate) {
     S.fullName  = saved.fullName;
     S.transport = saved.transport;
@@ -400,10 +363,13 @@ function step1Next() {
     goStep(2);
   }
 }
-document.getElementById('inp-pass').addEventListener('keydown', e => { if (e.key === 'Enter') step1Next(); });
+
+document.getElementById('inp-pass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') step1Next();
+});
 
 function goStep2to3() {
-  const name = document.getElementById('inp-fullname').value.trim();
+  var name = document.getElementById('inp-fullname').value.trim();
   if (name.length < 3) { show('err2'); return; }
   hide('err2');
   S.fullName = name;
@@ -411,7 +377,7 @@ function goStep2to3() {
 }
 
 function selTr(val, el) {
-  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
+  document.querySelectorAll('.tr-opt').forEach(function(e) { e.classList.remove('sel'); });
   el.classList.add('sel');
   selectedTransport = val;
 }
@@ -428,10 +394,10 @@ function validatePlate(p) {
 }
 
 function step4Done() {
-  const brand = document.getElementById('inp-brand').value.trim();
-  const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
-  const phone = document.getElementById('inp-phone').value.trim();
-  const err   = document.getElementById('err4');
+  var brand = document.getElementById('inp-brand').value.trim();
+  var plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
+  var phone = document.getElementById('inp-phone').value.trim();
+  var err   = document.getElementById('err4');
   if (!brand) { err.textContent = '⚠️ Вкажи марку та модель'; show('err4'); return; }
   if (!validatePlate(plate)) { err.textContent = '⚠️ Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
   if (phone.length < 10) { err.textContent = '⚠️ Вкажи номер телефону'; show('err4'); return; }
@@ -440,7 +406,7 @@ function step4Done() {
   apiPost('/courier/register', {
     login: S.user.login, pass: S.user.pass,
     fullName: S.fullName, transport: S.transport,
-    carBrand: brand, plate, phone
+    carBrand: brand, plate: plate, phone: phone
   });
   loadState(getSaved());
   showApp();
@@ -450,12 +416,15 @@ function step4Done() {
 // STATE
 // ============================================================
 function stateKey() { return 'mfd_' + S.user.login; }
-function getSaved()  { try { return JSON.parse(localStorage.getItem(stateKey())); } catch(e) { return null; } }
+
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem(stateKey())); } catch(e) { return null; }
+}
 
 function saveState() {
   localStorage.setItem(stateKey(), JSON.stringify({
-    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand, plate: S.plate, phone: S.phone,
-    isOnline: S.isOnline, order: S.order,
+    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand,
+    plate: S.plate, phone: S.phone, isOnline: S.isOnline, order: S.order,
     balance: S.balance, history: S.history, deliveries: S.deliveries,
     date: new Date().toDateString()
   }));
@@ -463,9 +432,9 @@ function saveState() {
 
 function loadState(d) {
   if (!d) return;
-  const at4 = new Date(); at4.setHours(4, 0, 0, 0);
-  const lr = parseInt(localStorage.getItem('reset_' + S.user.login) || '0');
-  const needReset = d.date !== new Date().toDateString() || (new Date() >= at4 && lr < at4.getTime());
+  var at4 = new Date(); at4.setHours(4, 0, 0, 0);
+  var lr = parseInt(localStorage.getItem('reset_' + S.user.login) || '0');
+  var needReset = d.date !== new Date().toDateString() || (new Date() >= at4 && lr < at4.getTime());
   S.balance    = needReset ? 0  : (d.balance    || 0);
   S.history    = needReset ? [] : (d.history    || []);
   S.deliveries = needReset ? 0  : (d.deliveries || 0);
@@ -473,60 +442,58 @@ function loadState(d) {
   S.isOnline   = d.isOnline || false;
 }
 
-async function apiPost(path, body) {
-  try {
-    const r = await fetch(BACKEND_URL + path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    return r.ok ? r.json() : null;
-  } catch(e) { console.warn('[API]', path, e.message); return null; }
+function apiPost(path, body) {
+  fetch(BACKEND_URL + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).catch(function(e) { console.warn('[API]', path, e.message); });
 }
 
-// ── SSE підключення до бекенду ───────────────────────────────
-let sseSource = null;
+// ============================================================
+// SSE
+// ============================================================
 function connectSSE() {
   if (sseSource) sseSource.close();
-  const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
+  var url = BACKEND_URL + '/sse/' + S.user.login + '?pass=' + encodeURIComponent(S.user.pass);
   sseSource = new EventSource(url);
 
-  sseSource.addEventListener('connected', () => { console.log('[SSE] Connected'); });
+  sseSource.addEventListener('connected', function() { console.log('[SSE] Connected'); });
 
-  sseSource.addEventListener('new_order', e => {
-    const order = JSON.parse(e.data);
+  sseSource.addEventListener('new_order', function(e) {
+    var order = JSON.parse(e.data);
     if (S.order) return;
-    S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
+    S.order = Object.assign({}, order, { status: 'new', assignedAt: new Date().toISOString() });
     saveState(); renderOrder(); goTab('orders');
     playSound();
     pushNotif('🆕 Нове замовлення!', order.address + ' · ' + order.clientName);
     toast('📦 Нове замовлення призначено!');
   });
 
-  sseSource.addEventListener('order_cancelled', e => {
-    const { reason } = JSON.parse(e.data);
-    if (reason === 'timeout' && S.order && S.order.status === 'new') {
+  sseSource.addEventListener('order_cancelled', function(e) {
+    var data = JSON.parse(e.data);
+    if (data.reason === 'timeout' && S.order && S.order.status === 'new') {
       S.order = null;
       saveState(); renderOrder();
       toast('⏱ Час вийшов — замовлення передано');
     }
   });
 
-  sseSource.onerror = () => { setTimeout(connectSSE, 5000); };
+  sseSource.onerror = function() { setTimeout(connectSSE, 5000); };
 }
 
 // ============================================================
 // SHOW APP
 // ============================================================
 function initials(name) {
-  const parts = name.trim().split(/\s+/);
+  var parts = name.trim().split(/\s+/);
   return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
 }
 
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
-  const tr = TR[S.transport] || { emoji: '🚗', label: '—' };
+  var tr = TR[S.transport] || { emoji: '🚗', label: '—' };
   document.getElementById('hdr-av').textContent       = initials(S.fullName || '??');
   document.getElementById('hdr-name').textContent     = S.fullName || 'Кур\'єр';
   document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id + ' · ' + tr.emoji;
@@ -547,19 +514,20 @@ function showApp() {
 }
 
 function doLogout() {
-  if (!confirm("Вийти з акаунту?")) return;
+  if (!confirm('Вийти з акаунту?')) return;
   stopTimer();
   saveState();
-  sessionStorage.setItem("logged_out", "1");
-  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null, phone: null,
-        isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
+  sessionStorage.setItem('logged_out', '1');
+  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null,
+        phone: null, isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
   selectedTransport = null;
   if (sseSource) { sseSource.close(); sseSource = null; }
-  document.getElementById("app").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-  ["inp-login","inp-pass","inp-fullname","inp-brand","inp-plate","inp-phone"]
-    .forEach(id => { document.getElementById(id).value = ""; });
-  document.querySelectorAll(".tr-opt").forEach(e => e.classList.remove("sel"));
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.querySelectorAll('.tr-opt').forEach(function(e) { e.classList.remove('sel'); });
   goStep(1);
 }
 
@@ -585,7 +553,7 @@ function updateStatusUI() {
 // TABS
 // ============================================================
 function goTab(t) {
-  ['orders','balance','settings'].forEach(x => {
+  ['orders','balance','settings'].forEach(function(x) {
     document.getElementById('tab-' + x).classList.toggle('active', x === t);
     document.getElementById('pane-' + x).classList.toggle('active', x === t);
   });
@@ -597,7 +565,7 @@ function goTab(t) {
 // ============================================================
 function startTimer(onExpire) {
   timerSec = 15; renderTimer();
-  timerInterval = setInterval(() => {
+  timerInterval = setInterval(function() {
     timerSec--;
     renderTimer();
     if (timerSec <= 0) { stopTimer(); onExpire(); }
@@ -605,7 +573,7 @@ function startTimer(onExpire) {
 }
 function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
 function renderTimer() {
-  const bar = document.getElementById('timer-bar'), cnt = document.getElementById('timer-count');
+  var bar = document.getElementById('timer-bar'), cnt = document.getElementById('timer-count');
   if (!bar || !cnt) return;
   bar.style.width = (timerSec / 15 * 100) + '%';
   bar.className = 'timer-fill' + (timerSec <= 5 ? ' urgent' : '');
@@ -615,17 +583,17 @@ function renderTimer() {
 // ============================================================
 // ORDER RENDER
 // ============================================================
-const ST = {
+var ST = {
   new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: '🆕' },
   accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: '✅' },
   delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: '🏍' },
   done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: '🎉' },
-  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: '❌' },
+  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: '❌' }
 };
 
 function isCash(p) {
   if (!p) return false;
-  const l = p.toLowerCase().trim();
+  var l = p.toLowerCase().trim();
   return /^готівк/i.test(l) || l === 'готівка' || l === 'за готівку' || l === 'готівковий' || l === 'готівкою';
 }
 
@@ -633,87 +601,60 @@ function d(v)  { return (v === undefined || v === null || String(v).trim() === '
 function dv(v) { return (v === undefined || v === null || String(v).trim() === '') ? '—' : v; }
 
 function renderOrder() {
-  const el = document.getElementById('order-area');
+  var el = document.getElementById('order-area');
   if (!S.order) {
     stopTimer();
-    el.innerHTML = `<div class="empty">
-      <div class="empty-emoji">📭</div>
-      <div class="empty-title">Замовлень немає</div>
-      <div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div>
-    </div>`;
+    el.innerHTML = '<div class="empty"><div class="empty-emoji">📭</div><div class="empty-title">Замовлень немає</div><div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div></div>';
     return;
   }
-
-  const o = S.order, st = ST[o.status], cash = isCash(o.payment);
-
-  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap">
-    <div class="timer-top"><span>⏱ Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div>
-    <div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div>
-  </div>` : '';
-
-  const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
-  const entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
-
-  let cashWarn = '';
+  var o = S.order, st = ST[o.status], cash = isCash(o.payment);
+  var timerHTML = o.status === 'new' ? '<div class="timer-bar-wrap"><div class="timer-top"><span>⏱ Час на прийом</span><span class="timer-count" id="timer-count">' + timerSec + 'с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>' : '';
+  var ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
+  var entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
+  var cashWarn = '';
   if (cash) {
     if (o.status === 'new' || o.status === 'accepted')
-      cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Ти маєш викупити це замовлення за готівку!</div></div>`;
+      cashWarn = '<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Ти маєш викупити це замовлення за готівку!</div></div>';
     else if (o.status === 'delivering')
-      cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>`;
+      cashWarn = '<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>';
   }
-
-  const pickupHint = o.status === 'accepted'
-    ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>`
-    : '';
-
-  let actions = '';
+  var pickupHint = o.status === 'accepted' ? '<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>' : '';
+  var actions = '';
   if (o.status === 'new')
-    actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
+    actions = '<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>';
   else if (o.status === 'accepted')
-    actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
+    actions = '<button class="btn btn-pickup" onclick="setStatus(\'delivering\')">🏍 Забрав замовлення</button>';
   else if (o.status === 'delivering')
-    actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button>
-               <button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
+    actions = '<button class="btn btn-done" onclick="finishOrder(\'done\')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder(\'notfound\')">❌ Одержувача не знайдено</button>';
 
-  el.innerHTML = `<div class="order-card">
-    ${timerHTML}
-    <div class="order-top">
-      <div class="order-top-row">
-        <span class="order-num">Чек #${o.checkNum || o.id}</span>
-        <span class="status-chip ${st.chip}">${st.emoji} ${st.text}</span>
-      </div>
-      <div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div>
-      <div class="order-amount-label">До оплати · ${o.payment || '—'}</div>
-    </div>
-    <div class="order-body">
-      <div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div>
-      <div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div>
-      <div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div>
-      <div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div>
-      <div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone ? `<a href="tel:${o.phone}">${o.phone}</a>` : d('')}</span></div>
-      <div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div>
-      <div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval">
-        <div class="addr-sub">
-          <div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div>
-          <div class="addr-sub-sep"></div>
-          <div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div>
-          <div class="addr-sub-sep"></div>
-          <div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div>
-        </div>
-      </span></div>
-      <div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div>
-      <div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div>
-      <div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>
-      ${o.comment ? `<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>` : ''}
-    </div>
-    ${pickupHint}
-    ${cashWarn}
-    <div class="earning-row">
-      <span class="earning-label">💰 Ти отримаєш за це замовлення</span>
-      <span class="earning-amount">+${REWARD} грн</span>
-    </div>
-    <div class="order-actions">${actions}</div>
-  </div>`;
+  var phoneHtml = o.phone ? '<a href="tel:' + o.phone + '">' + o.phone + '</a>' : d('');
+  var commentHtml = o.comment ? '<div class="orow"><span class="olabel">Коментар</span><span class="oval">' + o.comment + '</span></div>' : '';
+
+  el.innerHTML = '<div class="order-card">' + timerHTML +
+    '<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #' + (o.checkNum || o.id) + '</span><span class="status-chip ' + st.chip + '">' + st.emoji + ' ' + st.text + '</span></div>' +
+    '<div class="order-amount">' + o.sum + ' <span style="font-size:1.1rem;opacity:.7">грн</span></div>' +
+    '<div class="order-amount-label">До оплати · ' + (o.payment || '—') + '</div></div>' +
+    '<div class="order-body">' +
+    '<div class="orow"><span class="olabel">Заклад</span><span class="oval">' + d(o.shop) + '</span></div>' +
+    '<div class="orow"><span class="olabel">Чек №</span><span class="oval">' + d(o.checkNum) + '</span></div>' +
+    '<div class="orow"><span class="olabel">Касир</span><span class="oval">' + d(o.cashier) + '</span></div>' +
+    '<div class="orow"><span class="olabel">Клієнт</span><span class="oval">' + d(o.clientName) + '</span></div>' +
+    '<div class="orow"><span class="olabel">Телефон</span><span class="oval">' + phoneHtml + '</span></div>' +
+    '<div class="orow"><span class="olabel">Адреса</span><span class="oval">' + d(o.address) + '</span></div>' +
+    '<div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub">' +
+    '<div class="addr-sub-item"><div class="addr-sub-label">Під\'їзд</div><div class="addr-sub-val ' + entC + '">' + ent + '</div></div>' +
+    '<div class="addr-sub-sep"></div>' +
+    '<div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ' + flrC + '">' + flr + '</div></div>' +
+    '<div class="addr-sub-sep"></div>' +
+    '<div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ' + fltC + '">' + flt + '</div></div>' +
+    '</div></span></div>' +
+    '<div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">' + d(o.sum) + ' грн</span></div>' +
+    '<div class="orow"><span class="olabel">Оплата</span><span class="oval">' + d(o.payment) + '</span></div>' +
+    '<div class="orow"><span class="olabel">Місто</span><span class="oval">' + d(o.city) + '</span></div>' +
+    commentHtml + '</div>' +
+    pickupHint + cashWarn +
+    '<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+' + REWARD + ' грн</span></div>' +
+    '<div class="order-actions">' + actions + '</div></div>';
 
   if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
@@ -743,18 +684,17 @@ function finishOrder(status) {
   if (!S.order) return;
   S.order.status = status;
   S.order.finishedAt = new Date().toISOString();
-  const o = { ...S.order };
-  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_complete', order: { ...S.order } });
+  var o = Object.assign({}, S.order);
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_complete', order: Object.assign({}, S.order) });
   if (status === 'done') {
     S.balance += REWARD; S.deliveries++;
     S.history.unshift({
-      id: o.checkNum || o.id,
-      address: o.address,
+      id: o.checkNum || o.id, address: o.address,
       time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
       amount: REWARD
     });
     playCoins();
-    toast(`💰 +${REWARD} грн до балансу!`);
+    toast('💰 +' + REWARD + ' грн до балансу!');
   } else {
     toast('📦 Замовлення закрито');
   }
@@ -769,9 +709,9 @@ function onTimerExpired() {
 
 function canReceive(orderData) {
   if (!S.isOnline || S.order) return false;
-  if (RESTRICTED_TRANSPORTS.includes(S.transport)) {
-    const shop = (orderData.shop || '').toLowerCase().trim();
-    if (RESTRICTED_SHOPS.includes(shop)) return false;
+  if (RESTRICTED_TRANSPORTS.indexOf(S.transport) !== -1) {
+    var shop = (orderData.shop || '').toLowerCase().trim();
+    if (RESTRICTED_SHOPS.indexOf(shop) !== -1) return false;
   }
   return true;
 }
@@ -780,44 +720,42 @@ function canReceive(orderData) {
 // SOUND
 // ============================================================
 function playSound() {
-  // Якщо задано кастомний звук — грати його
   if (ADMIN_SOUND_URL) {
-    const audio = new Audio(ADMIN_SOUND_URL);
-    audio.play().catch(() => {});
+    var audio = new Audio(ADMIN_SOUND_URL);
+    audio.play().catch(function() {});
     return;
   }
-  // Інакше — вбудований синтезований звук
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [[880,0],[1046,.18],[1318,.36]].forEach(([f,t]) => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[880,0],[1046,.18],[1318,.36]].forEach(function(ft) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = f; o.type = 'sine';
-      g.gain.setValueAtTime(.35, ctx.currentTime + t);
-      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .3);
-      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .35);
+      o.frequency.value = ft[0]; o.type = 'sine';
+      g.gain.setValueAtTime(.35, ctx.currentTime + ft[1]);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + ft[1] + .3);
+      o.start(ctx.currentTime + ft[1]); o.stop(ctx.currentTime + ft[1] + .35);
     });
   } catch(e) {}
 }
 
 function playCoins() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const times = [0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
-    const freqs = [2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
-    times.forEach((t, i) => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      const o2 = ctx.createOscillator(), g2 = ctx.createGain();
-      o.connect(g);  g.connect(ctx.destination);
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var times = [0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
+    var freqs = [2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
+    times.forEach(function(t, i) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      var o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
       o2.connect(g2); g2.connect(ctx.destination);
-      o.type = 'sine';  o.frequency.value = freqs[i];
+      o.type = 'sine'; o.frequency.value = freqs[i];
       o2.type = 'sine'; o2.frequency.value = freqs[i] * 1.5;
-      const vol = i === 0 ? .32 : .22;
+      var vol = i === 0 ? .32 : .22;
       g.gain.setValueAtTime(vol, ctx.currentTime + t);
       g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .07);
       g2.gain.setValueAtTime(vol * .4, ctx.currentTime + t);
       g2.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .05);
-      o.start(ctx.currentTime + t);  o.stop(ctx.currentTime + t + .09);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .09);
       o2.start(ctx.currentTime + t); o2.stop(ctx.currentTime + t + .07);
     });
   } catch(e) {}
@@ -831,14 +769,14 @@ function checkPushBanner() {
     document.getElementById('push-banner').classList.add('show');
 }
 function askPush() {
-  Notification.requestPermission().then(p => {
+  Notification.requestPermission().then(function(p) {
     document.getElementById('push-banner').classList.remove('show');
     toast(p === 'granted' ? '🔔 Сповіщення увімкнено!' : '❌ Сповіщення заблоковано');
   });
 }
 function pushNotif(title, body) {
   if ('Notification' in window && Notification.permission === 'granted')
-    new Notification(title, { body, tag: 'order', requireInteraction: true });
+    new Notification(title, { body: body, tag: 'order', requireInteraction: true });
 }
 
 // ============================================================
@@ -847,30 +785,24 @@ function pushNotif(title, body) {
 function renderBalance() {
   document.getElementById('bal-amount').textContent = S.balance.toFixed(2);
   document.getElementById('stat-count').textContent = S.deliveries;
-  const area = document.getElementById('history-area');
+  var area = document.getElementById('history-area');
   if (!S.history.length) {
-    area.innerHTML = `<div class="empty" style="padding:2rem 0">
-      <div class="empty-emoji" style="font-size:2.5rem">🧾</div>
-      <div class="empty-title" style="font-size:.9rem">Поки порожньо</div>
-      <div class="empty-sub">Виконані замовлення з'являться тут</div>
-    </div>`;
+    area.innerHTML = '<div class="empty" style="padding:2rem 0"><div class="empty-emoji" style="font-size:2.5rem">🧾</div><div class="empty-title" style="font-size:.9rem">Поки порожньо</div><div class="empty-sub">Виконані замовлення з\'являться тут</div></div>';
     return;
   }
-  area.innerHTML = S.history.map(h => `<div class="history-item">
-    <div class="hico">✅</div>
-    <div style="flex:1"><div class="horder">Чек #${h.id}</div><div class="haddr">${h.address} · ${h.time}</div></div>
-    <div class="hsum">+${h.amount} грн</div>
-  </div>`).join('');
+  area.innerHTML = S.history.map(function(h) {
+    return '<div class="history-item"><div class="hico">✅</div><div style="flex:1"><div class="horder">Чек #' + h.id + '</div><div class="haddr">' + h.address + ' · ' + h.time + '</div></div><div class="hsum">+' + h.amount + ' грн</div></div>';
+  }).join('');
 }
 
 // ============================================================
 // DAILY RESET о 4:00
 // ============================================================
 function scheduleReset() {
-  const now = new Date(), next4 = new Date();
+  var now = new Date(), next4 = new Date();
   next4.setDate(now.getDate() + (now.getHours() >= 4 ? 1 : 0));
   next4.setHours(4, 0, 0, 0);
-  setTimeout(() => {
+  setTimeout(function() {
     S.balance = 0; S.history = []; S.deliveries = 0;
     localStorage.setItem('reset_' + S.user.login, Date.now().toString());
     saveState(); renderBalance();
@@ -885,20 +817,25 @@ function scheduleReset() {
 function show(id) { document.getElementById(id).style.display = 'block'; }
 function hide(id) { document.getElementById(id).style.display = 'none'; }
 function toast(msg) {
-  const el = document.getElementById('toast');
+  var el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
-  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  clearTimeout(el._t); el._t = setTimeout(function() { el.classList.remove('show'); }, 3000);
 }
 
-// ── Автологін при старті ─────────────────────────────────────
-if (!sessionStorage.getItem("logged_out")) {
-  for (const login of Object.keys(USERS)) {
-    const saved = localStorage.getItem("mfd_" + login);
-    if (!saved) continue;
+// ============================================================
+// АВТОЛОГІН при старті
+// ============================================================
+(function() {
+  if (sessionStorage.getItem('logged_out')) return;
+  var logins = Object.keys(USERS);
+  for (var i = 0; i < logins.length; i++) {
+    var login = logins[i];
+    var raw = localStorage.getItem('mfd_' + login);
+    if (!raw) continue;
     try {
-      const d = JSON.parse(saved);
+      var d = JSON.parse(raw);
       if (d.fullName && d.transport && d.carBrand && d.plate) {
-        S.user = { login, ...USERS[login] };
+        S.user = { login: login, pass: USERS[login].pass, id: USERS[login].id };
         S.fullName  = d.fullName;
         S.transport = d.transport;
         S.carBrand  = d.carBrand;
@@ -906,18 +843,18 @@ if (!sessionStorage.getItem("logged_out")) {
         S.phone     = d.phone;
         loadState(d);
         showApp();
-        break;
+        return;
       }
     } catch(e) {}
   }
-}
+})();
 
 // ============================================================
-// EXTERNAL API (викликається бекендом через SSE)
+// EXTERNAL API
 // ============================================================
 window.receiveOrder = function(orderData) {
   if (!canReceive(orderData)) return false;
-  S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
+  S.order = Object.assign({}, orderData, { status: 'new', assignedAt: new Date().toISOString() });
   saveState(); renderOrder(); goTab('orders');
   playSound();
   pushNotif('🆕 Нове замовлення!', orderData.address + ' · ' + orderData.clientName);
