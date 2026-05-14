@@ -179,11 +179,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .sico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-right:12px;flex-shrink:0;}
 .si-p{background:rgba(124,58,237,.18);}
 .si-g{background:rgba(16,185,129,.18);}
-.si-o{background:rgba(249,115,22,.18);}
 .srow-text{flex:1;}
 .srow-title{font-size:.88rem;font-weight:700;}
 .srow-sub{font-size:.73rem;color:var(--muted);margin-top:1px;}
-.saction{padding:7px 14px;border-radius:100px;background:var(--bg4);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;}
 .logout-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.25);color:var(--r1);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
 .logout-btn:active{transform:scale(.97);}
 
@@ -219,7 +217,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div class="step-hint">⚠️ Це ім'я буде відображатись у системі і не може бути змінено пізніше.</div>
     <label class="fl">Твоє ім'я та прізвище</label>
     <div class="fw"><span class="fi-icon">🙋</span><input class="fi" id="inp-fullname" type="text" placeholder="Наприклад: Олексій Мельник"/></div>
-    <button class="primary-btn" onclick="goStep(3)">Далі →</button>
+    <button class="primary-btn" onclick="goStep2to3()">Далі →</button>
     <button class="secondary-btn" onclick="goStep(1)">← Назад</button>
     <div class="err-box" id="err2">⚠️ Введи своє ім'я та прізвище</div>
   </div>
@@ -233,7 +231,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
       <div class="tr-opt" onclick="selTr('escooter',this)"><span class="tre">🛵⚡</span>Електроскутер</div>
       <div class="tr-opt" onclick="selTr('scooter',this)"><span class="tre">🛵</span>Скутер (бензин)</div>
     </div>
-    <button class="primary-btn" id="btn-step3-next" onclick="goStep3to4()">Далі →</button>
+    <button class="primary-btn" onclick="goStep3to4()">Далі →</button>
     <button class="secondary-btn" onclick="goStep(2)">← Назад</button>
     <div class="err-box" id="err3">⚠️ Оберіть тип транспорту</div>
   </div>
@@ -315,14 +313,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
         <div class="srow"><div class="sico si-p">🙋</div><div class="srow-text"><div class="srow-title" id="set-fullname">—</div><div class="srow-sub">Повне ім'я</div></div></div>
       </div>
       <div class="settings-card">
-        <div class="sgt">🛠 Тестовий режим</div>
-        <div class="srow">
-          <div class="sico si-o">📲</div>
-          <div class="srow-text"><div class="srow-title">Симулювати замовлення</div><div class="srow-sub">Лише для демонстрації</div></div>
-          <button class="saction" onclick="simOrder()">▶ Запуск</button>
-        </div>
-      </div>
-      <div class="settings-card">
         <div class="sgt">👤 Акаунт</div>
         <div class="srow"><div class="sico si-p">🪪</div><div class="srow-text"><div class="srow-title" id="set-name">—</div><div class="srow-sub" id="set-id">—</div></div></div>
       </div>
@@ -335,54 +325,64 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 <script>
 // ============================================================
+// СПИСОК КУР'ЄРІВ
+// Щоб додати нового — скопіюй рядок і заміни логін, пароль та id
+// Формат: логін: { pass: 'пароль', id: 'номер' }
+// ============================================================
+const USERS = {
+  ArtemMage: { pass: 'LolKek228',  id: '001' },
+  courier2: { pass: 'pass2',  id: '002' },
+  courier3: { pass: 'pass3',  id: '003' },
+  courier4: { pass: 'pass4',  id: '004' },
+  courier5: { pass: 'pass5',  id: '005' },
+  courier6: { pass: 'pass6',  id: '006' },
+  courier7: { pass: 'pass7',  id: '007' },
+  courier8: { pass: 'pass8',  id: '008' },
+  courier9: { pass: 'pass9',  id: '009' },
+  courier10:{ pass: 'pass10', id: '010' },
+};
+
+// ============================================================
 // CONFIG
 // ============================================================
-const BACKEND_URL     = 'mage-food-delivery-backend-production.up.railway.app';
-const ADMIN_SOUND_URL = null;
+const BACKEND_URL = 'mage-food-delivery-backend-production.up.railway.app';
 
-const RESTRICTED_SHOPS      = ['temari sushi тернопіль','temari sushi тернопіль 2'];
-const RESTRICTED_TRANSPORTS = ['scooter','escooter'];
+const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
+const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
 
 const REWARD = 110;
 
 const TR = {
-  car:     {emoji:'🚗',  label:'Автомобіль'},
-  ecar:    {emoji:'⚡🚗', label:'Електроавто'},
-  escooter:{emoji:'🛵⚡', label:'Електроскутер'},
-  scooter: {emoji:'🛵',  label:'Скутер (бензин)'},
-};
-
-const USERS = {
-  courier1:{pass:'pass1',id:'001'},
-  courier2:{pass:'pass2',id:'002'},
-  courier3:{pass:'pass3',id:'003'},
-  courier4:{pass:'pass4',id:'004'},
+  car:     { emoji: '🚗',  label: 'Автомобіль'    },
+  ecar:    { emoji: '⚡🚗', label: 'Електроавто'   },
+  escooter:{ emoji: '🛵⚡', label: 'Електроскутер' },
+  scooter: { emoji: '🛵',  label: 'Скутер (бензин)'},
 };
 
 let S = {
-  user:null, fullName:null, transport:null,
-  carBrand:null, plate:null, phone:null,
-  isOnline:false, order:null,
-  balance:0, history:[], deliveries:0
+  user: null, fullName: null, transport: null,
+  carBrand: null, plate: null, phone: null,
+  isOnline: false, order: null,
+  balance: 0, history: [], deliveries: 0
 };
 let selectedTransport = null;
-let timerInterval = null, timerSec = 0, orderIdCtr = 100;
+let timerInterval = null, timerSec = 0;
 
 // ============================================================
 // STEPS
 // ============================================================
 function goStep(n) {
-  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('step'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
 }
 
 function step1Next() {
   const login = document.getElementById('inp-login').value.trim();
   const pass  = document.getElementById('inp-pass').value;
   const u     = USERS[login];
-  if (!u || u.pass !== pass) { show('err1'); document.getElementById('inp-pass').value=''; return; }
+  if (!u || u.pass !== pass) { show('err1'); document.getElementById('inp-pass').value = ''; return; }
   hide('err1');
-  S.user = {login, ...u};
+  S.user = { login, ...u };
   const saved = getSaved();
   if (saved && saved.fullName && saved.transport && saved.carBrand && saved.plate) {
     S.fullName  = saved.fullName;
@@ -396,7 +396,7 @@ function step1Next() {
     goStep(2);
   }
 }
-document.getElementById('inp-pass').addEventListener('keydown',e=>{if(e.key==='Enter')step1Next();});
+document.getElementById('inp-pass').addEventListener('keydown', e => { if (e.key === 'Enter') step1Next(); });
 
 function goStep2to3() {
   const name = document.getElementById('inp-fullname').value.trim();
@@ -405,10 +405,9 @@ function goStep2to3() {
   S.fullName = name;
   goStep(3);
 }
-document.querySelector('#step2 .primary-btn').onclick = goStep2to3;
 
 function selTr(val, el) {
-  document.querySelectorAll('.tr-opt').forEach(e=>e.classList.remove('sel'));
+  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
   el.classList.add('sel');
   selectedTransport = val;
 }
@@ -421,17 +420,17 @@ function goStep3to4() {
 }
 
 function validatePlate(p) {
-  return /^[А-ЯІЇЄа-яіїєA-Za-z]{2}\d{4}[А-ЯІЇЄа-яіїєA-Za-z]{2}$/.test(p.replace(/\s/g,''));
+  return /^[А-ЯІЇЄа-яіїєA-Za-z]{2}\d{4}[А-ЯІЇЄа-яіїєA-Za-z]{2}$/.test(p.replace(/\s/g, ''));
 }
 
 function step4Done() {
   const brand = document.getElementById('inp-brand').value.trim();
-  const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g,'');
+  const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
   const phone = document.getElementById('inp-phone').value.trim();
   const err   = document.getElementById('err4');
-  if (!brand) { err.textContent='⚠️ Вкажи марку та модель'; show('err4'); return; }
-  if (!validatePlate(plate)) { err.textContent='⚠️ Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
-  if (phone.length < 10) { err.textContent='⚠️ Вкажи номер телефону'; show('err4'); return; }
+  if (!brand) { err.textContent = '⚠️ Вкажи марку та модель'; show('err4'); return; }
+  if (!validatePlate(plate)) { err.textContent = '⚠️ Номер має бути у форматі АА1234ВВ'; show('err4'); return; }
+  if (phone.length < 10) { err.textContent = '⚠️ Вкажи номер телефону'; show('err4'); return; }
   hide('err4');
   S.carBrand = brand; S.plate = plate; S.phone = phone;
   apiPost('/courier/register', {
@@ -446,28 +445,28 @@ function step4Done() {
 // ============================================================
 // STATE
 // ============================================================
-function stateKey() { return 'mfd_'+S.user.login; }
-function getSaved()  { try{return JSON.parse(localStorage.getItem(stateKey()));}catch(e){return null;} }
+function stateKey() { return 'mfd_' + S.user.login; }
+function getSaved()  { try { return JSON.parse(localStorage.getItem(stateKey())); } catch(e) { return null; } }
 
 function saveState() {
   localStorage.setItem(stateKey(), JSON.stringify({
-    fullName:S.fullName, transport:S.transport, carBrand:S.carBrand, plate:S.plate, phone:S.phone,
-    isOnline:S.isOnline, order:S.order,
-    balance:S.balance, history:S.history, deliveries:S.deliveries,
-    date:new Date().toDateString()
+    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand, plate: S.plate, phone: S.phone,
+    isOnline: S.isOnline, order: S.order,
+    balance: S.balance, history: S.history, deliveries: S.deliveries,
+    date: new Date().toDateString()
   }));
 }
 
 function loadState(d) {
   if (!d) return;
-  const at4=new Date(); at4.setHours(4,0,0,0);
-  const lr=parseInt(localStorage.getItem('reset_'+S.user.login)||'0');
-  const needReset = d.date!==new Date().toDateString()||(new Date()>=at4&&lr<at4.getTime());
+  const at4 = new Date(); at4.setHours(4, 0, 0, 0);
+  const lr = parseInt(localStorage.getItem('reset_' + S.user.login) || '0');
+  const needReset = d.date !== new Date().toDateString() || (new Date() >= at4 && lr < at4.getTime());
   S.balance    = needReset ? 0  : (d.balance    || 0);
   S.history    = needReset ? [] : (d.history    || []);
   S.deliveries = needReset ? 0  : (d.deliveries || 0);
-  S.order      = d.order     || null;
-  S.isOnline   = d.isOnline  || false;
+  S.order      = d.order    || null;
+  S.isOnline   = d.isOnline || false;
 }
 
 async function apiPost(path, body) {
@@ -481,15 +480,14 @@ async function apiPost(path, body) {
   } catch(e) { console.warn('[API]', path, e.message); return null; }
 }
 
+// ── SSE підключення до бекенду ───────────────────────────────
 let sseSource = null;
 function connectSSE() {
   if (sseSource) sseSource.close();
   const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
   sseSource = new EventSource(url);
 
-  sseSource.addEventListener('connected', () => {
-    console.log('[SSE] Connected to backend');
-  });
+  sseSource.addEventListener('connected', () => { console.log('[SSE] Connected'); });
 
   sseSource.addEventListener('new_order', e => {
     const order = JSON.parse(e.data);
@@ -510,10 +508,7 @@ function connectSSE() {
     }
   });
 
-  sseSource.onerror = () => {
-    console.warn('[SSE] Connection lost, reconnecting in 5s...');
-    setTimeout(connectSSE, 5000);
-  };
+  sseSource.onerror = () => { setTimeout(connectSSE, 5000); };
 }
 
 // ============================================================
@@ -521,24 +516,24 @@ function connectSSE() {
 // ============================================================
 function initials(name) {
   const parts = name.trim().split(/\s+/);
-  return parts.length >= 2 ? (parts[0][0]+parts[1][0]).toUpperCase() : name.slice(0,2).toUpperCase();
+  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
 }
 
 function showApp() {
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='flex';
-  const tr = TR[S.transport]||{emoji:'🚗',label:'—'};
-  document.getElementById('hdr-av').textContent     = initials(S.fullName||'??');
-  document.getElementById('hdr-name').textContent   = S.fullName||'Кур\'єр';
-  document.getElementById('hdr-id').textContent     = 'Кур\'єр #'+S.user.id+' · '+tr.emoji;
-  document.getElementById('set-name').textContent   = S.fullName||'—';
-  document.getElementById('set-id').textContent     = 'Кур\'єр #'+S.user.id;
-  document.getElementById('set-tr-ico').textContent = tr.emoji;
-  document.getElementById('set-tr-name').textContent= tr.label;
-  document.getElementById('set-plate').textContent  = S.plate||'—';
-  document.getElementById('set-brand').textContent  = S.carBrand||'—';
-  document.getElementById('set-phone').textContent  = S.phone||'—';
-  document.getElementById('set-fullname').textContent = S.fullName||'—';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  const tr = TR[S.transport] || { emoji: '🚗', label: '—' };
+  document.getElementById('hdr-av').textContent       = initials(S.fullName || '??');
+  document.getElementById('hdr-name').textContent     = S.fullName || 'Кур\'єр';
+  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id + ' · ' + tr.emoji;
+  document.getElementById('set-name').textContent     = S.fullName || '—';
+  document.getElementById('set-id').textContent       = 'Кур\'єр #' + S.user.id;
+  document.getElementById('set-tr-ico').textContent   = tr.emoji;
+  document.getElementById('set-tr-name').textContent  = tr.label;
+  document.getElementById('set-plate').textContent    = S.plate || '—';
+  document.getElementById('set-brand').textContent    = S.carBrand || '—';
+  document.getElementById('set-phone').textContent    = S.phone || '—';
+  document.getElementById('set-fullname').textContent = S.fullName || '—';
   updateStatusUI();
   renderOrder();
   renderBalance();
@@ -551,12 +546,15 @@ function doLogout() {
   if (!confirm('Вийти з акаунту?')) return;
   stopTimer();
   saveState();
-  S={user:null,fullName:null,transport:null,carBrand:null,plate:null,phone:null,isOnline:false,order:null,balance:0,history:[],deliveries:0};
-  selectedTransport=null;
-  document.getElementById('app').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
-  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone'].forEach(id=>{document.getElementById(id).value='';});
-  document.querySelectorAll('.tr-opt').forEach(e=>e.classList.remove('sel'));
+  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null, phone: null,
+        isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
+  selectedTransport = null;
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
   goStep(1);
 }
 
@@ -582,128 +580,137 @@ function updateStatusUI() {
 // TABS
 // ============================================================
 function goTab(t) {
-  ['orders','balance','settings'].forEach(x=>{
-    document.getElementById('tab-'+x).classList.toggle('active', x===t);
-    document.getElementById('pane-'+x).classList.toggle('active', x===t);
+  ['orders','balance','settings'].forEach(x => {
+    document.getElementById('tab-' + x).classList.toggle('active', x === t);
+    document.getElementById('pane-' + x).classList.toggle('active', x === t);
   });
-  if (t==='balance') renderBalance();
+  if (t === 'balance') renderBalance();
 }
 
 // ============================================================
 // TIMER
 // ============================================================
 function startTimer(onExpire) {
-  timerSec=15; renderTimer();
-  timerInterval = setInterval(()=>{
+  timerSec = 15; renderTimer();
+  timerInterval = setInterval(() => {
     timerSec--;
     renderTimer();
-    if (timerSec<=0) { stopTimer(); onExpire(); }
-  },1000);
+    if (timerSec <= 0) { stopTimer(); onExpire(); }
+  }, 1000);
 }
-function stopTimer() { if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
 function renderTimer() {
-  const bar=document.getElementById('timer-bar'), cnt=document.getElementById('timer-count');
-  if (!bar||!cnt) return;
-  bar.style.width=(timerSec/15*100)+'%';
-  bar.className='timer-fill'+(timerSec<=5?' urgent':'');
-  cnt.textContent=timerSec+'с';
+  const bar = document.getElementById('timer-bar'), cnt = document.getElementById('timer-count');
+  if (!bar || !cnt) return;
+  bar.style.width = (timerSec / 15 * 100) + '%';
+  bar.className = 'timer-fill' + (timerSec <= 5 ? ' urgent' : '');
+  cnt.textContent = timerSec + 'с';
 }
 
 // ============================================================
 // ORDER RENDER
 // ============================================================
 const ST = {
-  new:       {text:'Нове замовлення',        chip:'chip-new',        emoji:'🆕'},
-  accepted:  {text:'Прийнято тобою',         chip:'chip-accepted',   emoji:'✅'},
-  delivering:{text:'Доставляється',          chip:'chip-delivering', emoji:'🏍'},
-  done:      {text:'Доставлено',             chip:'chip-done',       emoji:'🎉'},
-  notfound:  {text:'Одержувача не знайдено', chip:'chip-notfound',   emoji:'❌'},
+  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: '🆕' },
+  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: '✅' },
+  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: '🏍' },
+  done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: '🎉' },
+  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: '❌' },
 };
 
 function isCash(p) {
   if (!p) return false;
   const l = p.toLowerCase().trim();
-  return /^готівк/i.test(l) || l==='готівка' || l==='за готівку' || l==='готівковий' || l==='готівкою';
+  return /^готівк/i.test(l) || l === 'готівка' || l === 'за готівку' || l === 'готівковий' || l === 'готівкою';
 }
 
-function d(v) { return (v===undefined||v===null||String(v).trim()==='') ? '<span class="dash">—</span>' : v; }
-function dv(v) { return (v===undefined||v===null||String(v).trim()==='') ? '—' : v; }
+function d(v)  { return (v === undefined || v === null || String(v).trim() === '') ? '<span class="dash">—</span>' : v; }
+function dv(v) { return (v === undefined || v === null || String(v).trim() === '') ? '—' : v; }
 
 function renderOrder() {
   const el = document.getElementById('order-area');
   if (!S.order) {
     stopTimer();
-    el.innerHTML=`<div class="empty"><div class="empty-emoji">📭</div><div class="empty-title">Замовлень немає</div><div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div></div>`;
+    el.innerHTML = `<div class="empty">
+      <div class="empty-emoji">📭</div>
+      <div class="empty-title">Замовлень немає</div>
+      <div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div>
+    </div>`;
     return;
   }
-  const o=S.order, st=ST[o.status], cash=isCash(o.payment);
 
-  const timerHTML = o.status==='new' ? `<div class="timer-bar-wrap">
+  const o = S.order, st = ST[o.status], cash = isCash(o.payment);
+
+  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap">
     <div class="timer-top"><span>⏱ Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div>
     <div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div>
   </div>` : '';
 
   const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
-  const entClass = ent==='—'?'dash':'', flrClass = flr==='—'?'dash':'', fltClass = flt==='—'?'dash':'';
+  const entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
 
   let cashWarn = '';
   if (cash) {
-    if (o.status === 'new' || o.status === 'accepted') {
+    if (o.status === 'new' || o.status === 'accepted')
       cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Ти маєш викупити це замовлення за готівку!</div></div>`;
-    } else if (o.status === 'delivering' || o.status === 'done' || o.status === 'notfound') {
+    else if (o.status === 'delivering')
       cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>`;
-    }
   }
 
-  const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>` : '';
+  const pickupHint = o.status === 'accepted'
+    ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>`
+    : '';
 
-  let actions='';
-  if (o.status==='new')
-    actions=`<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
-  else if (o.status==='accepted')
-    actions=`<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
-  else if (o.status==='delivering')
-    actions=`<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button>
-             <button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
+  let actions = '';
+  if (o.status === 'new')
+    actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
+  else if (o.status === 'accepted')
+    actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
+  else if (o.status === 'delivering')
+    actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button>
+               <button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
 
-  el.innerHTML=`<div class="order-card">
+  el.innerHTML = `<div class="order-card">
     ${timerHTML}
     <div class="order-top">
       <div class="order-top-row">
-        <span class="order-num">Чек #${o.checkNum||o.id}</span>
+        <span class="order-num">Чек #${o.checkNum || o.id}</span>
         <span class="status-chip ${st.chip}">${st.emoji} ${st.text}</span>
       </div>
       <div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div>
-      <div class="order-amount-label">До оплати · ${o.payment||'—'}</div>
+      <div class="order-amount-label">До оплати · ${o.payment || '—'}</div>
     </div>
     <div class="order-body">
       <div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div>
       <div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div>
       <div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div>
       <div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div>
-      <div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div>
+      <div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone ? `<a href="tel:${o.phone}">${o.phone}</a>` : d('')}</span></div>
       <div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div>
       <div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval">
         <div class="addr-sub">
-          <div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entClass}">${ent}</div></div>
+          <div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div>
           <div class="addr-sub-sep"></div>
-          <div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrClass}">${flr}</div></div>
+          <div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div>
           <div class="addr-sub-sep"></div>
-          <div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltClass}">${flt}</div></div>
+          <div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div>
         </div>
       </span></div>
       <div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div>
       <div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div>
       <div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>
-      ${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}
+      ${o.comment ? `<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>` : ''}
     </div>
     ${pickupHint}
     ${cashWarn}
-    <div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div>
+    <div class="earning-row">
+      <span class="earning-label">💰 Ти отримаєш за це замовлення</span>
+      <span class="earning-amount">+${REWARD} грн</span>
+    </div>
     <div class="order-actions">${actions}</div>
   </div>`;
 
-  if (o.status==='new' && timerInterval===null) startTimer(onTimerExpired);
+  if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
 
 // ============================================================
@@ -712,156 +719,132 @@ function renderOrder() {
 function acceptOrder() {
   if (!S.order) return;
   stopTimer();
-  S.order.status='accepted';
-  S.order.acceptedAt=new Date().toISOString();
+  S.order.status = 'accepted';
+  S.order.acceptedAt = new Date().toISOString();
   saveState(); renderOrder();
   toast('✅ Замовлення прийнято!');
-  apiPost('/courier/status', { login:S.user.login, pass:S.user.pass, event:'order_accepted', order:S.order });
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_accepted', order: S.order });
 }
 
 function setStatus(status) {
   if (!S.order) return;
-  S.order.status=status;
-  if (status==='delivering') S.order.pickedAt=new Date().toISOString();
+  S.order.status = status;
+  if (status === 'delivering') S.order.pickedAt = new Date().toISOString();
   saveState(); renderOrder();
-  apiPost('/courier/status', { login:S.user.login, pass:S.user.pass, event:'status_update', order:S.order });
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'status_update', order: S.order });
 }
 
 function finishOrder(status) {
   if (!S.order) return;
-  S.order.status=status;
-  S.order.finishedAt=new Date().toISOString();
-  const o={...S.order};
-  apiPost('/courier/status', { login:S.user.login, pass:S.user.pass, event:'order_complete', order:{...S.order} });
-  if (status==='done') {
-    S.balance+=REWARD; S.deliveries++;
+  S.order.status = status;
+  S.order.finishedAt = new Date().toISOString();
+  const o = { ...S.order };
+  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_complete', order: { ...S.order } });
+  if (status === 'done') {
+    S.balance += REWARD; S.deliveries++;
     S.history.unshift({
-      id:o.checkNum||o.id, address:o.address,
-      time:new Date().toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'}),
-      amount:REWARD
+      id: o.checkNum || o.id,
+      address: o.address,
+      time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+      amount: REWARD
     });
     playCoins();
     toast(`💰 +${REWARD} грн до балансу!`);
   } else {
     toast('📦 Замовлення закрито');
   }
-  S.order=null; stopTimer(); saveState(); renderOrder(); renderBalance();
+  S.order = null; stopTimer(); saveState(); renderOrder(); renderBalance();
 }
 
 function onTimerExpired() {
-  if (!S.order||S.order.status!=='new') return;
-  const expired={...S.order};
-  S.order=null; saveState(); renderOrder();
+  if (!S.order || S.order.status !== 'new') return;
+  S.order = null; saveState(); renderOrder();
   toast('⏱ Час вийшов — замовлення передано');
 }
 
-// ============================================================
-// CAN RECEIVE
-// ============================================================
 function canReceive(orderData) {
-  if (!S.isOnline||S.order) return false;
+  if (!S.isOnline || S.order) return false;
   if (RESTRICTED_TRANSPORTS.includes(S.transport)) {
-    const shop=(orderData.shop||'').toLowerCase().trim();
+    const shop = (orderData.shop || '').toLowerCase().trim();
     if (RESTRICTED_SHOPS.includes(shop)) return false;
   }
   return true;
 }
 
 // ============================================================
-// SIMULATE
-// ============================================================
-let demoIdx=0;
-const DEMO=[
-  {shop:'Temari Sushi Тернопіль',  checkNum:'13209',cashier:'Олена', clientName:'Артем',phone:'+380987772105',address:'вул. Родини Баранівських, буд. 2',entrance:'1',floor:'3',flat:'12',city:'Тернопіль',sum:'570.95',payment:'Безготівкова',comment:''},
-  {shop:'Pizza Hut Тернопіль',     checkNum:'13210',cashier:'Марія', clientName:'Ігор', phone:'+380671234567',address:'пр. Незалежності, 22',             entrance:'2',floor:'5',flat:'',  city:'Тернопіль',sum:'320.00',payment:'Готівка',     comment:'Без дзвінка'},
-  {shop:'Burger King',             checkNum:'13211',cashier:'Сергій',clientName:'Оля',  phone:'+380509876543',address:'вул. Грушевського, 7',              entrance:'', floor:'',flat:'',  city:'Тернопіль',sum:'180.50',payment:'Безготівкова',comment:''},
-  {shop:'Temari Sushi Тернопіль 2',checkNum:'13212',cashier:'Дарина',clientName:'Петро',phone:'+380631112233',address:'вул. Соборна, 10',                  entrance:'3',floor:'7',flat:'45',city:'Тернопіль',sum:'430.00',payment:'Безготівкова',comment:''},
-];
-
-function simOrder() {
-  if (!S.isOnline) { toast('⚠️ Перейди в онлайн'); return; }
-  if (S.order)     { toast('⚠️ Заверши поточне замовлення'); return; }
-  const data=DEMO[demoIdx%DEMO.length]; demoIdx++;
-  if (!canReceive(data)) { toast('🚫 Це замовлення не для твого транспорту'); return; }
-  window.receiveOrder(data);
-}
-
-// ============================================================
 // SOUND
 // ============================================================
-let adminAudio=null;
 function playSound() {
-  if (ADMIN_SOUND_URL) {
-    if (!adminAudio) adminAudio=new Audio(ADMIN_SOUND_URL);
-    adminAudio.currentTime=0; adminAudio.play().catch(()=>{});
-    return;
-  }
   try {
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [[880,0],[1046,.18],[1318,.36]].forEach(([f,t])=>{
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.frequency.value=f;o.type='sine';
-      g.gain.setValueAtTime(.35,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.3);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.35);
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[880,0],[1046,.18],[1318,.36]].forEach(([f,t]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(.35, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .3);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + .35);
     });
-  } catch(e){}
+  } catch(e) {}
 }
 
 function playCoins() {
   try {
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const coinTimes=[0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
-    const baseFreqs=[2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
-    coinTimes.forEach((t,i)=>{
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      const o2=ctx.createOscillator(), g2=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o2.connect(g2);g2.connect(ctx.destination);
-      o.type='sine'; o.frequency.value=baseFreqs[i];
-      o2.type='sine'; o2.frequency.value=baseFreqs[i]*1.5;
-      const vol=i===0?.32:.22;
-      g.gain.setValueAtTime(vol,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.07);
-      g2.gain.setValueAtTime(vol*.4,ctx.currentTime+t);
-      g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.05);
-      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.09);
-      o2.start(ctx.currentTime+t);o2.stop(ctx.currentTime+t+.07);
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const times = [0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
+    const freqs = [2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
+    times.forEach((t, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o.connect(g);  g.connect(ctx.destination);
+      o2.connect(g2); g2.connect(ctx.destination);
+      o.type = 'sine';  o.frequency.value = freqs[i];
+      o2.type = 'sine'; o2.frequency.value = freqs[i] * 1.5;
+      const vol = i === 0 ? .32 : .22;
+      g.gain.setValueAtTime(vol, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .07);
+      g2.gain.setValueAtTime(vol * .4, ctx.currentTime + t);
+      g2.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + t + .05);
+      o.start(ctx.currentTime + t);  o.stop(ctx.currentTime + t + .09);
+      o2.start(ctx.currentTime + t); o2.stop(ctx.currentTime + t + .07);
     });
-  } catch(e){}
+  } catch(e) {}
 }
 
 // ============================================================
 // PUSH
 // ============================================================
 function checkPushBanner() {
-  if ('Notification' in window && Notification.permission==='default')
+  if ('Notification' in window && Notification.permission === 'default')
     document.getElementById('push-banner').classList.add('show');
 }
 function askPush() {
-  Notification.requestPermission().then(p=>{
+  Notification.requestPermission().then(p => {
     document.getElementById('push-banner').classList.remove('show');
-    toast(p==='granted'?'🔔 Сповіщення увімкнено!':'❌ Сповіщення заблоковано');
+    toast(p === 'granted' ? '🔔 Сповіщення увімкнено!' : '❌ Сповіщення заблоковано');
   });
 }
-function pushNotif(title,body) {
-  if ('Notification' in window && Notification.permission==='granted')
-    new Notification(title,{body,tag:'order',requireInteraction:true});
+function pushNotif(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted')
+    new Notification(title, { body, tag: 'order', requireInteraction: true });
 }
 
 // ============================================================
 // BALANCE
 // ============================================================
 function renderBalance() {
-  document.getElementById('bal-amount').textContent=S.balance.toFixed(2);
-  document.getElementById('stat-count').textContent=S.deliveries;
-  const area=document.getElementById('history-area');
+  document.getElementById('bal-amount').textContent = S.balance.toFixed(2);
+  document.getElementById('stat-count').textContent = S.deliveries;
+  const area = document.getElementById('history-area');
   if (!S.history.length) {
-    area.innerHTML='<div class="empty" style="padding:2rem 0"><div class="empty-emoji" style="font-size:2.5rem">🧾</div><div class="empty-title" style="font-size:.9rem">Поки порожньо</div><div class="empty-sub">Виконані замовлення з\'являться тут</div></div>';
+    area.innerHTML = `<div class="empty" style="padding:2rem 0">
+      <div class="empty-emoji" style="font-size:2.5rem">🧾</div>
+      <div class="empty-title" style="font-size:.9rem">Поки порожньо</div>
+      <div class="empty-sub">Виконані замовлення з'являться тут</div>
+    </div>`;
     return;
   }
-  area.innerHTML=S.history.map(h=>`<div class="history-item">
+  area.innerHTML = S.history.map(h => `<div class="history-item">
     <div class="hico">✅</div>
     <div style="flex:1"><div class="horder">Чек #${h.id}</div><div class="haddr">${h.address} · ${h.time}</div></div>
     <div class="hsum">+${h.amount} грн</div>
@@ -869,40 +852,41 @@ function renderBalance() {
 }
 
 // ============================================================
-// DAILY RESET
+// DAILY RESET о 4:00
 // ============================================================
 function scheduleReset() {
-  const now=new Date(),next4=new Date();
-  next4.setDate(now.getDate()+(now.getHours()>=4?1:0));
-  next4.setHours(4,0,0,0);
-  setTimeout(()=>{
-    S.balance=0;S.history=[];S.deliveries=0;
-    localStorage.setItem('reset_'+S.user.login,Date.now().toString());
-    saveState();renderBalance();toast('🌅 Новий день — баланс скинуто');
+  const now = new Date(), next4 = new Date();
+  next4.setDate(now.getDate() + (now.getHours() >= 4 ? 1 : 0));
+  next4.setHours(4, 0, 0, 0);
+  setTimeout(() => {
+    S.balance = 0; S.history = []; S.deliveries = 0;
+    localStorage.setItem('reset_' + S.user.login, Date.now().toString());
+    saveState(); renderBalance();
+    toast('🌅 Новий день — баланс скинуто');
     scheduleReset();
-  },next4-now);
+  }, next4 - now);
 }
 
 // ============================================================
 // HELPERS
 // ============================================================
-function show(id){document.getElementById(id).style.display='block';}
-function hide(id){document.getElementById(id).style.display='none';}
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),3000);
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
 // ============================================================
-// EXTERNAL API
+// EXTERNAL API (викликається бекендом через SSE)
 // ============================================================
-window.receiveOrder=function(orderData){
+window.receiveOrder = function(orderData) {
   if (!canReceive(orderData)) return false;
-  S.order={...orderData,status:'new',assignedAt:new Date().toISOString()};
-  saveState();renderOrder();goTab('orders');
+  S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
+  saveState(); renderOrder(); goTab('orders');
   playSound();
-  pushNotif('🆕 Нове замовлення!',orderData.address+' · '+orderData.clientName);
+  pushNotif('🆕 Нове замовлення!', orderData.address + ' · ' + orderData.clientName);
   return true;
 };
 </script>
