@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#7C3AED">
-<!-- Іконка для iOS (Apple) -->
-<link rel="apple-touch-icon" href="icon-180.png">
-<!-- PWA manifest -->
-<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MageFood">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
 <title>Mage Food Delivery — Кур'єр</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -32,7 +32,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 #login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;position:relative;overflow:hidden;}
 .lg{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;}
 .lg2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);bottom:-80px;right:-80px;pointer-events:none;}
-.logo-wrap{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--p1),var(--g1));display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin-bottom:1.25rem;box-shadow:0 8px 32px rgba(124,58,237,.4);}
+.logo-wrap{width:80px;height:80px;border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;box-shadow:0 8px 32px rgba(124,58,237,.4);}
+.logo-wrap img{width:100%;height:100%;object-fit:cover;}
 .login-title{font-size:1.6rem;font-weight:900;margin-bottom:.15rem;letter-spacing:-.02em;text-align:center;}
 .login-title span{background:linear-gradient(90deg,var(--p2),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;text-align:center;}
@@ -60,8 +61,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .primary-btn:active{transform:scale(.97);}
 .secondary-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:all .2s;}
 .err-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xs);padding:10px 14px;color:var(--r2);font-size:.85rem;font-weight:600;margin-top:.65rem;display:none;text-align:center;}
-.demo-hint{margin-top:1.25rem;text-align:center;font-size:.78rem;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;}
-.demo-hint b{color:var(--p3);}
 
 /* APP */
 #app{display:none;flex-direction:column;min-height:100vh;}
@@ -117,7 +116,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .order-amount{font-size:2rem;font-weight:900;letter-spacing:-.02em;}
 .order-amount-label{font-size:.78rem;opacity:.75;margin-top:2px;}
 
-/* Order body — table-style like screenshot */
 .order-body{padding:0;}
 .orow{display:flex;align-items:baseline;padding:9px 1.25rem;border-bottom:1px solid var(--border);}
 .orow:last-child{border-bottom:none;}
@@ -198,7 +196,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 <!-- ===== LOGIN ===== -->
 <div id="login-screen">
   <div class="lg"></div><div class="lg2"></div>
-  <div class="logo-wrap">🚗</div>
+  <div class="logo-wrap">
+    <img src="icon-192.png" alt="Mage Courier">
+  </div>
   <div class="login-title">Mage Food <span>Delivery</span></div>
   <div class="login-sub">Панель кур'єра</div>
 
@@ -211,7 +211,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div class="fw"><span class="fi-icon">🔒</span><input class="fi" id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
     <button class="primary-btn" onclick="step1Next()">Далі →</button>
     <div class="err-box" id="err1">❌ Невірний логін або пароль</div>
-    <div class="demo-hint">Демо: <b>courier1 / pass1</b> · <b>courier2 / pass2</b><br><b>courier3 / pass3</b> · <b>courier4 / pass4</b></div>
   </div>
 
   <!-- Step 2: ім'я -->
@@ -336,10 +335,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 <script>
 // ============================================================
-// CONFIG — замініть BACKEND_URL на адресу вашого бекенду
+// CONFIG
 // ============================================================
-const BACKEND_URL     = 'mage-food-delivery-backend-production.up.railway.app'; // ← змінити
-const ADMIN_SOUND_URL = null; // URL звуку — задає тільки адмін
+const BACKEND_URL     = 'mage-food-delivery-backend-production.up.railway.app';
+const ADMIN_SOUND_URL = null;
 
 const RESTRICTED_SHOPS      = ['temari sushi тернопіль','temari sushi тернопіль 2'];
 const RESTRICTED_TRANSPORTS = ['scooter','escooter'];
@@ -353,7 +352,6 @@ const TR = {
   scooter: {emoji:'🛵',  label:'Скутер (бензин)'},
 };
 
-// Офлайн-резерв (якщо бекенд недоступний)
 const USERS = {
   courier1:{pass:'pass1',id:'001'},
   courier2:{pass:'pass2',id:'002'},
@@ -436,7 +434,6 @@ function step4Done() {
   if (phone.length < 10) { err.textContent='⚠️ Вкажи номер телефону'; show('err4'); return; }
   hide('err4');
   S.carBrand = brand; S.plate = plate; S.phone = phone;
-  // Зареєструвати профіль на бекенді
   apiPost('/courier/register', {
     login: S.user.login, pass: S.user.pass,
     fullName: S.fullName, transport: S.transport,
@@ -447,7 +444,7 @@ function step4Done() {
 }
 
 // ============================================================
-// STATE — зберігається в localStorage (кеш) + синхронізація з бекендом
+// STATE
 // ============================================================
 function stateKey() { return 'mfd_'+S.user.login; }
 function getSaved()  { try{return JSON.parse(localStorage.getItem(stateKey()));}catch(e){return null;} }
@@ -473,7 +470,6 @@ function loadState(d) {
   S.isOnline   = d.isOnline  || false;
 }
 
-// ── Backend API helpers ──────────────────────────────────────
 async function apiPost(path, body) {
   try {
     const r = await fetch(BACKEND_URL + path, {
@@ -485,7 +481,6 @@ async function apiPost(path, body) {
   } catch(e) { console.warn('[API]', path, e.message); return null; }
 }
 
-// ── SSE підключення до бекенду ───────────────────────────────
 let sseSource = null;
 function connectSSE() {
   if (sseSource) sseSource.close();
@@ -496,10 +491,9 @@ function connectSSE() {
     console.log('[SSE] Connected to backend');
   });
 
-  // Нове замовлення від диспетчера
   sseSource.addEventListener('new_order', e => {
     const order = JSON.parse(e.data);
-    if (S.order) return; // вже є активне
+    if (S.order) return;
     S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
     saveState(); renderOrder(); goTab('orders');
     playSound();
@@ -507,7 +501,6 @@ function connectSSE() {
     toast('📦 Нове замовлення призначено!');
   });
 
-  // Замовлення скасовано (таймаут диспетчера)
   sseSource.addEventListener('order_cancelled', e => {
     const { reason } = JSON.parse(e.data);
     if (reason === 'timeout' && S.order && S.order.status === 'new') {
@@ -568,7 +561,7 @@ function doLogout() {
 }
 
 // ============================================================
-// STATUS TOGGLE — вебхук при кожній зміні
+// STATUS TOGGLE
 // ============================================================
 function toggleOnline() {
   S.isOnline = !S.isOnline;
@@ -630,11 +623,9 @@ const ST = {
 function isCash(p) {
   if (!p) return false;
   const l = p.toLowerCase().trim();
-  // Only trigger for cash payment — NOT for "безготівкова"
   return /^готівк/i.test(l) || l==='готівка' || l==='за готівку' || l==='готівковий' || l==='готівкою';
 }
 
-// dash if empty
 function d(v) { return (v===undefined||v===null||String(v).trim()==='') ? '<span class="dash">—</span>' : v; }
 function dv(v) { return (v===undefined||v===null||String(v).trim()==='') ? '—' : v; }
 
@@ -655,7 +646,6 @@ function renderOrder() {
   const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
   const entClass = ent==='—'?'dash':'', flrClass = flr==='—'?'dash':'', fltClass = flt==='—'?'dash':'';
 
-  // Cash warning: different text depending on status
   let cashWarn = '';
   if (cash) {
     if (o.status === 'new' || o.status === 'accepted') {
@@ -665,7 +655,6 @@ function renderOrder() {
     }
   }
 
-  // Pickup hint — shown after accepting, before picking up
   const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>` : '';
 
   let actions='';
@@ -764,10 +753,7 @@ function onTimerExpired() {
   const expired={...S.order};
   S.order=null; saveState(); renderOrder();
   toast('⏱ Час вийшов — замовлення передано');
-  sendWH(WH_ORDER_STATUS,{event:'order_timeout',timestamp:new Date().toISOString(),courier:courierMeta(),order:expired});
 }
-
-
 
 // ============================================================
 // CAN RECEIVE
@@ -794,7 +780,7 @@ const DEMO=[
 
 function simOrder() {
   if (!S.isOnline) { toast('⚠️ Перейди в онлайн'); return; }
-  if (S.order)     { toast('⚠️ Завершш поточне замовлення'); return; }
+  if (S.order)     { toast('⚠️ Заверши поточне замовлення'); return; }
   const data=DEMO[demoIdx%DEMO.length]; demoIdx++;
   if (!canReceive(data)) { toast('🚫 Це замовлення не для твого транспорту'); return; }
   window.receiveOrder(data);
@@ -824,14 +810,12 @@ function playSound() {
 }
 
 function playCoins() {
-  // Realistic coin jingle: metallic high-freq blips with slight pitch variation
   try {
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
     const coinTimes=[0,.11,.2,.27,.33,.38,.43,.47,.51,.54];
     const baseFreqs=[2100,2400,2200,2600,2300,2500,2100,2350,2450,2200];
     coinTimes.forEach((t,i)=>{
       const o=ctx.createOscillator(), g=ctx.createGain();
-      // Add slight "ting" harmonics
       const o2=ctx.createOscillator(), g2=ctx.createGain();
       o.connect(g);g.connect(ctx.destination);
       o2.connect(g2);g2.connect(ctx.destination);
@@ -865,8 +849,6 @@ function pushNotif(title,body) {
   if ('Notification' in window && Notification.permission==='granted')
     new Notification(title,{body,tag:'order',requireInteraction:true});
 }
-
-// (Вебхуки надсилаються через бекенд, не напряму з фронтенду)
 
 // ============================================================
 // BALANCE
