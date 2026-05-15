@@ -188,6 +188,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 </head>
 <body>
 
@@ -525,6 +527,7 @@ function showApp() {
   checkPushBanner();
   scheduleReset();
   connectSSE();
+  initFirebase();
 }
 
 function doLogout() {
@@ -725,19 +728,60 @@ function playCoins() {
 // ============================================================
 // PUSH
 // ============================================================
-function checkPushBanner() {
-  if ('Notification' in window && Notification.permission === 'default')
-    document.getElementById('push-banner').classList.add('show');
-}
-function askPush() {
-  Notification.requestPermission().then(p => {
-    document.getElementById('push-banner').classList.remove('show');
-    toast(p === 'granted' ? 'Сповіщення увімкнено!' : 'Сповіщення заблоковано');
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBza8zvWZ1Z9j1NmaPUaIS4AaGlP0WRFGw",
+  authDomain: "mage-courier.firebaseapp.com",
+  projectId: "mage-courier",
+  storageBucket: "mage-courier.firebasestorage.app",
+  messagingSenderId: "337736317081",
+  appId: "1:337736317081:web:ea06038aba11b369ae2008"
+};
+const VAPID_KEY = 'BJpoSWJWE5XgCZ6TZLQS9Sw2-jeQZdbF5dlITPGUq5hNQqk4G6xt42evnVBcodvfWHBCxglBDLFShQhZtSiIADo';
+
+let _messaging = null;
+
+function initFirebase() {
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  _messaging = firebase.messaging();
+  _messaging.onMessage(payload => {
+    // Замовлення прийшло поки застосунок відкритий
+    playSound();
   });
 }
+
+function checkPushBanner() {
+  if ('Notification' in window && Notification.permission !== 'granted')
+    document.getElementById('push-banner').classList.add('show');
+}
+
+function askPush() {
+  if (!('serviceWorker' in navigator)) {
+    toast('Сповіщення не підтримуються');
+    return;
+  }
+  navigator.serviceWorker.register('/mage_delivery/firebase-messaging-sw.js')
+    .then(reg => {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      _messaging = firebase.messaging();
+      return _messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    })
+    .then(token => {
+      document.getElementById('push-banner').classList.remove('show');
+      toast('Сповіщення увімкнено!');
+      // Надіслати токен на бекенд
+      if (S.user) {
+        apiPost('/courier/push-token', { login: S.user.login, pass: S.user.pass, token });
+      }
+    })
+    .catch(err => {
+      console.error('Push error:', err);
+      toast('Не вдалося увімкнути сповіщення');
+    });
+}
+
 function pushNotif(title, body) {
-  if ('Notification' in window && Notification.permission === 'granted')
-    new Notification(title, { body, tag: 'order', requireInteraction: true });
+  // Push тепер через Firebase — локальні сповіщення не потрібні
 }
 
 // ============================================================
