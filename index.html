@@ -472,7 +472,20 @@ function connectSSE() {
   if (sseSource) sseSource.close();
   const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
   sseSource = new EventSource(url);
-  sseSource.addEventListener('connected', () => { console.log('[SSE] Connected'); });
+  sseSource.addEventListener('connected', () => {
+    console.log('[SSE] Connected');
+    // При підключенні перевіряємо чи є активне замовлення в черзі
+    if (!S.order) {
+      apiPost('/courier/active-order', { login: S.user.login, pass: S.user.pass })
+        .then(data => {
+          if (data && data.order && !S.order) {
+            S.order = { ...data.order, status: 'new', assignedAt: new Date().toISOString() };
+            saveState(); renderOrder(); goTab('orders');
+            if (timerInterval === null) startTimer(onTimerExpired);
+          }
+        }).catch(() => {});
+    }
+  });
   sseSource.addEventListener('new_order', e => {
     const order = JSON.parse(e.data);
     if (S.order) return;
