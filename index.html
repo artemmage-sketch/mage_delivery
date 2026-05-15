@@ -27,8 +27,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-
-/* LOGIN */
 #login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;position:relative;overflow:hidden;}
 .lg{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.25) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;}
 .lg2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);bottom:-80px;right:-80px;pointer-events:none;}
@@ -37,12 +35,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .login-title{font-size:1.6rem;font-weight:900;margin-bottom:.15rem;letter-spacing:-.02em;text-align:center;}
 .login-title span{background:linear-gradient(90deg,var(--p2),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;text-align:center;}
-
 .step{display:none;width:100%;max-width:340px;}
 .step.active{display:block;}
 .step-title{font-size:1rem;font-weight:800;margin-bottom:1rem;}
 .step-hint{font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.5;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 14px;}
-
 .fl{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
 .fw{position:relative;margin-bottom:.9rem;}
 .fi-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;}
@@ -50,19 +46,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .fi:focus{border-color:var(--p1);background:var(--bg4);box-shadow:0 0 0 4px rgba(124,58,237,.15);}
 .fi::placeholder{color:var(--muted);font-weight:400;}
 .fi-upper{text-transform:uppercase;}
-
 .transport-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
 .tr-opt{padding:12px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;}
 .tr-opt:active{transform:scale(.96);}
 .tr-opt.sel{border-color:var(--p1);background:rgba(124,58,237,.18);color:var(--p3);}
 .tr-opt .tre{font-size:1.5rem;display:block;margin-bottom:4px;}
-
 .primary-btn{width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-family:inherit;font-size:1rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.4);transition:all .2s;margin-top:.25rem;}
 .primary-btn:active{transform:scale(.97);}
 .secondary-btn{width:100%;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:all .2s;}
 .err-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xs);padding:10px 14px;color:var(--r2);font-size:.85rem;font-weight:600;margin-top:.65rem;display:none;text-align:center;}
-
-/* APP */
 #app{display:none;flex-direction:column;min-height:100vh;}
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:.85rem 1.25rem;position:sticky;top:0;z-index:100;}
 .hdr1{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
@@ -81,20 +73,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .content{flex:1;padding:1rem 1.1rem 5rem;}
 .tab-pane{display:none;}
 .tab-pane.active{display:block;}
-
 .push-banner{display:none;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(168,85,247,.1));border:1px solid rgba(124,58,237,.3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:1rem;align-items:center;gap:10px;}
 .push-banner.show{display:flex;}
 .push-banner-text{font-size:.82rem;font-weight:600;flex:1;line-height:1.4;}
 .push-btn{padding:7px 14px;border-radius:100px;background:var(--p1);color:#fff;border:none;font-family:inherit;font-size:.8rem;font-weight:800;cursor:pointer;flex-shrink:0;}
-
 .offline-block{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:1rem;align-items:center;gap:12px;}
 .offline-block.show{display:flex;}
 .offline-text{font-size:.85rem;font-weight:700;color:var(--r2);}
-
-/* ORDER CARD */
 .order-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
 @keyframes popIn{from{opacity:0;transform:scale(.93) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
-
 .timer-bar-wrap{padding:.75rem 1.25rem .6rem;background:var(--card);border-bottom:1px solid var(--border);}
 .timer-top{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:5px;}
 .timer-top span:first-child{color:var(--muted);}
@@ -102,7 +89,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .timer-track{height:6px;background:var(--bg4);border-radius:100px;overflow:hidden;}
 .timer-fill{height:100%;background:linear-gradient(90deg,var(--y1),var(--o1));border-radius:100px;transition:width .9s linear;}
 .timer-fill.urgent{background:linear-gradient(90deg,var(--r1),var(--o1));}
-
 .order-top{padding:1rem 1.25rem .85rem;background:linear-gradient(135deg,var(--p1) 0%,var(--b1) 100%);position:relative;overflow:hidden;}
 .order-top::after{content:'';position:absolute;right:-10px;bottom:-15px;font-size:5rem;opacity:.12;}
 .order-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
@@ -115,7 +101,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .chip-notfound{background:rgba(252,165,165,.2);border-color:rgba(252,165,165,.5);color:var(--r2);}
 .order-amount{font-size:2rem;font-weight:900;letter-spacing:-.02em;}
 .order-amount-label{font-size:.78rem;opacity:.75;margin-top:2px;}
-
 .order-body{padding:0;}
 .orow{display:flex;align-items:baseline;padding:9px 1.25rem;border-bottom:1px solid var(--border);}
 .orow:last-child{border-bottom:none;}
@@ -124,23 +109,19 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .oval.dash{color:var(--muted);font-weight:400;}
 .oval.highlight{color:var(--g2);font-size:1.05rem;}
 .oval a{color:var(--g2);text-decoration:none;}
-
 .addr-sub{display:flex;gap:0;margin-top:4px;}
 .addr-sub-item{flex:1;}
 .addr-sub-label{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px;}
 .addr-sub-val{font-size:.88rem;font-weight:700;}
 .addr-sub-val.dash{color:var(--muted);font-weight:400;}
 .addr-sub-sep{width:1px;background:var(--border);margin:0 10px;flex-shrink:0;}
-
 .cash-warn{margin:.75rem 1.25rem .25rem;background:rgba(245,158,11,.15);border:1.5px solid rgba(245,158,11,.4);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .cash-warn-text{font-size:.85rem;font-weight:700;color:var(--y2);line-height:1.4;}
 .pickup-hint{margin:.75rem 1.25rem .25rem;background:rgba(59,130,246,.12);border:1.5px solid rgba(59,130,246,.35);border-radius:var(--radius-xs);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
 .pickup-hint-text{font-size:.85rem;font-weight:700;color:var(--b2);line-height:1.4;}
-
 .earning-row{margin:.75rem 1.25rem 0;background:rgba(16,185,129,.12);border:1.5px solid rgba(16,185,129,.3);border-radius:var(--radius-xs);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
 .earning-label{font-size:.82rem;color:var(--g2);font-weight:700;}
 .earning-amount{font-size:1.2rem;font-weight:900;color:var(--g2);}
-
 .order-actions{padding:.75rem 1.25rem 1.25rem;display:flex;flex-direction:column;gap:9px;}
 .btn{width:100%;padding:14px;border-radius:var(--radius-sm);border:none;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn:active{transform:scale(.96);}
@@ -148,13 +129,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .btn-pickup{background:linear-gradient(135deg,var(--b1),#60A5FA);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35);}
 .btn-done{background:linear-gradient(135deg,var(--g1),var(--g2));color:#052e16;box-shadow:0 4px 16px rgba(16,185,129,.35);}
 .btn-notfound{background:rgba(239,68,68,.12);color:var(--r1);border:1.5px solid rgba(239,68,68,.3);}
-
 .empty{display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;text-align:center;}
 .empty-emoji{font-size:4rem;margin-bottom:1rem;}
 .empty-title{font-size:1.05rem;font-weight:800;margin-bottom:6px;}
 .empty-sub{font-size:.82rem;color:var(--muted);line-height:1.6;}
-
-/* BALANCE */
 .balance-card{background:linear-gradient(135deg,#10B981,#059669);border-radius:var(--radius);padding:1.75rem 1.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(16,185,129,.3);}
 .balance-card::before{content:'';position:absolute;right:-15px;top:-15px;font-size:7rem;opacity:.1;}
 .bal-label{font-size:.8rem;font-weight:700;opacity:.8;margin-bottom:8px;}
@@ -171,8 +149,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .horder{font-size:.88rem;font-weight:700;}
 .haddr{font-size:.75rem;color:var(--muted);margin-top:2px;}
 .hsum{font-size:1rem;font-weight:900;color:var(--g2);margin-left:auto;}
-
-/* SETTINGS */
 .settings-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;}
 .sgt{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:14px 16px 8px;}
 .srow{display:flex;align-items:center;padding:13px 16px;border-top:1px solid var(--border);}
@@ -184,7 +160,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .srow-sub{font-size:.73rem;color:var(--muted);margin-top:1px;}
 .logout-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.25);color:var(--r1);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:.5rem;}
 .logout-btn:active{transform:scale(.97);}
-
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
@@ -195,9 +170,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 <div id="login-screen">
   <div class="lg"></div><div class="lg2"></div>
-  <div class="logo-wrap">
-    <img src="/mage_delivery/icon-192.png" alt="Mage Courier">
-  </div>
+  <div class="logo-wrap"><img src="/mage_delivery/icon-192.png" alt="Mage Courier"></div>
   <div class="login-title">Mage Food <span>Delivery</span></div>
   <div class="login-sub">Панель кур'єра</div>
 
@@ -316,7 +289,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 <script>
 // ============================================================
 // СПИСОК КУР'ЄРІВ
-// Щоб додати нового: скопіюй рядок, заміни логін, пароль та id
 // ============================================================
 const USERS = {
   ArtemMage: { pass: 'LolKek228', id: '001' },
@@ -334,22 +306,30 @@ const USERS = {
 // ============================================================
 // CONFIG
 // ============================================================
-const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
-
-// Кастомний звук. Приклад: https://artemmage-sketch.github.io/mage_delivery/sound.mp3
+const BACKEND_URL     = 'https://mage-food-delivery-backend-production.up.railway.app';
 const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
-const _audio = ADMIN_SOUND_URL ? new Audio(ADMIN_SOUND_URL) : null;
+const _audio          = ADMIN_SOUND_URL ? new Audio(ADMIN_SOUND_URL) : null;
 
 const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
 const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
 const REWARD = 110;
 
 const TR = {
-  car:      { label: 'Автомобіль'    },
-  ecar:     { label: 'Електроавто'   },
-  escooter: { label: 'Електроскутер' },
+  car:      { label: 'Автомобіль'     },
+  ecar:     { label: 'Електроавто'    },
+  escooter: { label: 'Електроскутер'  },
   scooter:  { label: 'Скутер (бензин)'},
 };
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBza8zvWZ1Z9j1NmaPUaIS4AaGlP0WRFGw",
+  authDomain: "mage-courier.firebaseapp.com",
+  projectId: "mage-courier",
+  storageBucket: "mage-courier.firebasestorage.app",
+  messagingSenderId: "337736317081",
+  appId: "1:337736317081:web:ea06038aba11b369ae2008"
+};
+const VAPID_KEY = 'BJpoSWJWE5XgCZ6TZLQS9Sw2-jeQZdbF5dlITPGUq5hNQqk4G6xt42evnVBcodvfWHBCxglBDLFShQhZtSiIADo';
 
 let S = {
   user: null, fullName: null, transport: null,
@@ -360,6 +340,9 @@ let S = {
 let selectedTransport = null;
 let timerInterval = null, timerSec = 0;
 let sseSource = null;
+let _messaging = null;
+// Захист від подвійного звуку — час останнього відтворення
+let _lastSoundTime = 0;
 
 // ============================================================
 // STEPS
@@ -443,18 +426,27 @@ function getSaved() { try { return JSON.parse(localStorage.getItem(stateKey()));
 
 function saveState() {
   localStorage.setItem(stateKey(), JSON.stringify({
-    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand, plate: S.plate, phone: S.phone,
-    isOnline: S.isOnline, order: S.order,
+    fullName: S.fullName, transport: S.transport, carBrand: S.carBrand,
+    plate: S.plate, phone: S.phone, isOnline: S.isOnline, order: S.order,
     balance: S.balance, history: S.history, deliveries: S.deliveries,
-    date: new Date().toDateString()
+    savedDate: new Date().toDateString()
   }));
 }
 
 function loadState(d) {
   if (!d) return;
-  const at4 = new Date(); at4.setHours(4, 0, 0, 0);
-  const lr = parseInt(localStorage.getItem('reset_' + S.user.login) || '0');
-  const needReset = d.date !== new Date().toDateString() || (new Date() >= at4 && lr < at4.getTime());
+  // Перевіряємо чи потрібен скид — тільки якщо дата збереження не сьогодні
+  // і вже після 4:00 ранку
+  const today = new Date().toDateString();
+  const savedDate = d.savedDate || d.date || today;
+  const now = new Date();
+  const hour = now.getHours();
+
+  // Скидаємо тільки якщо: збережено вчора (або раніше) І вже після 4:00
+  const isOtherDay = savedDate !== today;
+  const isAfter4am = hour >= 4;
+  const needReset  = isOtherDay && isAfter4am;
+
   S.balance    = needReset ? 0  : (d.balance    || 0);
   S.history    = needReset ? [] : (d.history    || []);
   S.deliveries = needReset ? 0  : (d.deliveries || 0);
@@ -473,7 +465,9 @@ async function apiPost(path, body) {
   } catch(e) { console.warn('[API]', path, e.message); return null; }
 }
 
-// ── SSE ──────────────────────────────────────────────────────
+// ============================================================
+// SSE
+// ============================================================
 function connectSSE() {
   if (sseSource) sseSource.close();
   const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
@@ -485,17 +479,53 @@ function connectSSE() {
     S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
     saveState(); renderOrder(); goTab('orders');
     playSound();
-    pushNotif('Нове замовлення!', order.address + ' ' + order.clientName);
     toast('Нове замовлення призначено!');
   });
   sseSource.addEventListener('order_cancelled', e => {
     const { reason } = JSON.parse(e.data);
     if (reason === 'timeout' && S.order && S.order.status === 'new') {
       S.order = null; saveState(); renderOrder();
-      toast('⏱ Час вийшов — замовлення передано');
+      toast('Час вийшов — замовлення передано');
     }
   });
   sseSource.onerror = () => { setTimeout(connectSSE, 5000); };
+}
+
+// ============================================================
+// FIREBASE PUSH
+// ============================================================
+function initFirebase() {
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  _messaging = firebase.messaging();
+  // Коли застосунок відкритий і приходить push — НЕ граємо звук,
+  // бо SSE вже обробив замовлення і звук вже зіграв
+  _messaging.onMessage(() => {
+    // Навмисно порожньо — SSE обробляє замовлення коли застосунок відкритий
+  });
+}
+
+function checkPushBanner() {
+  if ('Notification' in window && Notification.permission !== 'granted')
+    document.getElementById('push-banner').classList.add('show');
+}
+
+function askPush() {
+  if (!('serviceWorker' in navigator)) { toast('Сповіщення не підтримуються'); return; }
+  navigator.serviceWorker.register('/mage_delivery/firebase-messaging-sw.js')
+    .then(reg => {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      _messaging = firebase.messaging();
+      return _messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    })
+    .then(token => {
+      document.getElementById('push-banner').classList.remove('show');
+      toast('Сповіщення увімкнено!');
+      if (S.user) apiPost('/courier/push-token', { login: S.user.login, pass: S.user.pass, token });
+    })
+    .catch(err => {
+      console.error('Push error:', err);
+      toast('Не вдалося увімкнути сповіщення');
+    });
 }
 
 // ============================================================
@@ -599,11 +629,11 @@ function renderTimer() {
 // ORDER RENDER
 // ============================================================
 const ST = {
-  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: 'NEW' },
-  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: 'OK' },
-  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: 'GO' },
+  new:       { text: 'Нове замовлення',        chip: 'chip-new',        emoji: 'NEW'  },
+  accepted:  { text: 'Прийнято тобою',         chip: 'chip-accepted',   emoji: 'OK'   },
+  delivering:{ text: 'Доставляється',          chip: 'chip-delivering', emoji: 'GO'   },
   done:      { text: 'Доставлено',             chip: 'chip-done',       emoji: 'DONE' },
-  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: 'ERR' },
+  notfound:  { text: 'Одержувача не знайдено', chip: 'chip-notfound',   emoji: 'ERR'  },
 };
 
 function isCash(p) {
@@ -622,7 +652,7 @@ function renderOrder() {
     return;
   }
   const o = S.order, st = ST[o.status], cash = isCash(o.payment);
-  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap"><div class="timer-top"><span>⏱ Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>` : '';
+  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap"><div class="timer-top"><span>Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>` : '';
   const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
   const entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
   let cashWarn = '';
@@ -636,7 +666,7 @@ function renderOrder() {
   else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
   else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
 
-  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.emoji} ${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
+  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
 
   if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
@@ -671,7 +701,7 @@ function finishOrder(status) {
 }
 function onTimerExpired() {
   if (!S.order || S.order.status !== 'new') return;
-  S.order = null; saveState(); renderOrder(); toast('⏱ Час вийшов — замовлення передано');
+  S.order = null; saveState(); renderOrder(); toast('Час вийшов — замовлення передано');
 }
 function canReceive(orderData) {
   if (!S.isOnline || S.order) return false;
@@ -685,6 +715,11 @@ function canReceive(orderData) {
 // SOUND
 // ============================================================
 function playSound() {
+  // Захист від подвійного відтворення — мінімум 3 секунди між звуками
+  const now = Date.now();
+  if (now - _lastSoundTime < 3000) return;
+  _lastSoundTime = now;
+
   if (_audio) {
     _audio.currentTime = 0;
     _audio.play().catch(() => {});
@@ -723,65 +758,6 @@ function playCoins() {
       o2.start(ctx.currentTime + t); o2.stop(ctx.currentTime + t + .07);
     });
   } catch(e) {}
-}
-
-// ============================================================
-// PUSH
-// ============================================================
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBza8zvWZ1Z9j1NmaPUaIS4AaGlP0WRFGw",
-  authDomain: "mage-courier.firebaseapp.com",
-  projectId: "mage-courier",
-  storageBucket: "mage-courier.firebasestorage.app",
-  messagingSenderId: "337736317081",
-  appId: "1:337736317081:web:ea06038aba11b369ae2008"
-};
-const VAPID_KEY = 'BJpoSWJWE5XgCZ6TZLQS9Sw2-jeQZdbF5dlITPGUq5hNQqk4G6xt42evnVBcodvfWHBCxglBDLFShQhZtSiIADo';
-
-let _messaging = null;
-
-function initFirebase() {
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  _messaging = firebase.messaging();
-  _messaging.onMessage(payload => {
-    // Замовлення прийшло поки застосунок відкритий
-    playSound();
-  });
-}
-
-function checkPushBanner() {
-  if ('Notification' in window && Notification.permission !== 'granted')
-    document.getElementById('push-banner').classList.add('show');
-}
-
-function askPush() {
-  if (!('serviceWorker' in navigator)) {
-    toast('Сповіщення не підтримуються');
-    return;
-  }
-  navigator.serviceWorker.register('/mage_delivery/firebase-messaging-sw.js')
-    .then(reg => {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      _messaging = firebase.messaging();
-      return _messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    })
-    .then(token => {
-      document.getElementById('push-banner').classList.remove('show');
-      toast('Сповіщення увімкнено!');
-      // Надіслати токен на бекенд
-      if (S.user) {
-        apiPost('/courier/push-token', { login: S.user.login, pass: S.user.pass, token });
-      }
-    })
-    .catch(err => {
-      console.error('Push error:', err);
-      toast('Не вдалося увімкнути сповіщення');
-    });
-}
-
-function pushNotif(title, body) {
-  // Push тепер через Firebase — локальні сповіщення не потрібні
 }
 
 // ============================================================
@@ -852,7 +828,6 @@ window.receiveOrder = function(orderData) {
   S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
   saveState(); renderOrder(); goTab('orders');
   playSound();
-  pushNotif('Нове замовлення!', orderData.address + ' ' + orderData.clientName);
   return true;
 };
 </script>
