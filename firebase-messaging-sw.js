@@ -12,16 +12,21 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Показуємо сповіщення коли застосунок у фоні
 messaging.onBackgroundMessage(function(payload) {
   const title = payload.notification.title || 'Нове замовлення!';
   const body  = payload.notification.body  || '';
-  self.registration.showNotification(title, {
-    body,
-    icon: '/mage_delivery/icon-192.png',
-    badge: '/mage_delivery/icon-192.png',
-    tag: 'order',
-    requireInteraction: true,
-    sound: '/mage_delivery/sound.mp3'
-  });
+
+  // Закрити всі існуючі сповіщення з тим самим тегом перед показом нового
+  return self.registration.getNotifications({ tag: 'order' })
+    .then(notifications => {
+      notifications.forEach(n => n.close());
+      return self.registration.showNotification(title, {
+        body,
+        icon: '/mage_delivery/icon-192.png',
+        badge: '/mage_delivery/icon-192.png',
+        tag: 'order',
+        renotify: false,
+        requireInteraction: true
+      });
+    });
 });
