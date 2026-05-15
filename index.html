@@ -558,6 +558,10 @@ function showApp() {
   scheduleReset();
   connectSSE();
   initFirebase();
+  // Якщо є активне замовлення зі статусом 'new' — запустити таймер
+  if (S.order && S.order.status === 'new' && timerInterval === null) {
+    startTimer(onTimerExpired);
+  }
 }
 
 function doLogout() {
