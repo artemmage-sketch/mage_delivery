@@ -162,6 +162,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .logout-btn:active{transform:scale(.97);}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.nav-block{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin:14px 0;}
+.nav-title{font-size:.8rem;font-weight:800;color:var(--p3);margin-bottom:6px;}
+.nav-addr{font-size:.92rem;font-weight:700;margin-bottom:12px;color:var(--text);}
+.nav-btns{display:flex;gap:8px;}
+.nav-btn{flex:1;text-align:center;text-decoration:none;padding:13px;border-radius:var(--radius-xs);font-weight:800;font-size:.9rem;color:#fff;transition:transform .15s;}
+.nav-btn:active{transform:scale(.96);}
+.nav-gmaps{background:linear-gradient(135deg,#4285F4,#34A853);}
+.nav-waze{background:linear-gradient(135deg,#33CCFF,#1F86D6);}
 .auth-toggle{display:flex;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px;margin-bottom:1.1rem;}
 .at-btn{flex:1;padding:10px;border:none;border-radius:var(--radius-xs);background:transparent;color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s;}
 .at-btn.active{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);}
@@ -189,6 +197,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     <div id="reg-only" style="display:none">
       <label class="fl">Код-запрошення</label>
       <div class="fw"><span class="fi-icon">🎟️</span><input class="fi" id="inp-invite" type="text" placeholder="Код від керівника"/></div>
+      <label class="fl">Місто</label>
+      <div class="fw"><span class="fi-icon">🏙️</span><select class="fi" id="inp-city"><option value="">Завантаження…</option></select></div>
     </div>
     <label class="fl">Логін</label>
     <div class="fw"><span class="fi-icon">👤</span><input class="fi" id="inp-login" type="text" placeholder="Твій логін" autocomplete="username"/></div>
@@ -354,6 +364,26 @@ function setAuthMode(mode) {
   document.getElementById('auth-btn').textContent = mode === 'register' ? 'Зареєструватися →' : 'Увійти →';
   document.getElementById('step-title-auth').textContent = mode === 'register' ? 'Створи акаунт' : 'Увійди в акаунт';
   hide('err1');
+  if (mode === 'register') loadCities();
+}
+
+let _citiesLoaded = false;
+async function loadCities() {
+  const sel = document.getElementById('inp-city');
+  try {
+    const r = await fetch(BACKEND_URL + '/cities/active');
+    const data = await r.json();
+    const cities = (data && data.cities) || [];
+    if (!cities.length) {
+      sel.innerHTML = '<option value="">Міст поки немає — зверніться до керівника</option>';
+    } else {
+      sel.innerHTML = '<option value="">Обери своє місто</option>' +
+        cities.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join('');
+    }
+    _citiesLoaded = true;
+  } catch (e) {
+    sel.innerHTML = '<option value="">Не вдалося завантажити міста</option>';
+  }
 }
 
 // ============================================================
@@ -373,8 +403,10 @@ async function authSubmit() {
   let res;
   if (authMode === 'register') {
     const invite = document.getElementById('inp-invite').value.trim();
+    const city   = document.getElementById('inp-city').value;
     if (!invite) { err.textContent = '⚠️ Введи код-запрошення'; show('err1'); return; }
-    res = await rawPost('/auth/register', { inviteCode: invite, login, password: pass });
+    if (!city)   { err.textContent = '⚠️ Обери місто'; show('err1'); return; }
+    res = await rawPost('/auth/register', { inviteCode: invite, login, password: pass, city });
   } else {
     res = await rawPost('/auth/login', { login, password: pass });
   }
@@ -729,12 +761,14 @@ function renderOrder() {
     else if (o.status === 'delivering') cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>`;
   }
   const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>` : '';
+  const fullAddr = [o.address, o.city].filter(v => v && String(v).trim()).join(', ');
+  const navHTML = (fullAddr && (o.status === 'accepted' || o.status === 'delivering')) ? `<div class="nav-block"><div class="nav-title">🧭 Маршрут до клієнта</div><div class="nav-addr">${d(o.address)}</div><div class="nav-btns"><a class="nav-btn nav-gmaps" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddr)}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="nav-btn nav-waze" href="https://waze.com/ul?q=${encodeURIComponent(fullAddr)}&navigate=yes" target="_blank" rel="noopener">🚗 Waze</a></div></div>` : '';
   let actions = '';
   if (o.status === 'new') actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
   else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
   else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
 
-  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
+  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${navHTML}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
 
   if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
