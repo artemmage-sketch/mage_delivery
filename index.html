@@ -162,6 +162,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .logout-btn:active{transform:scale(.97);}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg4);border:1px solid var(--border2);padding:12px 22px;border-radius:100px;font-size:.88rem;font-weight:700;white-space:nowrap;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.4);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.auth-toggle{display:flex;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px;margin-bottom:1.1rem;}
+.at-btn{flex:1;padding:10px;border:none;border-radius:var(--radius-xs);background:transparent;color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s;}
+.at-btn.active{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);}
+.bal-sub-row{display:flex;align-items:baseline;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);}
+.bal-sub-label{font-size:.8rem;color:rgba(255,255,255,.82);font-weight:700;}
+.bal-sub-val{font-size:1.15rem;font-weight:900;color:#fff;margin-left:auto;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
@@ -175,12 +181,20 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
   <div class="login-sub">Панель кур'єра</div>
 
   <div class="step active" id="step1">
-    <div class="step-title">Увійди в акаунт</div>
+    <div class="auth-toggle">
+      <button type="button" class="at-btn active" id="at-login" onclick="setAuthMode('login')">Вхід</button>
+      <button type="button" class="at-btn" id="at-reg" onclick="setAuthMode('register')">Реєстрація</button>
+    </div>
+    <div class="step-title" id="step-title-auth">Увійди в акаунт</div>
+    <div id="reg-only" style="display:none">
+      <label class="fl">Код-запрошення</label>
+      <div class="fw"><span class="fi-icon">🎟️</span><input class="fi" id="inp-invite" type="text" placeholder="Код від керівника"/></div>
+    </div>
     <label class="fl">Логін</label>
     <div class="fw"><span class="fi-icon">👤</span><input class="fi" id="inp-login" type="text" placeholder="Твій логін" autocomplete="username"/></div>
     <label class="fl">Пароль</label>
     <div class="fw"><span class="fi-icon">🔒</span><input class="fi" id="inp-pass" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
-    <button class="primary-btn" onclick="step1Next()">Далі →</button>
+    <button class="primary-btn" id="auth-btn" onclick="authSubmit()">Увійти →</button>
     <div class="err-box" id="err1">❌ Невірний логін або пароль</div>
   </div>
 
@@ -256,15 +270,16 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
     </div>
     <div class="tab-pane" id="pane-balance">
       <div class="balance-card">
-        <div class="bal-label">💵 Баланс за сьогодні</div>
-        <div><span class="bal-amount" id="bal-amount">0.00</span><span class="bal-currency">грн</span></div>
-        <div class="bal-reset">🕓 Автоматичний скид о 4:00</div>
+        <div class="bal-label">💰 Загальний баланс</div>
+        <div><span class="bal-amount" id="bal-total">0.00</span><span class="bal-currency">грн</span></div>
+        <div class="bal-sub-row"><span class="bal-sub-label">💵 Зароблено сьогодні</span><span class="bal-sub-val" id="bal-today">0.00</span><span class="bal-sub-label">грн</span></div>
+        <div class="bal-reset">🏦 Виплачує керівник на картку</div>
       </div>
       <div class="bal-stat">
         <div class="stat-item"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Доставок сьогодні</div></div>
         <div class="stat-item"><div class="stat-num" style="color:var(--g2)">+110</div><div class="stat-label">грн за доставку</div></div>
       </div>
-      <div class="section-title">Історія</div>
+      <div class="section-title">Історія за сьогодні</div>
       <div id="history-area"></div>
     </div>
     <div class="tab-pane" id="pane-settings">
@@ -288,31 +303,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 <script>
 // ============================================================
-// СПИСОК КУР'ЄРІВ
-// ============================================================
-const USERS = {
-  ArtemMage: { pass: 'LolKek228', id: '001' },
-  courier2:  { pass: 'pass2',     id: '002' },
-  courier3:  { pass: 'pass3',     id: '003' },
-  courier4:  { pass: 'pass4',     id: '004' },
-  courier5:  { pass: 'pass5',     id: '005' },
-  courier6:  { pass: 'pass6',     id: '006' },
-  courier7:  { pass: 'pass7',     id: '007' },
-  courier8:  { pass: 'pass8',     id: '008' },
-  courier9:  { pass: 'pass9',     id: '009' },
-  courier10: { pass: 'pass10',    id: '010' },
-};
-
-// ============================================================
 // CONFIG
 // ============================================================
 const BACKEND_URL     = 'https://mage-food-delivery-backend-production.up.railway.app';
 const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
 const _audio          = ADMIN_SOUND_URL ? new Audio(ADMIN_SOUND_URL) : null;
-
-const RESTRICTED_SHOPS      = ['temari sushi тернопіль', 'temari sushi тернопіль 2'];
-const RESTRICTED_TRANSPORTS = ['scooter', 'escooter'];
-const REWARD = 110;
+const REWARD = 110; // лише для відображення; реально нараховує сервер
 
 const TR = {
   car:      { label: 'Автомобіль'     },
@@ -331,18 +327,34 @@ const firebaseConfig = {
 };
 const VAPID_KEY = 'BJpoSWJWE5XgCZ6TZLQS9Sw2-jeQZdbF5dlITPGUq5hNQqk4G6xt42evnVBcodvfWHBCxglBDLFShQhZtSiIADo';
 
+const SESSION_KEY = 'mfd_session';
+
 let S = {
-  user: null, fullName: null, transport: null,
-  carBrand: null, plate: null, phone: null,
+  user: null,                 // { login, id, token }
+  fullName: null, transport: null, carBrand: null, plate: null, phone: null,
   isOnline: false, order: null,
-  balance: 0, history: [], deliveries: 0
+  balanceTotal: 0, earnedToday: 0, deliveriesToday: 0, history: []
 };
+let authMode = 'login';
 let selectedTransport = null;
 let timerInterval = null, timerSec = 0;
 let sseSource = null;
 let _messaging = null;
-// Захист від подвійного звуку — час останнього відтворення
 let _lastSoundTime = 0;
+let _authErrShown = false;
+
+// ============================================================
+// AUTH MODE TOGGLE (Вхід / Реєстрація)
+// ============================================================
+function setAuthMode(mode) {
+  authMode = mode;
+  document.getElementById('at-login').classList.toggle('active', mode === 'login');
+  document.getElementById('at-reg').classList.toggle('active', mode === 'register');
+  document.getElementById('reg-only').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('auth-btn').textContent = mode === 'register' ? 'Зареєструватися →' : 'Увійти →';
+  document.getElementById('step-title-auth').textContent = mode === 'register' ? 'Створи акаунт' : 'Увійди в акаунт';
+  hide('err1');
+}
 
 // ============================================================
 // STEPS
@@ -352,27 +364,44 @@ function goStep(n) {
   document.getElementById('step' + n).classList.add('active');
 }
 
-function step1Next() {
+async function authSubmit() {
   const login = document.getElementById('inp-login').value.trim();
   const pass  = document.getElementById('inp-pass').value;
-  const u     = USERS[login];
-  if (!u || u.pass !== pass) { show('err1'); document.getElementById('inp-pass').value = ''; return; }
+  const err   = document.getElementById('err1');
+  if (!login || !pass) { err.textContent = '⚠️ Введи логін і пароль'; show('err1'); return; }
+
+  let res;
+  if (authMode === 'register') {
+    const invite = document.getElementById('inp-invite').value.trim();
+    if (!invite) { err.textContent = '⚠️ Введи код-запрошення'; show('err1'); return; }
+    res = await rawPost('/auth/register', { inviteCode: invite, login, password: pass });
+  } else {
+    res = await rawPost('/auth/login', { login, password: pass });
+  }
+
+  if (!res.ok) {
+    err.textContent = '❌ ' + ((res.data && res.data.error) || 'Помилка. Спробуй ще раз');
+    show('err1'); document.getElementById('inp-pass').value = ''; return;
+  }
   hide('err1');
-  S.user = { login, pass: u.pass, id: u.id };
-  const saved = getSaved();
-  if (saved && saved.fullName && saved.transport && saved.carBrand && saved.plate) {
-    S.fullName  = saved.fullName;
-    S.transport = saved.transport;
-    S.carBrand  = saved.carBrand;
-    S.plate     = saved.plate;
-    S.phone     = saved.phone;
-    loadState(saved);
+
+  const data = res.data;
+  S.user = { login, id: data.id, token: data.token };
+  _authErrShown = false;
+  if (data.profile) {
+    applyProfile(data.profile);
+    persistSession();
     showApp();
   } else {
-    goStep(2);
+    persistSession();
+    goStep(2); // онбординг: ім'я → транспорт → авто
   }
 }
-document.getElementById('inp-pass').addEventListener('keydown', e => { if (e.key === 'Enter') step1Next(); });
+
+function applyProfile(p) {
+  S.fullName = p.fullName; S.transport = p.transport;
+  S.carBrand = p.carBrand; S.plate = p.plate; S.phone = p.phone;
+}
 
 function goStep2to3() {
   const name = document.getElementById('inp-fullname').value.trim();
@@ -399,7 +428,7 @@ function validatePlate(p) {
   return /^[А-ЯІЇЄа-яіїєA-Za-z]{2}\d{4}[А-ЯІЇЄа-яіїєA-Za-z]{2}$/.test(p.replace(/\s/g, ''));
 }
 
-function step4Done() {
+async function step4Done() {
   const brand = document.getElementById('inp-brand').value.trim();
   const plate = document.getElementById('inp-plate').value.trim().toUpperCase().replace(/\s/g, '');
   const phone = document.getElementById('inp-phone').value.trim();
@@ -409,112 +438,150 @@ function step4Done() {
   if (phone.length < 10) { err.textContent = 'Вкажи номер телефону'; show('err4'); return; }
   hide('err4');
   S.carBrand = brand; S.plate = plate; S.phone = phone;
-  apiPost('/courier/register', {
-    login: S.user.login, pass: S.user.pass,
-    fullName: S.fullName, transport: S.transport,
-    carBrand: brand, plate, phone
+  await apiPost('/courier/register', {
+    fullName: S.fullName, transport: S.transport, carBrand: brand, plate, phone
   });
-  loadState(getSaved());
+  persistSession();
   showApp();
 }
 
 // ============================================================
-// STATE
+// SESSION (localStorage) — зберігаємо ТОКЕН, не пароль
 // ============================================================
-function stateKey() { return 'mfd_' + S.user.login; }
-function getSaved() { try { return JSON.parse(localStorage.getItem(stateKey())); } catch(e) { return null; } }
-
-function saveState() {
-  localStorage.setItem(stateKey(), JSON.stringify({
+function persistSession() {
+  if (!S.user) return;
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    login: S.user.login, id: S.user.id, token: S.user.token,
     fullName: S.fullName, transport: S.transport, carBrand: S.carBrand,
-    plate: S.plate, phone: S.phone, isOnline: S.isOnline, order: S.order,
-    balance: S.balance, history: S.history, deliveries: S.deliveries,
-    savedDate: new Date().toDateString()
+    plate: S.plate, phone: S.phone, isOnline: S.isOnline, order: S.order
   }));
 }
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+function saveState() { persistSession(); } // сумісність зі старими викликами
 
-function loadState(d) {
-  if (!d) return;
-  // Перевіряємо чи потрібен скид — тільки якщо дата збереження не сьогодні
-  // і вже після 4:00 ранку
-  const today = new Date().toDateString();
-  const savedDate = d.savedDate || d.date || today;
-  const now = new Date();
-  const hour = now.getHours();
+// ============================================================
+// API
+// ============================================================
+async function rawPost(path, body) {
+  try {
+    const r = await fetch(BACKEND_URL + path, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    });
+    let data = null; try { data = await r.json(); } catch (e) {}
+    return { ok: r.ok, status: r.status, data };
+  } catch (e) {
+    return { ok: false, status: 0, data: { error: 'Немає зв\'язку з сервером' } };
+  }
+}
 
-  // Скидаємо тільки якщо: збережено вчора (або раніше) І вже після 4:00
-  const isOtherDay = savedDate !== today;
-  const isAfter4am = hour >= 4;
-  const needReset  = isOtherDay && isAfter4am;
-
-  S.balance    = needReset ? 0  : (d.balance    || 0);
-  S.history    = needReset ? [] : (d.history    || []);
-  S.deliveries = needReset ? 0  : (d.deliveries || 0);
-  S.order      = d.order    || null;
-  S.isOnline   = d.isOnline || false;
+function authHeaders() {
+  return (S.user && S.user.token) ? { 'Authorization': 'Bearer ' + S.user.token } : {};
 }
 
 async function apiPost(path, body) {
   try {
     const r = await fetch(BACKEND_URL + path, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(body || {})
     });
+    if (handleAuth(r)) return null;
     return r.ok ? r.json() : null;
-  } catch(e) { console.warn('[API]', path, e.message); return null; }
+  } catch (e) { console.warn('[API]', path, e.message); return null; }
+}
+
+async function apiGet(path) {
+  try {
+    const r = await fetch(BACKEND_URL + path, { headers: { ...authHeaders() } });
+    if (handleAuth(r)) return null;
+    return r.ok ? r.json() : null;
+  } catch (e) { console.warn('[API]', path, e.message); return null; }
+}
+
+// Недійсний токен або заблокований акаунт → вихід на екран входу
+function handleAuth(r) {
+  if (r.status === 401 || r.status === 403) {
+    r.clone().json().then(j => {
+      if (j && j.blocked && !_authErrShown) { _authErrShown = true; toast('Акаунт заблоковано'); }
+    }).catch(() => {});
+    forceLogout();
+    return true;
+  }
+  return false;
+}
+
+function forceLogout() {
+  stopTimer(); clearSession();
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null,
+        phone: null, isOnline: false, order: null,
+        balanceTotal: 0, earnedToday: 0, deliveriesToday: 0, history: [] };
+  selectedTransport = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  ['inp-login','inp-pass','inp-invite','inp-fullname','inp-brand','inp-plate','inp-phone']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
+  goStep(1); setAuthMode('login');
 }
 
 // ============================================================
-// SSE
+// SSE (через одноразовий тикет, без пароля в URL)
 // ============================================================
-function connectSSE() {
-  if (sseSource) sseSource.close();
-  const url = `${BACKEND_URL}/sse/${S.user.login}?pass=${encodeURIComponent(S.user.pass)}`;
-  sseSource = new EventSource(url);
+async function connectSSE() {
+  if (sseSource) { sseSource.close(); sseSource = null; }
+  const t = await apiPost('/sse-ticket', {});
+  if (!t || !t.ticket) { setTimeout(connectSSE, 5000); return; }
+  sseSource = new EventSource(`${BACKEND_URL}/sse?ticket=${encodeURIComponent(t.ticket)}`);
+
   sseSource.addEventListener('connected', () => {
     console.log('[SSE] Connected');
-    // При підключенні перевіряємо чи є активне замовлення в черзі
     if (!S.order) {
-      apiPost('/courier/active-order', { login: S.user.login, pass: S.user.pass })
-        .then(data => {
-          if (data && data.order && !S.order) {
-            S.order = { ...data.order, status: 'new', assignedAt: new Date().toISOString() };
-            saveState(); renderOrder(); goTab('orders');
-            if (timerInterval === null) startTimer(onTimerExpired);
-          }
-        }).catch(() => {});
+      apiPost('/courier/active-order', {}).then(data => {
+        if (data && data.order && !S.order) {
+          S.order = { ...data.order, status: data.order.status || 'new', assignedAt: new Date().toISOString() };
+          persistSession(); renderOrder(); goTab('orders');
+          if (S.order.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
+        }
+      }).catch(() => {});
     }
   });
+
   sseSource.addEventListener('new_order', e => {
     const order = JSON.parse(e.data);
     if (S.order) return;
     S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
-    saveState(); renderOrder(); goTab('orders');
+    persistSession(); renderOrder(); goTab('orders');
     playSound();
     toast('Нове замовлення призначено!');
   });
+
   sseSource.addEventListener('order_cancelled', e => {
-    const { reason } = JSON.parse(e.data);
+    let reason = '';
+    try { reason = (JSON.parse(e.data) || {}).reason; } catch (_) {}
+    if (reason === 'blocked') { toast('Акаунт заблоковано'); forceLogout(); return; }
     if (reason === 'timeout' && S.order && S.order.status === 'new') {
-      S.order = null; saveState(); renderOrder();
+      S.order = null; persistSession(); renderOrder();
       toast('Час вийшов — замовлення передано');
     }
   });
-  sseSource.onerror = () => { setTimeout(connectSSE, 5000); };
+
+  sseSource.onerror = () => {
+    if (sseSource) { sseSource.close(); sseSource = null; }
+    setTimeout(connectSSE, 5000);
+  };
 }
 
 // ============================================================
 // FIREBASE PUSH
 // ============================================================
 function initFirebase() {
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  _messaging = firebase.messaging();
-  // Коли застосунок відкритий і приходить push — НЕ граємо звук,
-  // бо SSE вже обробив замовлення і звук вже зіграв
-  _messaging.onMessage(() => {
-    // Навмисно порожньо — SSE обробляє замовлення коли застосунок відкритий
-  });
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    _messaging = firebase.messaging();
+    _messaging.onMessage(() => { /* SSE обробляє коли застосунок відкритий */ });
+  } catch (e) {}
 }
 
 function checkPushBanner() {
@@ -533,31 +600,29 @@ function askPush() {
     .then(token => {
       document.getElementById('push-banner').classList.remove('show');
       toast('Сповіщення увімкнено!');
-      if (S.user) apiPost('/courier/push-token', { login: S.user.login, pass: S.user.pass, token });
+      if (S.user) apiPost('/courier/push-token', { token });
     })
-    .catch(err => {
-      console.error('Push error:', err);
-      toast('Не вдалося увімкнути сповіщення');
-    });
+    .catch(err => { console.error('Push error:', err); toast('Не вдалося увімкнути сповіщення'); });
 }
 
 // ============================================================
 // SHOW APP
 // ============================================================
 function initials(name) {
-  const parts = name.trim().split(/\s+/);
-  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+  const parts = (name || '').trim().split(/\s+/);
+  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : (name || '??').slice(0, 2).toUpperCase();
 }
 
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   const tr = TR[S.transport] || { label: '—' };
+  const id = S.user ? S.user.id : '';
   document.getElementById('hdr-av').textContent       = initials(S.fullName || '??');
   document.getElementById('hdr-name').textContent     = S.fullName || 'Кур\'єр';
-  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + S.user.id;
+  document.getElementById('hdr-id').textContent       = 'Кур\'єр #' + id;
   document.getElementById('set-name').textContent     = S.fullName || '—';
-  document.getElementById('set-id').textContent       = 'Кур\'єр #' + S.user.id;
+  document.getElementById('set-id').textContent       = 'Кур\'єр #' + id;
   document.getElementById('set-tr-ico').textContent   = '';
   document.getElementById('set-tr-name').textContent  = tr.label;
   document.getElementById('set-plate').textContent    = S.plate || '—';
@@ -567,31 +632,17 @@ function showApp() {
   updateStatusUI();
   renderOrder();
   renderBalance();
+  refreshBalance();
   checkPushBanner();
-  scheduleReset();
   connectSSE();
   initFirebase();
-  // Якщо є активне замовлення зі статусом 'new' — запустити таймер
-  if (S.order && S.order.status === 'new' && timerInterval === null) {
-    startTimer(onTimerExpired);
-  }
+  if (S.order && S.order.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
 
 function doLogout() {
   if (!confirm('Вийти з акаунту?')) return;
-  stopTimer();
-  saveState();
-  sessionStorage.setItem('logged_out', '1');
-  S = { user: null, fullName: null, transport: null, carBrand: null, plate: null,
-        phone: null, isOnline: false, order: null, balance: 0, history: [], deliveries: 0 };
-  selectedTransport = null;
-  if (sseSource) { sseSource.close(); sseSource = null; }
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  ['inp-login','inp-pass','inp-fullname','inp-brand','inp-plate','inp-phone']
-    .forEach(id => { document.getElementById(id).value = ''; });
-  document.querySelectorAll('.tr-opt').forEach(e => e.classList.remove('sel'));
-  goStep(1);
+  apiPost('/courier/online', { isOnline: false });
+  forceLogout();
 }
 
 // ============================================================
@@ -599,14 +650,14 @@ function doLogout() {
 // ============================================================
 function toggleOnline() {
   S.isOnline = !S.isOnline;
-  updateStatusUI(); saveState();
+  updateStatusUI(); persistSession();
   toast(S.isOnline ? 'Ти онлайн — готовий до роботи!' : 'Ти офлайн');
   if (S.isOnline && _audio) {
     _audio.volume = 0;
     _audio.play().catch(() => {});
     setTimeout(() => { _audio.volume = 1; }, 100);
   }
-  apiPost('/courier/online', { login: S.user.login, pass: S.user.pass, isOnline: S.isOnline });
+  apiPost('/courier/online', { isOnline: S.isOnline });
 }
 function updateStatusUI() {
   document.getElementById('sdot').classList.toggle('on', S.isOnline);
@@ -623,7 +674,7 @@ function goTab(t) {
     document.getElementById('tab-' + x).classList.toggle('active', x === t);
     document.getElementById('pane-' + x).classList.toggle('active', x === t);
   });
-  if (t === 'balance') renderBalance();
+  if (t === 'balance') refreshBalance();
 }
 
 // ============================================================
@@ -694,54 +745,46 @@ function renderOrder() {
 function acceptOrder() {
   if (!S.order) return;
   stopTimer(); S.order.status = 'accepted'; S.order.acceptedAt = new Date().toISOString();
-  saveState(); renderOrder(); toast('Замовлення прийнято!');
-  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_accepted', order: S.order });
+  persistSession(); renderOrder(); toast('Замовлення прийнято!');
+  apiPost('/courier/status', { event: 'order_accepted', order: S.order });
 }
 function setStatus(status) {
   if (!S.order) return;
   S.order.status = status;
   if (status === 'delivering') S.order.pickedAt = new Date().toISOString();
-  saveState(); renderOrder();
-  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'status_update', order: S.order });
+  persistSession(); renderOrder();
+  apiPost('/courier/status', { event: 'status_update', order: S.order });
 }
-function finishOrder(status) {
+async function finishOrder(status) {
   if (!S.order) return;
   S.order.status = status; S.order.finishedAt = new Date().toISOString();
-  const o = { ...S.order };
-  apiPost('/courier/status', { login: S.user.login, pass: S.user.pass, event: 'order_complete', order: { ...S.order } });
+  const sent = { ...S.order };
+  S.order = null; stopTimer(); persistSession(); renderOrder();
+  // Гроші нараховує СЕРВЕР — беремо актуальний баланс із відповіді
+  const res = await apiPost('/courier/status', { event: 'order_complete', order: sent });
+  if (res && res.balance) { applyBalance(res.balance); renderBalance(); }
   if (status === 'done') {
-    S.balance += REWARD; S.deliveries++;
-    S.history.unshift({ id: o.checkNum||o.id, address: o.address, time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }), amount: REWARD });
-    playCoins(); toast('+' + REWARD + ' грн до балансу!');
-  } else { toast('Замовлення закрито'); }
-  S.order = null; stopTimer(); saveState(); renderOrder(); renderBalance();
+    if (res && res.credited) { playCoins(); toast('+' + (res.reward || REWARD) + ' грн до балансу!'); }
+    else { toast('Замовлення завершено'); refreshBalance(); }
+  } else {
+    toast('Замовлення закрито');
+  }
 }
 function onTimerExpired() {
   if (!S.order || S.order.status !== 'new') return;
-  S.order = null; saveState(); renderOrder(); toast('Час вийшов — замовлення передано');
-}
-function canReceive(orderData) {
-  if (!S.isOnline || S.order) return false;
-  if (RESTRICTED_TRANSPORTS.includes(S.transport)) {
-    if (RESTRICTED_SHOPS.includes((orderData.shop || '').toLowerCase().trim())) return false;
-  }
-  return true;
+  const had = { ...S.order };
+  S.order = null; persistSession(); renderOrder(); toast('Час вийшов — замовлення передано');
+  apiPost('/courier/status', { event: 'order_timeout', order: had });
 }
 
 // ============================================================
 // SOUND
 // ============================================================
 function playSound() {
-  // Захист від подвійного відтворення — мінімум 3 секунди між звуками
   const now = Date.now();
   if (now - _lastSoundTime < 3000) return;
   _lastSoundTime = now;
-
-  if (_audio) {
-    _audio.currentTime = 0;
-    _audio.play().catch(() => {});
-    return;
-  }
+  if (_audio) { _audio.currentTime = 0; _audio.play().catch(() => {}); return; }
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     [[880,0],[1046,.18],[1318,.36]].forEach(([f,t]) => {
@@ -778,32 +821,29 @@ function playCoins() {
 }
 
 // ============================================================
-// BALANCE
+// BALANCE (джерело істини — сервер)
 // ============================================================
+function applyBalance(b) {
+  if (!b) return;
+  S.balanceTotal    = b.balanceTotal    || 0;
+  S.earnedToday     = b.earnedToday     || 0;
+  S.deliveriesToday = b.deliveriesToday || 0;
+  S.history         = b.history         || [];
+}
+async function refreshBalance() {
+  const b = await apiGet('/courier/balance');
+  if (b) { applyBalance(b); renderBalance(); }
+}
 function renderBalance() {
-  document.getElementById('bal-amount').textContent = S.balance.toFixed(2);
-  document.getElementById('stat-count').textContent = S.deliveries;
+  document.getElementById('bal-total').textContent = (S.balanceTotal || 0).toFixed(2);
+  document.getElementById('bal-today').textContent = (S.earnedToday || 0).toFixed(2);
+  document.getElementById('stat-count').textContent = S.deliveriesToday || 0;
   const area = document.getElementById('history-area');
-  if (!S.history.length) {
+  if (!S.history || !S.history.length) {
     area.innerHTML = `<div class="empty" style="padding:2rem 0"><div class="empty-emoji" style="font-size:2.5rem">🧾</div><div class="empty-title" style="font-size:.9rem">Поки порожньо</div><div class="empty-sub">Виконані замовлення з'являться тут</div></div>`;
     return;
   }
-  area.innerHTML = S.history.map(h => `<div class="history-item"><div class="hico">✅</div><div style="flex:1"><div class="horder">Чек #${h.id}</div><div class="haddr">${h.address} · ${h.time}</div></div><div class="hsum">+${h.amount} грн</div></div>`).join('');
-}
-
-// ============================================================
-// DAILY RESET о 4:00
-// ============================================================
-function scheduleReset() {
-  const now = new Date(), next4 = new Date();
-  next4.setDate(now.getDate() + (now.getHours() >= 4 ? 1 : 0));
-  next4.setHours(4, 0, 0, 0);
-  setTimeout(() => {
-    S.balance = 0; S.history = []; S.deliveries = 0;
-    localStorage.setItem('reset_' + S.user.login, Date.now().toString());
-    saveState(); renderBalance(); toast('Новий день — баланс скинуто');
-    scheduleReset();
-  }, next4 - now);
+  area.innerHTML = S.history.map(h => `<div class="history-item"><div class="hico">✅</div><div style="flex:1"><div class="horder">Чек #${h.id}</div><div class="haddr">${h.address||''} · ${h.time||''}</div></div><div class="hsum">+${h.amount} грн</div></div>`).join('');
 }
 
 // ============================================================
@@ -817,36 +857,30 @@ function toast(msg) {
   clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+// Enter у полях входу → надіслати
+['inp-pass','inp-login','inp-invite'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') authSubmit(); });
+});
+
 // ============================================================
-// АВТОЛОГІН при старті
+// АВТОЛОГІН при старті (за збереженим токеном)
 // ============================================================
 (function() {
-  if (sessionStorage.getItem('logged_out')) return;
-  for (const login of Object.keys(USERS)) {
-    const raw = localStorage.getItem('mfd_' + login);
-    if (!raw) continue;
-    try {
-      const d = JSON.parse(raw);
-      if (d.fullName && d.transport && d.carBrand && d.plate) {
-        S.user = { login, pass: USERS[login].pass, id: USERS[login].id };
-        S.fullName = d.fullName; S.transport = d.transport;
-        S.carBrand = d.carBrand; S.plate = d.plate; S.phone = d.phone;
-        loadState(d); showApp(); return;
-      }
-    } catch(e) {}
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) {}
+  if (!s || !s.token) return;
+  S.user = { login: s.login, id: s.id, token: s.token };
+  S.fullName = s.fullName; S.transport = s.transport; S.carBrand = s.carBrand;
+  S.plate = s.plate; S.phone = s.phone; S.isOnline = !!s.isOnline; S.order = s.order || null;
+  if (s.fullName && s.transport && s.carBrand && s.plate) {
+    showApp(); // refreshBalance всередині перевірить токен (401/403 → вихід)
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    goStep(2); // профіль не завершено — продовжити онбординг
   }
 })();
 
-// ============================================================
-// EXTERNAL API
-// ============================================================
-window.receiveOrder = function(orderData) {
-  if (!canReceive(orderData)) return false;
-  S.order = { ...orderData, status: 'new', assignedAt: new Date().toISOString() };
-  saveState(); renderOrder(); goTab('orders');
-  playSound();
-  return true;
-};
 </script>
 </body>
 </html>
