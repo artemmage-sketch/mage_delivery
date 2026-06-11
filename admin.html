@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7C3AED">
+<title>Mage Food — Адмін-панель</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --p1:#7C3AED;--p2:#A855F7;--p3:#C084FC;
+  --g1:#10B981;--g2:#34D399;
+  --y1:#F59E0B;--y2:#FCD34D;
+  --r1:#EF4444;--r2:#FCA5A5;
+  --b1:#3B82F6;--b2:#93C5FD;
+  --bg:#0D0D1A;--bg2:#13131F;--bg3:#1A1A2E;--bg4:#22223A;--card:#181828;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#F0F0FF;--muted:#7878A0;
+  --radius:20px;--radius-sm:14px;--radius-xs:10px;
+  font-family:'Nunito',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);min-height:100vh;}
+.fl{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
+.fw{position:relative;margin-bottom:.9rem;}
+.fi-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;pointer-events:none;}
+.fi{width:100%;padding:14px 14px 14px 44px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:1rem;font-weight:600;outline:none;transition:all .2s;-webkit-appearance:none;}
+.fi:focus{border-color:var(--p1);background:var(--bg4);box-shadow:0 0 0 4px rgba(124,58,237,.15);}
+.fi::placeholder{color:var(--muted);font-weight:400;}
+.fi-sel{padding-left:14px;}
+.primary-btn{width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-family:inherit;font-size:1rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.4);transition:all .2s;}
+.primary-btn:active{transform:scale(.97);}
+.err-box{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius-xs);padding:10px 14px;color:var(--r2);font-size:.85rem;font-weight:600;margin-top:.65rem;display:none;text-align:center;}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;}
+.logo-badge{width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:1.1rem;box-shadow:0 8px 32px rgba(124,58,237,.4);}
+.login-title{font-size:1.5rem;font-weight:900;margin-bottom:.15rem;}
+.login-title span{background:linear-gradient(90deg,var(--p2),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;}
+.login-box{width:100%;max-width:340px;}
+
+/* ADMIN */
+#admin{display:none;max-width:760px;margin:0 auto;padding:1rem 1rem 3rem;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0 1rem;}
+.topbar-title{font-size:1.25rem;font-weight:900;}
+.topbar-title span{color:var(--p3);}
+.topbar-actions{display:flex;gap:8px;}
+.icon-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-xs);padding:9px 13px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.icon-btn:active{transform:scale(.95);}
+.summary{display:flex;gap:10px;margin-bottom:1.25rem;}
+.sum-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;}
+.sum-num{font-size:1.5rem;font-weight:900;}
+.sum-num.green{color:var(--g2);}
+.sum-label{font-size:.72rem;color:var(--muted);font-weight:700;margin-top:2px;}
+
+.courier-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:1rem;}
+.cc-head{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
+.cc-av{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--p1),var(--p2));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+.cc-name{font-size:1.05rem;font-weight:800;}
+.cc-meta{font-size:.78rem;color:var(--muted);font-weight:600;}
+.cc-badges{margin-left:auto;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.badge{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;}
+.b-online{background:rgba(16,185,129,.18);color:var(--g2);}
+.b-offline{background:rgba(120,120,160,.18);color:var(--muted);}
+.b-busy{background:rgba(245,158,11,.18);color:var(--y2);}
+.b-blocked{background:rgba(239,68,68,.18);color:var(--r2);}
+.cc-stats{display:flex;gap:8px;margin-bottom:1rem;}
+.cc-stat{flex:1;background:var(--bg3);border-radius:var(--radius-xs);padding:10px;text-align:center;}
+.cc-stat-num{font-size:1.15rem;font-weight:900;}
+.cc-stat-num.green{color:var(--g2);}
+.cc-stat-label{font-size:.66rem;color:var(--muted);font-weight:700;margin-top:2px;}
+.cc-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{flex:1;min-width:96px;padding:11px;border-radius:var(--radius-xs);border:none;font-family:inherit;font-weight:800;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.btn:active{transform:scale(.96);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-pay{background:linear-gradient(135deg,var(--g1),#059669);color:#fff;}
+.btn-edit{background:var(--bg4);color:var(--text);border:1px solid var(--border2);}
+.btn-block{background:rgba(239,68,68,.15);color:var(--r2);border:1px solid rgba(239,68,68,.3);}
+.btn-unblock{background:rgba(16,185,129,.15);color:var(--g2);border:1px solid rgba(16,185,129,.3);}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.empty-emoji{font-size:3rem;margin-bottom:.5rem;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius) var(--radius) 0 0;padding:1.5rem 1.25rem 2rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:1.15rem;font-weight:900;margin-bottom:.25rem;}
+.modal-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;}
+.modal-actions{display:flex;gap:8px;margin-top:.5rem;}
+.secondary-btn{flex:1;padding:14px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;}
+.modal .primary-btn{flex:1;}
+.hint{font-size:.75rem;color:var(--muted);margin:-.4rem 0 .9rem;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:13px 22px;border-radius:30px;font-weight:700;font-size:.9rem;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .3s;z-index:100;max-width:90vw;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="logo-badge">🛡️</div>
+  <div class="login-title">Mage <span>Адмін</span></div>
+  <div class="login-sub">Панель керівника</div>
+  <div class="login-box">
+    <label class="fl">Пароль керівника</label>
+    <div class="fw"><span class="fi-icon">🔒</span><input class="fi" id="inp-pass" type="password" placeholder="••••••••"/></div>
+    <button class="primary-btn" onclick="login()">Увійти →</button>
+    <div class="err-box" id="err">❌ Невірний пароль</div>
+  </div>
+</div>
+
+<div id="admin">
+  <div class="topbar">
+    <div class="topbar-title">🛡️ <span>Кур'єри</span></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="loadList()">↻ Оновити</button>
+      <button class="icon-btn" onclick="logout()">Вийти</button>
+    </div>
+  </div>
+  <div class="summary">
+    <div class="sum-card"><div class="sum-num" id="sum-online">0</div><div class="sum-label">Онлайн зараз</div></div>
+    <div class="sum-card"><div class="sum-num green" id="sum-debt">0</div><div class="sum-label">До виплати, грн</div></div>
+    <div class="sum-card"><div class="sum-num" id="sum-total">0</div><div class="sum-label">Усього кур'єрів</div></div>
+  </div>
+  <div id="list"></div>
+</div>
+
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title" id="m-title">Редагувати</div>
+    <div class="modal-sub" id="m-sub">—</div>
+    <label class="fl">Ім'я та прізвище</label>
+    <div class="fw"><span class="fi-icon">🙋</span><input class="fi" id="m-fullname" type="text"/></div>
+    <label class="fl">Тип транспорту</label>
+    <div class="fw"><select class="fi fi-sel" id="m-transport">
+      <option value="car">Автомобіль</option>
+      <option value="ecar">Електроавто</option>
+      <option value="escooter">Електроскутер</option>
+      <option value="scooter">Скутер (бензин)</option>
+    </select></div>
+    <label class="fl">Марка та модель</label>
+    <div class="fw"><span class="fi-icon">🚗</span><input class="fi" id="m-brand" type="text"/></div>
+    <label class="fl">Номерний знак</label>
+    <div class="fw"><span class="fi-icon">🔤</span><input class="fi" id="m-plate" type="text"/></div>
+    <label class="fl">Телефон</label>
+    <div class="fw"><span class="fi-icon">📞</span><input class="fi" id="m-phone" type="tel"/></div>
+    <label class="fl">Новий пароль (необов'язково)</label>
+    <div class="fw"><span class="fi-icon">🔑</span><input class="fi" id="m-pass" type="text" placeholder="Лишіть порожнім, щоб не змінювати"/></div>
+    <div class="hint">Пароль зміниться лише якщо щось ввести.</div>
+    <div class="err-box" id="m-err"></div>
+    <div class="modal-actions">
+      <button class="secondary-btn" onclick="closeEdit()">Скасувати</button>
+      <button class="primary-btn" onclick="saveEdit()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BACKEND_URL = 'https://mage-food-delivery-backend-production.up.railway.app';
+const ADMIN_KEY = 'mfd_admin_token';
+let token = localStorage.getItem(ADMIN_KEY) || null;
+let couriers = [];
+let editLogin = null;
+let refreshTimer = null;
+
+const TR_LABEL = { car:'Автомобіль', ecar:'Електроавто', escooter:'Електроскутер', scooter:'Скутер (бензин)' };
+
+function show(id){ document.getElementById(id).style.display='block'; }
+function hide(id){ document.getElementById(id).style.display='none'; }
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3000); }
+function money(n){ return (Number(n)||0).toFixed(2); }
+function initials(name){ const p=(name||'').trim().split(/\s+/); return p.length>=2?(p[0][0]+p[1][0]).toUpperCase():(name||'?').slice(0,2).toUpperCase(); }
+
+// ── API ──────────────────────────────────────────────────────
+async function aFetch(path, method, body){
+  try{
+    const r = await fetch(BACKEND_URL+path, {
+      method: method||'GET',
+      headers: { 'Content-Type':'application/json', ...(token?{Authorization:'Bearer '+token}:{}) },
+      ...(body?{body:JSON.stringify(body)}:{})
+    });
+    if(r.status===401 || r.status===403){ doLogoutLocal(); toast('Сесія завершилась — увійди знову'); return null; }
+    let data=null; try{ data=await r.json(); }catch(e){}
+    return { ok:r.ok, status:r.status, data };
+  }catch(e){ toast('Немає зв\'язку з сервером'); return null; }
+}
+
+// ── LOGIN ────────────────────────────────────────────────────
+async function login(){
+  const pass = document.getElementById('inp-pass').value;
+  if(!pass){ show('err'); return; }
+  const res = await fetch(BACKEND_URL+'/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
+  let data=null; try{ data=await res.json(); }catch(e){}
+  if(!res.ok || !data || !data.token){
+    document.getElementById('err').textContent = '❌ ' + ((data&&data.error)||'Невірний пароль');
+    show('err'); document.getElementById('inp-pass').value=''; return;
+  }
+  hide('err');
+  token = data.token; localStorage.setItem(ADMIN_KEY, token);
+  enterAdmin();
+}
+
+function enterAdmin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('admin').style.display='block';
+  loadList();
+  if(refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(()=>{ if(!document.getElementById('edit-modal').classList.contains('show')) loadList(true); }, 20000);
+}
+
+function logout(){ if(!confirm('Вийти з адмін-панелі?')) return; doLogoutLocal(); }
+function doLogoutLocal(){
+  token=null; localStorage.removeItem(ADMIN_KEY);
+  if(refreshTimer){ clearInterval(refreshTimer); refreshTimer=null; }
+  document.getElementById('admin').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('inp-pass').value='';
+}
+
+// ── LIST ─────────────────────────────────────────────────────
+async function loadList(silent){
+  const res = await aFetch('/admin/couriers','GET');
+  if(!res || !res.ok){ if(!silent) toast('Не вдалося завантажити список'); return; }
+  couriers = res.data.couriers || [];
+  render();
+}
+
+function statusBadge(c){
+  if(c.blocked) return '<span class="badge b-blocked">Заблокований</span>';
+  if(c.busy)    return '<span class="badge b-busy">На замовленні</span>';
+  if(c.online)  return '<span class="badge b-online">Онлайн</span>';
+  return '<span class="badge b-offline">Офлайн</span>';
+}
+
+function render(){
+  const list = document.getElementById('list');
+  let online=0, debt=0;
+  couriers.forEach(c=>{ if(c.online&&!c.blocked) online++; debt+=Number(c.balanceTotal)||0; });
+  document.getElementById('sum-online').textContent = online;
+  document.getElementById('sum-debt').textContent   = money(debt);
+  document.getElementById('sum-total').textContent  = couriers.length;
+
+  if(!couriers.length){
+    list.innerHTML = `<div class="empty"><div class="empty-emoji">👥</div><div>Кур'єрів ще немає.<br>Видай комусь код-запрошення.</div></div>`;
+    return;
+  }
+
+  list.innerHTML = couriers.map(c=>{
+    const name = (c.profile && c.profile.fullName) || c.login;
+    const tr   = c.profile && c.profile.transport ? (TR_LABEL[c.profile.transport]||c.profile.transport) : '—';
+    const plate= (c.profile && c.profile.plate) || '';
+    const meta = `@${c.login} · #${c.id}${plate?' · '+plate:''}`;
+    const canPay = (Number(c.balanceTotal)||0) > 0.001;
+    return `<div class="courier-card">
+      <div class="cc-head">
+        <div class="cc-av">${initials(name)}</div>
+        <div><div class="cc-name">${esc(name)}</div><div class="cc-meta">${esc(meta)} · ${esc(tr)}</div></div>
+        <div class="cc-badges">${statusBadge(c)}</div>
+      </div>
+      <div class="cc-stats">
+        <div class="cc-stat"><div class="cc-stat-num">${c.deliveriesToday||0}</div><div class="cc-stat-label">Доставок сьогодні</div></div>
+        <div class="cc-stat"><div class="cc-stat-num">${money(c.earnedToday)}</div><div class="cc-stat-label">За день, грн</div></div>
+        <div class="cc-stat"><div class="cc-stat-num green">${money(c.balanceTotal)}</div><div class="cc-stat-label">Баланс, грн</div></div>
+      </div>
+      <div class="cc-actions">
+        <button class="btn btn-pay" ${canPay?'':'disabled'} onclick="payout('${c.login}')">💸 Виплатити</button>
+        <button class="btn btn-edit" onclick="openEdit('${c.login}')">✏️ Редагувати</button>
+        <button class="btn ${c.blocked?'btn-unblock':'btn-block'}" onclick="toggleBlock('${c.login}', ${c.blocked?1:0})">${c.blocked?'🔓 Розблок.':'🚫 Блок.'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ── ACTIONS ──────────────────────────────────────────────────
+async function payout(login){
+  const c = couriers.find(x=>x.login===login); if(!c) return;
+  const amount = money(c.balanceTotal);
+  if(!confirm(`Виплатити ${amount} грн кур'єру «${(c.profile&&c.profile.fullName)||login}»?\n\nЦе обнулить його баланс. Зроби це лише ПІСЛЯ реального переказу на картку.`)) return;
+  const res = await aFetch('/admin/payout','POST',{login});
+  if(res && res.ok){ toast(`Виплачено ${money(res.data.paid.amount)} грн · баланс обнулено`); loadList(); }
+  else if(res){ toast((res.data&&res.data.error)||'Помилка виплати'); }
+}
+
+async function toggleBlock(login, blocked){
+  const willBlock = !blocked;
+  if(!confirm(willBlock ? `Заблокувати «${login}»? Він одразу втратить доступ.` : `Розблокувати «${login}»?`)) return;
+  const res = await aFetch('/admin/courier/block','POST',{login, blocked: willBlock});
+  if(res && res.ok){ toast(willBlock?'Кур\'єра заблоковано':'Кур\'єра розблоковано'); loadList(); }
+  else if(res){ toast((res.data&&res.data.error)||'Помилка'); }
+}
+
+function openEdit(login){
+  const c = couriers.find(x=>x.login===login); if(!c) return;
+  editLogin = login;
+  const p = c.profile || {};
+  document.getElementById('m-title').textContent = 'Редагувати кур\'єра';
+  document.getElementById('m-sub').textContent   = `@${c.login} · #${c.id}`;
+  document.getElementById('m-fullname').value = p.fullName || '';
+  document.getElementById('m-transport').value = p.transport || 'car';
+  document.getElementById('m-brand').value = p.carBrand || '';
+  document.getElementById('m-plate').value = p.plate || '';
+  document.getElementById('m-phone').value = p.phone || '';
+  document.getElementById('m-pass').value = '';
+  hide('m-err');
+  document.getElementById('edit-modal').classList.add('show');
+}
+function closeEdit(){ document.getElementById('edit-modal').classList.remove('show'); editLogin=null; }
+
+async function saveEdit(){
+  if(!editLogin) return;
+  const body = {
+    login: editLogin,
+    fullName:  document.getElementById('m-fullname').value.trim(),
+    transport: document.getElementById('m-transport').value,
+    carBrand:  document.getElementById('m-brand').value.trim(),
+    plate:     document.getElementById('m-plate').value.trim().toUpperCase(),
+    phone:     document.getElementById('m-phone').value.trim(),
+  };
+  const np = document.getElementById('m-pass').value.trim();
+  if(np){
+    if(np.length < 6){ document.getElementById('m-err').textContent='Пароль: щонайменше 6 символів'; show('m-err'); return; }
+    body.newPassword = np;
+  }
+  const res = await aFetch('/admin/courier/edit','POST',body);
+  if(res && res.ok){ toast('Збережено'+(np?' · пароль змінено':'')); closeEdit(); loadList(); }
+  else if(res){ document.getElementById('m-err').textContent=(res.data&&res.data.error)||'Помилка збереження'; show('m-err'); }
+}
+
+document.getElementById('inp-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+
+// ── START ────────────────────────────────────────────────────
+(function(){
+  if(token) enterAdmin();
+})();
+</script>
+</body>
+</html>
