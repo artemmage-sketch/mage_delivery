@@ -729,14 +729,14 @@ function goTab(t) {
 // TIMER
 // ============================================================
 function startTimer(onExpire) {
-  timerSec = 15; renderTimer();
+  timerSec = 45; renderTimer();
   timerInterval = setInterval(() => { timerSec--; renderTimer(); if (timerSec <= 0) { stopTimer(); onExpire(); } }, 1000);
 }
 function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
 function renderTimer() {
   const bar = document.getElementById('timer-bar'), cnt = document.getElementById('timer-count');
   if (!bar || !cnt) return;
-  bar.style.width = (timerSec / 15 * 100) + '%';
+  bar.style.width = (timerSec / 45 * 100) + '%';
   bar.className = 'timer-fill' + (timerSec <= 5 ? ' urgent' : '');
   cnt.textContent = timerSec + 'с';
 }
