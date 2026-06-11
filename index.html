@@ -621,6 +621,21 @@ function checkPushBanner() {
     document.getElementById('push-banner').classList.add('show');
 }
 
+// Оновити FCM-токен при КОЖНОМУ відкритті (а не лише по кнопці).
+// Токен змінюється після перевстановлення застосунку — інакше push іде на стару адресу.
+function refreshPushToken() {
+  if (!('serviceWorker' in navigator)) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  navigator.serviceWorker.register('/mage_delivery/firebase-messaging-sw.js')
+    .then(reg => {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      _messaging = firebase.messaging();
+      return _messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    })
+    .then(token => { if (token && S.user) apiPost('/courier/push-token', { token }); })
+    .catch(err => console.warn('[push] refresh failed:', err && err.message));
+}
+
 function askPush() {
   if (!('serviceWorker' in navigator)) { toast('Сповіщення не підтримуються'); return; }
   navigator.serviceWorker.register('/mage_delivery/firebase-messaging-sw.js')
@@ -666,6 +681,7 @@ function showApp() {
   renderBalance();
   refreshBalance();
   checkPushBanner();
+  refreshPushToken();
   connectSSE();
   initFirebase();
   if (S.order && S.order.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
