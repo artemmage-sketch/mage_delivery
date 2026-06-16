@@ -165,6 +165,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .nav-block{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin:14px 0;}
 .nav-title{font-size:.8rem;font-weight:800;color:var(--p3);margin-bottom:6px;}
 .nav-addr{font-size:.92rem;font-weight:700;margin-bottom:12px;color:var(--text);}
+.nav-leg{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;color:var(--text);padding:4px 0;}
+.nav-leg-ico{font-size:1rem;}
+.nav-leg-arrow{color:var(--muted);font-size:.85rem;margin:0 0 0 5px;}
+.src-badge{display:inline-block;font-size:.72rem;font-weight:800;padding:3px 9px;border-radius:20px;}
+.src-app{background:rgba(124,58,237,.18);color:var(--p3);}
+.src-shop{background:rgba(245,158,11,.18);color:var(--y2);}
 .nav-btns{display:flex;gap:8px;}
 .nav-btn{flex:1;text-align:center;text-decoration:none;padding:13px;border-radius:var(--radius-xs);font-weight:800;font-size:.9rem;color:#fff;transition:transform .15s;}
 .nav-btn:active{transform:scale(.96);}
@@ -287,7 +293,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
       </div>
       <div class="bal-stat">
         <div class="stat-item"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Доставок сьогодні</div></div>
-        <div class="stat-item"><div class="stat-num" style="color:var(--g2)">+110</div><div class="stat-label">грн за доставку</div></div>
+        <div class="stat-item"><div class="stat-num" style="color:var(--g2)">💰</div><div class="stat-label">оплата за тарифом</div></div>
       </div>
       <div class="section-title">Історія за сьогодні</div>
       <div id="history-area"></div>
@@ -318,7 +324,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 const BACKEND_URL     = 'https://mage-food-delivery-backend-production.up.railway.app';
 const ADMIN_SOUND_URL = 'https://artemmage-sketch.github.io/mage_delivery/sound.mp3';
 const _audio          = ADMIN_SOUND_URL ? new Audio(ADMIN_SOUND_URL) : null;
-const REWARD = 110; // лише для відображення; реально нараховує сервер
 
 const TR = {
   car:      { label: 'Автомобіль'     },
@@ -776,15 +781,21 @@ function renderOrder() {
     if (o.status === 'new' || o.status === 'accepted') cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Ти маєш викупити це замовлення за готівку!</div></div>`;
     else if (o.status === 'delivering') cashWarn = `<div class="cash-warn"><span>💵</span><div class="cash-warn-text">Не забудь взяти суму готівкою з одержувача!</div></div>`;
   }
-  const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай до визначеного закладу та забери замовлення</div></div>` : '';
-  const fullAddr = [o.address, o.city].filter(v => v && String(v).trim()).join(', ');
-  const navHTML = (fullAddr && (o.status === 'accepted' || o.status === 'delivering')) ? `<div class="nav-block"><div class="nav-title">🧭 Маршрут до клієнта</div><div class="nav-addr">${d(o.address)}</div><div class="nav-btns"><a class="nav-btn nav-gmaps" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddr)}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="nav-btn nav-waze" href="https://waze.com/ul?q=${encodeURIComponent(fullAddr)}&navigate=yes" target="_blank" rel="noopener">🚗 Waze</a></div></div>` : '';
+  const pickupHint = o.status === 'accepted' ? `<div class="pickup-hint"><span>🗺️</span><div class="pickup-hint-text">Вирушай за адресою закладу та забери замовлення</div></div>` : '';
+  const srcLabel = o.source === 'shop' ? 'Виклик від закладу' : 'Застосунок Mage Food';
+  const feeText  = (o.fee !== undefined && o.fee !== null && o.fee !== '') ? o.fee : '—';
+  const clientFull = [o.address, o.city].filter(v => v && String(v).trim()).join(', ');
+  const shopFull   = (o.shopAddress && String(o.shopAddress).trim()) ? [o.shopAddress, o.city].filter(v => v && String(v).trim()).join(', ') : '';
+  const gmapsUrl = shopFull
+    ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(shopFull)}&destination=${encodeURIComponent(clientFull)}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(clientFull)}`;
+  const navHTML = (clientFull && (o.status === 'accepted' || o.status === 'delivering')) ? `<div class="nav-block"><div class="nav-title">🧭 ${shopFull ? 'Маршрут: заклад → клієнт' : 'Маршрут до клієнта'}</div>${shopFull ? `<div class="nav-leg"><span class="nav-leg-ico">🏪</span><span>${d(o.shopAddress)}</span></div><div class="nav-leg-arrow">↓</div><div class="nav-leg"><span class="nav-leg-ico">📍</span><span>${d(o.address)}</span></div>` : `<div class="nav-addr">${d(o.address)}</div>`}<div class="nav-btns"><a class="nav-btn nav-gmaps" href="${gmapsUrl}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="nav-btn nav-waze" href="https://waze.com/ul?q=${encodeURIComponent(clientFull)}&navigate=yes" target="_blank" rel="noopener">🚗 Waze</a></div></div>` : '';
   let actions = '';
   if (o.status === 'new') actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
   else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
   else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
 
-  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${navHTML}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">+${REWARD} грн</span></div><div class="order-actions">${actions}</div></div>`;
+  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Джерело</span><span class="oval"><span class="src-badge ${o.source === 'shop' ? 'src-shop' : 'src-app'}">${srcLabel}</span></span></div><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Адреса закладу</span><span class="oval">${d(o.shopAddress)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${navHTML}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">${feeText === '—' ? '—' : '+' + feeText + ' грн'}</span></div><div class="order-actions">${actions}</div></div>`;
 
   if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
@@ -814,7 +825,7 @@ async function finishOrder(status) {
   const res = await apiPost('/courier/status', { event: 'order_complete', order: sent });
   if (res && res.balance) { applyBalance(res.balance); renderBalance(); }
   if (status === 'done') {
-    if (res && res.credited) { playCoins(); toast('+' + (res.reward || REWARD) + ' грн до балансу!'); }
+    if (res && res.credited) { playCoins(); toast('+' + (res.reward || 0) + ' грн до балансу!'); }
     else { toast('Замовлення завершено'); refreshBalance(); }
   } else {
     toast('Замовлення закрито');
