@@ -107,6 +107,12 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
 .mini-del:disabled{opacity:.35;cursor:not-allowed;}
 .city-add-row{display:flex;gap:8px;margin-bottom:1.1rem;}
 .city-add-row .fw{flex:1;margin-bottom:0;}
+.city-tariff-row{display:flex;align-items:center;gap:7px;margin-top:9px;flex-wrap:wrap;}
+.city-tariff-label{font-size:.74rem;font-weight:700;color:var(--muted);}
+.city-tariff-input{width:80px;padding:7px 9px;background:var(--bg4);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:inherit;font-weight:800;font-size:.85rem;outline:none;}
+.city-tariff-input:focus{border-color:var(--p1);}
+.city-tariff-cur{font-size:.78rem;font-weight:700;color:var(--muted);}
+.mini-save{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;}
 .city-badge-off{font-size:.66rem;font-weight:800;color:var(--y2);background:rgba(245,158,11,.16);padding:2px 7px;border-radius:10px;margin-left:6px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:13px 22px;border-radius:30px;font-weight:700;font-size:.9rem;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .3s;z-index:100;max-width:90vw;text-align:center;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -339,13 +345,29 @@ function closeCities(){ document.getElementById('city-modal').classList.remove('
 function renderCityList(){
   const el = document.getElementById('city-list');
   if(!allCities.length){ el.innerHTML='<div class="empty" style="padding:1.5rem 0"><div>Міст ще немає. Додай перше вище.</div></div>'; return; }
-  el.innerHTML = allCities.map(c=>`<div class="city-item">
-    <div><div class="city-name">${esc(c.name)}${c.active?'':'<span class="city-badge-off">вимкнено</span>'}</div><div class="city-meta">${c.couriers} кур'єр(ів)</div></div>
+  el.innerHTML = allCities.map((c,i)=>`<div class="city-item">
+    <div style="flex:1">
+      <div class="city-name">${esc(c.name)}${c.active?'':'<span class="city-badge-off">вимкнено</span>'}</div>
+      <div class="city-meta">${c.couriers} кур'єр(ів)</div>
+      <div class="city-tariff-row">
+        <span class="city-tariff-label">💰 Тариф «Виклик від закладу»:</span>
+        <input class="city-tariff-input" id="ct-${i}" type="number" min="0" step="1" value="${c.shopTariff!=null?c.shopTariff:''}" placeholder="—">
+        <span class="city-tariff-cur">грн</span>
+        <button class="mini-btn mini-save" onclick="saveCityTariff(${i})">Зберегти</button>
+      </div>
+    </div>
     <div class="city-actions">
       <button class="mini-btn ${c.active?'mini-on':'mini-off'}" onclick="toggleCity('${esc(c.name)}', ${c.active?0:1})">${c.active?'Увімкн.':'Вимкн.'}</button>
-      <button class="mini-btn mini-del" ${c.couriers>0?'disabled title="Є кур\'єри"':''} onclick="delCity('${esc(c.name)}')">🗑</button>
+      <button class="mini-btn mini-del" ${c.couriers>0?'disabled':''} onclick="delCity('${esc(c.name)}')">🗑</button>
     </div>
   </div>`).join('');
+}
+async function saveCityTariff(i){
+  const c = allCities[i]; if(!c) return;
+  const val = document.getElementById('ct-'+i).value;
+  const res = await aFetch('/admin/cities/tariff','POST',{ name:c.name, tariff: val===''?null:val });
+  if(res && res.ok){ toast(val===''?'Тариф очищено':('Тариф ' + c.name + ': ' + val + ' грн')); await loadCities(); }
+  else if(res){ toast((res.data&&res.data.error)||'Помилка'); }
 }
 async function addCity(){
   const name = document.getElementById('new-city').value.trim();
