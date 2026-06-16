@@ -574,6 +574,9 @@ async function connectSSE() {
 
   sseSource.addEventListener('connected', () => {
     console.log('[SSE] Connected');
+    // Відновити статус «онлайн» на сервері: його памʼять могла очиститись після
+    // перезапуску/деплою бекенду, інакше кур'єру не призначатимуться замовлення.
+    if (S.isOnline) apiPost('/courier/online', { isOnline: true }).catch(() => {});
     if (!S.order) {
       apiPost('/courier/active-order', {}).then(data => {
         if (data && data.order && !S.order) {
