@@ -80,7 +80,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .offline-block{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:1rem;align-items:center;gap:12px;}
 .offline-block.show{display:flex;}
 .offline-text{font-size:.85rem;font-weight:700;color:var(--r2);}
-.order-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
+.order-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);margin-bottom:16px;}
 @keyframes popIn{from{opacity:0;transform:scale(.93) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
 .timer-bar-wrap{padding:.75rem 1.25rem .6rem;background:var(--card);border-bottom:1px solid var(--border);}
 .timer-top{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:5px;}
@@ -127,6 +127,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .btn:active{transform:scale(.96);}
 .btn-accept{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);}
 .btn-pickup{background:linear-gradient(135deg,var(--b1),#60A5FA);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35);}
+.photo-hint{font-size:.72rem;color:var(--muted);text-align:center;margin-top:8px;line-height:1.4;}
 .btn-done{background:linear-gradient(135deg,var(--g1),var(--g2));color:#052e16;box-shadow:0 4px 16px rgba(16,185,129,.35);}
 .btn-notfound{background:rgba(239,68,68,.12);color:var(--r1);border:1.5px solid rgba(239,68,68,.3);}
 .empty{display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;text-align:center;}
@@ -315,6 +316,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
   </div>
 </div>
 
+<input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none">
 <div class="toast" id="toast"></div>
 
 <script>
@@ -347,7 +349,7 @@ const SESSION_KEY = 'mfd_session';
 let S = {
   user: null,                 // { login, id, token }
   fullName: null, transport: null, carBrand: null, plate: null, phone: null,
-  isOnline: false, order: null,
+  isOnline: false, orders: [], offer: null,
   balanceTotal: 0, earnedToday: 0, deliveriesToday: 0, history: []
 };
 let authMode = 'login';
@@ -490,7 +492,7 @@ function persistSession() {
   localStorage.setItem(SESSION_KEY, JSON.stringify({
     login: S.user.login, id: S.user.id, token: S.user.token,
     fullName: S.fullName, transport: S.transport, carBrand: S.carBrand,
-    plate: S.plate, phone: S.phone, isOnline: S.isOnline, order: S.order
+    plate: S.plate, phone: S.phone, isOnline: S.isOnline, orders: S.orders
   }));
 }
 function clearSession() { localStorage.removeItem(SESSION_KEY); }
@@ -577,32 +579,33 @@ async function connectSSE() {
     // Відновити статус «онлайн» на сервері: його памʼять могла очиститись після
     // перезапуску/деплою бекенду, інакше кур'єру не призначатимуться замовлення.
     if (S.isOnline) apiPost('/courier/online', { isOnline: true }).catch(() => {});
-    if (!S.order) {
-      apiPost('/courier/active-order', {}).then(data => {
-        if (data && data.order && !S.order) {
-          S.order = { ...data.order, status: data.order.status || 'new', assignedAt: new Date().toISOString() };
-          persistSession(); renderOrder(); goTab('orders');
-          if (S.order.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
-        }
-      }).catch(() => {});
-    }
+    // Відновити список активних замовлень
+    apiPost('/courier/active-order', {}).then(data => {
+      if (data && Array.isArray(data.orders)) {
+        S.orders = data.orders.map(o => ({ ...o, status: o.status || 'accepted' }));
+        persistSession(); renderOrders();
+      }
+    }).catch(() => {});
   });
 
   sseSource.addEventListener('new_order', e => {
     const order = JSON.parse(e.data);
-    if (S.order) return;
-    S.order = { ...order, status: 'new', assignedAt: new Date().toISOString() };
-    persistSession(); renderOrder(); goTab('orders');
+    const oid = order.checkNum || order.id;
+    if (S.offer) return;                                   // вже є пропозиція
+    if ((S.orders || []).length >= 3) return;              // черга повна
+    if (findOrder(oid)) return;                            // вже маємо це замовлення
+    S.offer = { ...order, status: 'new', assignedAt: new Date().toISOString() };
+    renderOrders(); goTab('orders');
     playSound();
-    toast('Нове замовлення призначено!');
+    toast('Нове замовлення!');
   });
 
   sseSource.addEventListener('order_cancelled', e => {
     let reason = '';
     try { reason = (JSON.parse(e.data) || {}).reason; } catch (_) {}
     if (reason === 'blocked') { toast('Акаунт заблоковано'); forceLogout(); return; }
-    if (reason === 'timeout' && S.order && S.order.status === 'new') {
-      S.order = null; persistSession(); renderOrder();
+    if (reason === 'timeout' && S.offer) {
+      S.offer = null; stopTimer(); renderOrders();
       toast('Час вийшов — замовлення передано');
     }
   });
@@ -685,14 +688,13 @@ function showApp() {
   document.getElementById('set-phone').textContent    = S.phone || '—';
   document.getElementById('set-fullname').textContent = S.fullName || '—';
   updateStatusUI();
-  renderOrder();
+  renderOrders();
   renderBalance();
   refreshBalance();
   checkPushBanner();
   refreshPushToken();
   connectSSE();
   initFirebase();
-  if (S.order && S.order.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
 }
 
 function doLogout() {
@@ -768,15 +770,24 @@ function isCash(p) {
 function d(v)  { return (v === undefined || v === null || String(v).trim() === '') ? '<span class="dash">—</span>' : v; }
 function dv(v) { return (v === undefined || v === null || String(v).trim() === '') ? '—' : v; }
 
-function renderOrder() {
+function renderOrders() {
   const el = document.getElementById('order-area');
-  if (!S.order) {
+  const parts = [];
+  if (S.offer) parts.push(orderCardHTML(S.offer, true));
+  (S.orders || []).forEach(o => parts.push(orderCardHTML(o, false)));
+  if (!parts.length) {
     stopTimer();
     el.innerHTML = `<div class="empty"><div class="empty-emoji">📭</div><div class="empty-title">Замовлень немає</div><div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div></div>`;
     return;
   }
-  const o = S.order, st = ST[o.status], cash = isCash(o.payment);
-  const timerHTML = o.status === 'new' ? `<div class="timer-bar-wrap"><div class="timer-top"><span>Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>` : '';
+  const counter = `<div style="text-align:center;font-size:.85rem;font-weight:800;color:var(--muted);margin-bottom:14px">Замовлень у роботі: <span style="color:var(--p3)">${(S.orders||[]).length}/3</span></div>`;
+  el.innerHTML = counter + parts.join('');
+  if (S.offer && timerInterval === null) startTimer(onOfferExpired);
+}
+
+function orderCardHTML(o, isOffer) {
+  const st = ST[o.status] || ST.accepted, cash = isCash(o.payment);
+  const timerHTML = isOffer ? `<div class="timer-bar-wrap"><div class="timer-top"><span>Час на прийом</span><span class="timer-count" id="timer-count">${timerSec}с</span></div><div class="timer-track"><div class="timer-fill" id="timer-bar" style="width:100%"></div></div></div>` : '';
   const ent = dv(o.entrance), flr = dv(o.floor), flt = dv(o.flat);
   const entC = ent === '—' ? 'dash' : '', flrC = flr === '—' ? 'dash' : '', fltC = flt === '—' ? 'dash' : '';
   let cashWarn = '';
@@ -793,52 +804,115 @@ function renderOrder() {
     ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(shopFull)}&destination=${encodeURIComponent(clientFull)}`
     : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(clientFull)}`;
   const navHTML = (clientFull && (o.status === 'accepted' || o.status === 'delivering')) ? `<div class="nav-block"><div class="nav-title">🧭 ${shopFull ? 'Маршрут: заклад → клієнт' : 'Маршрут до клієнта'}</div>${shopFull ? `<div class="nav-leg"><span class="nav-leg-ico">🏪</span><span>${d(o.shopAddress)}</span></div><div class="nav-leg-arrow">↓</div><div class="nav-leg"><span class="nav-leg-ico">📍</span><span>${d(o.address)}</span></div>` : `<div class="nav-addr">${d(o.address)}</div>`}<div class="nav-btns"><a class="nav-btn nav-gmaps" href="${gmapsUrl}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="nav-btn nav-waze" href="https://waze.com/ul?q=${encodeURIComponent(clientFull)}&navigate=yes" target="_blank" rel="noopener">🚗 Waze</a></div></div>` : '';
+  const id = o.checkNum || o.id;
   let actions = '';
-  if (o.status === 'new') actions = `<button class="btn btn-accept" onclick="acceptOrder()">✅ Прийняти замовлення</button>`;
-  else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" onclick="setStatus('delivering')">🏍 Забрав замовлення</button>`;
-  else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('notfound')">❌ Одержувача не знайдено</button>`;
+  if (isOffer) actions = `<button class="btn btn-accept" onclick="acceptOffer()">✅ Прийняти замовлення</button><button class="btn btn-notfound" onclick="declineOffer()">✖ Відмовитись</button>`;
+  else if (o.status === 'accepted') actions = `<button class="btn btn-pickup" id="pickup-btn-${id}" onclick="capturePhoto('${id}')">📸 Фото страви + забрав</button><div class="photo-hint" id="photo-hint-${id}">Перед тим, як покласти в сумку — сфотографуй страву для контролю якості</div>`;
+  else if (o.status === 'delivering') actions = `<button class="btn btn-done" onclick="finishOrder('${id}','done')">🎉 Доставлено одержувачу</button><button class="btn btn-notfound" onclick="finishOrder('${id}','notfound')">❌ Одержувача не знайдено</button>`;
 
-  el.innerHTML = `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Джерело</span><span class="oval"><span class="src-badge ${o.source === 'shop' ? 'src-shop' : 'src-app'}">${srcLabel}</span></span></div><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Адреса закладу</span><span class="oval">${d(o.shopAddress)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${navHTML}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">${feeText === '—' ? '—' : '+' + feeText + ' грн'}</span></div><div class="order-actions">${actions}</div></div>`;
-
-  if (o.status === 'new' && timerInterval === null) startTimer(onTimerExpired);
+  return `<div class="order-card">${timerHTML}<div class="order-top"><div class="order-top-row"><span class="order-num">Чек #${o.checkNum||o.id}</span><span class="status-chip ${st.chip}">${st.text}</span></div><div class="order-amount">${o.sum} <span style="font-size:1.1rem;opacity:.7">грн</span></div><div class="order-amount-label">До оплати · ${o.payment||'—'}</div></div><div class="order-body"><div class="orow"><span class="olabel">Джерело</span><span class="oval"><span class="src-badge ${o.source === 'shop' ? 'src-shop' : 'src-app'}">${srcLabel}</span></span></div><div class="orow"><span class="olabel">Заклад</span><span class="oval">${d(o.shop)}</span></div><div class="orow"><span class="olabel">Адреса закладу</span><span class="oval">${d(o.shopAddress)}</span></div><div class="orow"><span class="olabel">Чек №</span><span class="oval">${d(o.checkNum)}</span></div><div class="orow"><span class="olabel">Касир</span><span class="oval">${d(o.cashier)}</span></div><div class="orow"><span class="olabel">Клієнт</span><span class="oval">${d(o.clientName)}</span></div><div class="orow"><span class="olabel">Телефон</span><span class="oval">${o.phone?`<a href="tel:${o.phone}">${o.phone}</a>`:d('')}</span></div><div class="orow"><span class="olabel">Адреса</span><span class="oval">${d(o.address)}</span></div><div class="orow"><span class="olabel" style="padding-top:6px">Деталі</span><span class="oval"><div class="addr-sub"><div class="addr-sub-item"><div class="addr-sub-label">Під'їзд</div><div class="addr-sub-val ${entC}">${ent}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Поверх</div><div class="addr-sub-val ${flrC}">${flr}</div></div><div class="addr-sub-sep"></div><div class="addr-sub-item"><div class="addr-sub-label">Квартира</div><div class="addr-sub-val ${fltC}">${flt}</div></div></div></span></div><div class="orow"><span class="olabel">До оплати</span><span class="oval highlight">${d(o.sum)} грн</span></div><div class="orow"><span class="olabel">Оплата</span><span class="oval">${d(o.payment)}</span></div><div class="orow"><span class="olabel">Місто</span><span class="oval">${d(o.city)}</span></div>${o.comment?`<div class="orow"><span class="olabel">Коментар</span><span class="oval">${o.comment}</span></div>`:''}</div>${pickupHint}${navHTML}${cashWarn}<div class="earning-row"><span class="earning-label">💰 Ти отримаєш за це замовлення</span><span class="earning-amount">${feeText === '—' ? '—' : '+' + feeText + ' грн'}</span></div><div class="order-actions">${actions}</div></div>`;
 }
 
 // ============================================================
-// ORDER LOGIC
+// ORDER LOGIC (черга до 3)
 // ============================================================
-function acceptOrder() {
-  if (!S.order) return;
-  stopTimer(); S.order.status = 'accepted'; S.order.acceptedAt = new Date().toISOString();
-  persistSession(); renderOrder(); toast('Замовлення прийнято!');
-  apiPost('/courier/status', { event: 'order_accepted', order: S.order });
+function findOrder(id) { return (S.orders || []).find(o => (o.checkNum || o.id) == id); }
+
+function acceptOffer() {
+  if (!S.offer) return;
+  if ((S.orders || []).length >= 3) { toast('Максимум 3 замовлення одночасно'); return; }
+  stopTimer();
+  const ord = { ...S.offer, status: 'accepted', acceptedAt: new Date().toISOString() };
+  S.orders.push(ord);
+  S.offer = null;
+  persistSession(); renderOrders(); toast('Замовлення прийнято!');
+  apiPost('/courier/status', { event: 'order_accepted', order: ord });
 }
-function setStatus(status) {
-  if (!S.order) return;
-  S.order.status = status;
-  if (status === 'delivering') S.order.pickedAt = new Date().toISOString();
-  persistSession(); renderOrder();
-  apiPost('/courier/status', { event: 'status_update', order: S.order });
+function declineOffer() {
+  if (!S.offer) return;
+  const had = { ...S.offer };
+  stopTimer(); S.offer = null; renderOrders();
+  toast('Замовлення відхилено');
+  apiPost('/courier/status', { event: 'order_timeout', order: had });
 }
-async function finishOrder(status) {
-  if (!S.order) return;
-  S.order.status = status; S.order.finishedAt = new Date().toISOString();
-  const sent = { ...S.order };
-  S.order = null; stopTimer(); persistSession(); renderOrder();
-  // Гроші нараховує СЕРВЕР — беремо актуальний баланс із відповіді
+function setStatus(id, status) {
+  const o = findOrder(id); if (!o) return;
+  o.status = status;
+  if (status === 'delivering') o.pickedAt = new Date().toISOString();
+  persistSession(); renderOrders();
+  apiPost('/courier/status', { event: 'status_update', order: o });
+}
+async function finishOrder(id, status) {
+  const o = findOrder(id); if (!o) return;
+  o.status = status; o.finishedAt = new Date().toISOString();
+  const sent = { ...o };
+  S.orders = (S.orders || []).filter(x => (x.checkNum || x.id) != id);
+  persistSession(); renderOrders();
   const res = await apiPost('/courier/status', { event: 'order_complete', order: sent });
   if (res && res.balance) { applyBalance(res.balance); renderBalance(); }
   if (status === 'done') {
     if (res && res.credited) { playCoins(); toast('+' + (res.reward || 0) + ' грн до балансу!'); }
     else { toast('Замовлення завершено'); refreshBalance(); }
-  } else {
-    toast('Замовлення закрито');
-  }
+  } else { toast('Замовлення закрито'); }
 }
-function onTimerExpired() {
-  if (!S.order || S.order.status !== 'new') return;
-  const had = { ...S.order };
-  S.order = null; persistSession(); renderOrder(); toast('Час вийшов — замовлення передано');
+function onOfferExpired() {
+  if (!S.offer) return;
+  const had = { ...S.offer };
+  S.offer = null; renderOrders(); toast('Час вийшов — замовлення передано');
   apiPost('/courier/status', { event: 'order_timeout', order: had });
+}
+
+// ── ФОТО СТРАВИ (обов'язкове при заборі) ──────────────────────
+let _photoTargetId = null;
+function capturePhoto(id) {
+  _photoTargetId = id;
+  const inp = document.getElementById('photo-input');
+  inp.value = '';                 // дозволити повторний вибір того самого фото
+  inp.click();
+}
+document.getElementById('photo-input').addEventListener('change', async function () {
+  const file = this.files && this.files[0];
+  const id = _photoTargetId;
+  if (!file || !id) return;
+  const o = findOrder(id); if (!o) return;
+  const btn = document.getElementById('pickup-btn-' + id);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Завантаження фото…'; }
+  try {
+    const blob = await compressImage(file, 1280, 0.7);
+    const res = await fetch(BACKEND_URL + '/courier/order-photo?checkNum=' + encodeURIComponent(id), {
+      method: 'POST',
+      headers: { 'Content-Type': 'image/jpeg', ...authHeaders() },
+      body: blob,
+    });
+    if (!res.ok) throw new Error('upload ' + res.status);
+    const data = await res.json();
+    o.photoUrl = (data && data.url) || null;
+    toast('✅ Фото збережено');
+    setStatus(id, 'delivering');   // тільки тепер — «забрав, їду до клієнта»
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = '📸 Фото страви + забрав'; }
+    toast('Не вдалося завантажити фото. Спробуй ще раз');
+  }
+});
+
+// Стиснути зображення через canvas → JPEG Blob (щоб не слати важкі мегабайти)
+function compressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let width = img.width, height = img.height;
+      if (width >= height && width > maxDim) { height = Math.round(height * maxDim / width); width = maxDim; }
+      else if (height > width && height > maxDim) { width = Math.round(width * maxDim / height); height = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob')), 'image/jpeg', quality || 0.7);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img')); };
+    img.src = url;
+  });
 }
 
 // ============================================================
@@ -936,7 +1010,7 @@ function toast(msg) {
   if (!s || !s.token) return;
   S.user = { login: s.login, id: s.id, token: s.token };
   S.fullName = s.fullName; S.transport = s.transport; S.carBrand = s.carBrand;
-  S.plate = s.plate; S.phone = s.phone; S.isOnline = !!s.isOnline; S.order = s.order || null;
+  S.plate = s.plate; S.phone = s.phone; S.isOnline = !!s.isOnline; S.orders = Array.isArray(s.orders) ? s.orders : []; S.offer = null;
   if (s.fullName && s.transport && s.carBrand && s.plate) {
     showApp(); // refreshBalance всередині перевірить токен (401/403 → вихід)
   } else {
