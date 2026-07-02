@@ -128,6 +128,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .btn-accept{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35);}
 .btn-pickup{background:linear-gradient(135deg,var(--b1),#60A5FA);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35);}
 .photo-hint{font-size:.72rem;color:var(--muted);text-align:center;margin-top:8px;line-height:1.4;}
+.order-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:3px;}
+.order-tabs::-webkit-scrollbar{display:none;}
+.otab{flex-shrink:0;padding:9px 15px;border-radius:100px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.otab:active{transform:scale(.96);}
+.otab.active{background:var(--bg4);color:var(--text);border-color:var(--p1);box-shadow:0 2px 10px rgba(124,58,237,.25);}
+.otab.ot-new{color:var(--y2);border-color:rgba(252,211,77,.45);}
+.otab.ot-delivering{color:var(--g2);}
+.otab.ot-delivering.active{border-color:var(--g1);}
 .btn-done{background:linear-gradient(135deg,var(--g1),var(--g2));color:#052e16;box-shadow:0 4px 16px rgba(16,185,129,.35);}
 .btn-notfound{background:rgba(239,68,68,.12);color:var(--r1);border:1.5px solid rgba(239,68,68,.3);}
 .empty{display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;text-align:center;}
@@ -349,7 +357,7 @@ const SESSION_KEY = 'mfd_session';
 let S = {
   user: null,                 // { login, id, token }
   fullName: null, transport: null, carBrand: null, plate: null, phone: null,
-  isOnline: false, orders: [], offer: null,
+  isOnline: false, orders: [], offer: null, tab: null,
   balanceTotal: 0, earnedToday: 0, deliveriesToday: 0, history: []
 };
 let authMode = 'login';
@@ -591,6 +599,7 @@ async function connectSSE() {
         const oid = data.offer.checkNum || data.offer.id;
         if (!findOrder(oid)) {
           S.offer = { ...data.offer, status: 'new', assignedAt: new Date().toISOString() };
+          S.tab = 'offer';
           playSound(); goTab('orders');
         }
       }
@@ -605,6 +614,7 @@ async function connectSSE() {
     if ((S.orders || []).length >= 3) return;              // черга повна
     if (findOrder(oid)) return;                            // вже маємо це замовлення
     S.offer = { ...order, status: 'new', assignedAt: new Date().toISOString() };
+    S.tab = 'offer';
     renderOrders(); goTab('orders');
     playSound();
     toast('Нове замовлення!');
@@ -798,18 +808,34 @@ function dv(v) { return (v === undefined || v === null || String(v).trim() === '
 
 function renderOrders() {
   const el = document.getElementById('order-area');
-  const parts = [];
-  if (S.offer) parts.push(orderCardHTML(S.offer, true));
-  (S.orders || []).forEach(o => parts.push(orderCardHTML(o, false)));
-  if (!parts.length) {
+  const items = [];
+  if (S.offer) items.push({ o: S.offer, isOffer: true, key: 'offer' });
+  (S.orders || []).forEach(o => items.push({ o, isOffer: false, key: String(o.checkNum || o.id) }));
+  if (!items.length) {
     stopTimer();
     el.innerHTML = `<div class="empty"><div class="empty-emoji">📭</div><div class="empty-title">Замовлень немає</div><div class="empty-sub">Будь онлайн — замовлення<br>призначаються автоматично</div></div>`;
     return;
   }
-  const counter = `<div style="text-align:center;font-size:.85rem;font-weight:800;color:var(--muted);margin-bottom:14px">Замовлень у роботі: <span style="color:var(--p3)">${(S.orders||[]).length}/3</span></div>`;
-  el.innerHTML = counter + parts.join('');
+  // яка вкладка вибрана (якщо стала недійсною — беремо першу)
+  if (!items.some(it => it.key === S.tab)) S.tab = items[0].key;
+  const sel = items.find(it => it.key === S.tab) || items[0];
+
+  const counter = `<div style="text-align:center;font-size:.85rem;font-weight:800;color:var(--muted);margin-bottom:12px">Замовлень у роботі: <span style="color:var(--p3)">${(S.orders||[]).length}/3</span></div>`;
+
+  let tabsHTML = '';
+  if (items.length > 1) {
+    tabsHTML = '<div class="order-tabs">' + items.map(it => {
+      const active = it.key === sel.key ? ' active' : '';
+      const label  = it.isOffer ? '🔔 Нова' : ('Чек #' + (it.o.checkNum || it.o.id));
+      const stCls  = it.isOffer ? 'ot-new' : ('ot-' + (it.o.status || 'accepted'));
+      return `<button class="otab ${stCls}${active}" onclick="selectOrderTab('${it.key}')">${label}</button>`;
+    }).join('') + '</div>';
+  }
+
+  el.innerHTML = counter + tabsHTML + orderCardHTML(sel.o, sel.isOffer);
   if (S.offer && timerInterval === null) startTimer(onOfferExpired);
 }
+function selectOrderTab(key) { S.tab = key; renderOrders(); }
 
 function orderCardHTML(o, isOffer) {
   const st = ST[o.status] || ST.accepted, cash = isCash(o.payment);
