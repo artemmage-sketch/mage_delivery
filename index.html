@@ -591,7 +591,17 @@ async function connectSSE() {
     apiPost('/courier/active-order', {}).then(data => {
       if (!data) return;
       if (Array.isArray(data.orders)) {
-        S.orders = data.orders.map(o => ({ ...o, status: o.status || 'accepted' }));
+        // Об'єднуємо з сервером, але НЕ відкочуємо локальний прогрес:
+        // якщо кур'єр уже позначив «забрав» (delivering), сервер може ще не знати —
+        // не скидаємо назад на «прийнято». Фото теж зберігаємо.
+        const rank = s => ({ accepted: 1, delivering: 2 }[s] || 0);
+        S.orders = data.orders.map(so => {
+          const key = so.checkNum || so.id;
+          const local = (S.orders || []).find(lo => (lo.checkNum || lo.id) == key);
+          let status = so.status || 'accepted';
+          if (local && rank(local.status) > rank(status)) status = local.status;
+          return { ...so, status, photoUrl: so.photoUrl || (local && local.photoUrl) || null };
+        });
       }
       // Якщо кур'єру призначено замовлення, а SSE-подія new_order не дійшла
       // (застосунок відкрито з фону / подія загубилась) — показати пропозицію самі.
