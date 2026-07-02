@@ -579,12 +579,22 @@ async function connectSSE() {
     // Відновити статус «онлайн» на сервері: його памʼять могла очиститись після
     // перезапуску/деплою бекенду, інакше кур'єру не призначатимуться замовлення.
     if (S.isOnline) apiPost('/courier/online', { isOnline: true }).catch(() => {});
-    // Відновити список активних замовлень
+    // Відновити список активних замовлень + забрати активну пропозицію
     apiPost('/courier/active-order', {}).then(data => {
-      if (data && Array.isArray(data.orders)) {
+      if (!data) return;
+      if (Array.isArray(data.orders)) {
         S.orders = data.orders.map(o => ({ ...o, status: o.status || 'accepted' }));
-        persistSession(); renderOrders();
       }
+      // Якщо кур'єру призначено замовлення, а SSE-подія new_order не дійшла
+      // (застосунок відкрито з фону / подія загубилась) — показати пропозицію самі.
+      if (data.offer && !S.offer) {
+        const oid = data.offer.checkNum || data.offer.id;
+        if (!findOrder(oid)) {
+          S.offer = { ...data.offer, status: 'new', assignedAt: new Date().toISOString() };
+          playSound(); goTab('orders');
+        }
+      }
+      persistSession(); renderOrders();
     }).catch(() => {});
   });
 
@@ -615,6 +625,22 @@ async function connectSSE() {
     setTimeout(connectSSE, 5000);
   };
 }
+
+// Коли застосунок повертається на екран (відкрито з push / з фону) —
+// перепідключити SSE. Старе з'єднання у фоні часто «вмирає» без події,
+// тож без цього нові замовлення не приходять до наступної дії.
+let _lastReconnect = 0;
+function ensureConnected() {
+  if (!S.user) return;
+  const now = Date.now();
+  if (now - _lastReconnect < 1500) return;
+  _lastReconnect = now;
+  connectSSE();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') ensureConnected();
+});
+window.addEventListener('focus', ensureConnected);
 
 // ============================================================
 // FIREBASE PUSH
