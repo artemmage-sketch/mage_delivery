@@ -90,6 +90,31 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
 .modal-sub{font-size:.8rem;color:var(--muted);margin-bottom:1.25rem;}
 .modal-actions{display:flex;gap:8px;margin-top:.5rem;}
 .secondary-btn{flex:1;padding:14px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border2);color:var(--muted);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;}
+.btn-details{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;}
+.cc-carrying{font-size:.78rem;font-weight:700;color:var(--y2);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:var(--radius-xs);padding:8px 11px;margin-bottom:10px;line-height:1.45;}
+.det-section-title{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:1.15rem 0 .6rem;}
+.det-empty{font-size:.85rem;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:12px 14px;}
+.det-order{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-xs);padding:11px 13px;margin-bottom:9px;}
+.det-order-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.det-check{font-size:.85rem;font-weight:800;}
+.dchip{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:20px;}
+.dchip-acc{background:rgba(147,197,253,.18);color:var(--b2);}
+.dchip-del{background:rgba(52,211,153,.18);color:var(--g2);}
+.det-order-route{font-size:.85rem;font-weight:700;margin-bottom:3px;}
+.det-order-meta{font-size:.76rem;color:var(--muted);line-height:1.4;}
+.det-date-group{margin-bottom:14px;}
+.det-date-head{display:flex;justify-content:space-between;align-items:baseline;font-size:.8rem;font-weight:800;color:var(--p3);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:7px;}
+.det-date-sum{font-size:.74rem;color:var(--muted);font-weight:700;}
+.det-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.det-row:last-child{border-bottom:none;}
+.det-row-main{font-size:.85rem;font-weight:700;}
+.det-row-sub{font-size:.73rem;color:var(--muted);margin-top:1px;}
+.det-amt{font-size:.9rem;font-weight:900;color:var(--g2);white-space:nowrap;}
+.det-log-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.det-log-ico{font-size:.7rem;}
+.det-log-txt{font-size:.85rem;font-weight:700;flex:1;}
+.det-log-time{font-size:.8rem;color:var(--muted);font-weight:700;}
+.det-online-badge{margin-left:6px;}
 .modal .primary-btn{flex:1;}
 .hint{font-size:.75rem;color:var(--muted);margin:-.4rem 0 .9rem;}
 
@@ -216,6 +241,22 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
   </div>
 </div>
 
+<div class="modal-bg" id="details-modal">
+  <div class="modal">
+    <div class="modal-title">📊 <span id="details-name">Кур'єр</span><span class="badge b-offline det-online-badge" id="details-badge">Офлайн</span></div>
+    <div class="modal-sub">Оновлюється автоматично кожні 5 секунд.</div>
+    <div class="det-section-title">🚗 Везе зараз</div>
+    <div id="det-current"></div>
+    <div class="det-section-title">📦 Виконані замовлення по днях</div>
+    <div id="det-deliveries"></div>
+    <div class="det-section-title">🟢 Журнал онлайн / офлайн</div>
+    <div id="det-log"></div>
+    <div class="modal-actions">
+      <button class="secondary-btn" onclick="closeDetails()">Закрити</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -270,7 +311,7 @@ function enterAdmin(){
   loadCities();
   loadList();
   if(refreshTimer) clearInterval(refreshTimer);
-  refreshTimer = setInterval(()=>{ if(!document.getElementById('edit-modal').classList.contains('show') && !document.getElementById('city-modal').classList.contains('show') && !document.getElementById('photos-modal').classList.contains('show')) loadList(true); }, 20000);
+  refreshTimer = setInterval(()=>{ if(!document.getElementById('edit-modal').classList.contains('show') && !document.getElementById('city-modal').classList.contains('show') && !document.getElementById('photos-modal').classList.contains('show') && !document.getElementById('details-modal').classList.contains('show')) loadList(true); }, 20000);
 }
 
 function logout(){ if(!confirm('Вийти з адмін-панелі?')) return; doLogoutLocal(); }
@@ -330,7 +371,9 @@ function render(){
         <div class="cc-stat"><div class="cc-stat-num">${money(c.earnedToday)}</div><div class="cc-stat-label">За день, грн</div></div>
         <div class="cc-stat"><div class="cc-stat-num green">${money(c.balanceTotal)}</div><div class="cc-stat-label">Баланс, грн</div></div>
       </div>
+      ${(c.currentOrders&&c.currentOrders.length)?`<div class="cc-carrying">🚗 Везе зараз: ${c.currentOrders.map(o=>'Чек #'+esc(o.checkNum)+(o.status==='delivering'?' (клієнту)':' (забирає)')).join(', ')}</div>`:''}
       <div class="cc-actions">
+        <button class="btn btn-details" onclick="openDetails('${c.login}')">📊 Деталі</button>
         <button class="btn btn-pay" ${canPay?'':'disabled'} onclick="payout('${c.login}')">💸 Виплатити</button>
         <button class="btn btn-edit" onclick="openEdit('${c.login}')">✏️ Редагувати</button>
         <button class="btn ${c.blocked?'btn-unblock':'btn-block'}" onclick="toggleBlock('${c.login}', ${c.blocked?1:0})">${c.blocked?'🔓 Розблок.':'🚫 Блок.'}</button>
@@ -385,6 +428,71 @@ function renderPhotos(photos, enabled){
     return `<div class="photo-item"><img class="photo-thumb" src="${esc(p.url)}" onclick="window.open('${esc(p.url)}','_blank')" loading="lazy"><div class="photo-meta"><div class="photo-courier">${esc(p.fullName||p.login)}</div><div class="photo-sub">Чек #${esc(p.checkNum)}${p.city?' · '+esc(p.city):''} · ${time}</div></div></div>`;
   }).join('');
 }
+// ── ДЕТАЛІ КУР'ЄРА (real-time замовлення + історія по днях + журнал онлайн) ──
+let detailsLogin=null, detailsTimer=null;
+function kyivDateKey(iso){ try{ return new Date(iso).toLocaleDateString('uk-UA',{timeZone:'Europe/Kyiv',day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){ return '—'; } }
+function kyivTime(iso){ try{ return new Date(iso).toLocaleTimeString('uk-UA',{timeZone:'Europe/Kyiv',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function dateLabel(key){ const t=kyivDateKey(new Date().toISOString()); const y=kyivDateKey(new Date(Date.now()-86400000).toISOString()); return key===t?'Сьогодні':(key===y?'Вчора':key); }
+function groupByDate(items){ const m=new Map(); (items||[]).forEach(it=>{ const k=kyivDateKey(it.at); if(!m.has(k)) m.set(k,[]); m.get(k).push(it); }); return [...m.entries()]; }
+
+function openDetails(login){
+  detailsLogin=login;
+  const c=couriers.find(x=>x.login===login);
+  document.getElementById('details-name').textContent=(c&&c.profile&&c.profile.fullName)||login;
+  document.getElementById('det-current').innerHTML='<div class="det-empty">Завантаження…</div>';
+  document.getElementById('det-deliveries').innerHTML='';
+  document.getElementById('det-log').innerHTML='';
+  document.getElementById('details-modal').classList.add('show');
+  loadDetails(true);
+  if(detailsTimer) clearInterval(detailsTimer);
+  detailsTimer=setInterval(()=>loadDetails(false),5000);
+}
+function closeDetails(){
+  document.getElementById('details-modal').classList.remove('show');
+  if(detailsTimer){ clearInterval(detailsTimer); detailsTimer=null; }
+  detailsLogin=null;
+}
+async function loadDetails(full){
+  if(!detailsLogin) return;
+  const res=await aFetch('/admin/courier/details?login='+encodeURIComponent(detailsLogin),'GET');
+  if(!res||!res.ok) return;
+  const d=res.data;
+  const badge=document.getElementById('details-badge');
+  badge.className='badge '+(d.online?'b-online':'b-offline')+' det-online-badge';
+  badge.textContent=d.online?'Онлайн':'Офлайн';
+  renderCurrent(d.currentOrders||[], d.online);
+  if(full){ renderDeliveries(d.deliveries||[]); renderLog(d.statusEvents||[]); }
+}
+function renderCurrent(orders, online){
+  const el=document.getElementById('det-current');
+  if(!orders.length){ el.innerHTML=`<div class="det-empty">${online?'Онлайн, але зараз нічого не везе.':'Офлайн, нічого не везе.'}</div>`; return; }
+  el.innerHTML=orders.map(o=>{
+    const st=o.status==='delivering'?['Везе клієнту','dchip-del']:['Забирає / прийняв','dchip-acc'];
+    const route=o.shopAddress?`${esc(o.shop||'заклад')} → ${esc(o.address||'')}`:esc(o.address||'—');
+    const meta=[o.clientName&&esc(o.clientName), o.phone&&esc(o.phone), (o.sum!=null?money(o.sum)+' грн':''), o.payment&&esc(o.payment), (o.fee!=null?'тариф '+money(o.fee)+' грн':'')].filter(Boolean).join(' · ');
+    return `<div class="det-order"><div class="det-order-top"><span class="det-check">Чек #${esc(o.checkNum)}</span><span class="dchip ${st[1]}">${st[0]}</span></div><div class="det-order-route">🧭 ${route}</div><div class="det-order-meta">${meta}</div></div>`;
+  }).join('');
+}
+function renderDeliveries(items){
+  const el=document.getElementById('det-deliveries');
+  const groups=groupByDate(items);
+  if(!groups.length){ el.innerHTML='<div class="det-empty">Виконаних замовлень за 30 днів немає.</div>'; return; }
+  el.innerHTML=groups.map(([date,arr])=>{
+    const sum=arr.reduce((s,i)=>s+(Number(i.amount)||0),0);
+    const rows=arr.map(i=>`<div class="det-row"><div><div class="det-row-main">Чек #${esc(i.orderCheck)}</div><div class="det-row-sub">${esc(i.address||'')} · ${kyivTime(i.at)}</div></div><div class="det-amt">+${money(i.amount)}</div></div>`).join('');
+    return `<div class="det-date-group"><div class="det-date-head"><span>${dateLabel(date)}</span><span class="det-date-sum">${arr.length} замовл. · ${money(sum)} грн</span></div>${rows}</div>`;
+  }).join('');
+}
+function renderLog(items){
+  const el=document.getElementById('det-log');
+  const groups=groupByDate(items);
+  if(!groups.length){ el.innerHTML='<div class="det-empty">Подій онлайн/офлайн за 14 днів немає.</div>'; return; }
+  el.innerHTML=groups.map(([date,arr])=>{
+    const rows=arr.map(ev=>{ const on=ev.event==='online'; return `<div class="det-log-row"><span class="det-log-ico">${on?'🟢':'⚫'}</span><span class="det-log-txt">${on?'Вийшов онлайн':'Вийшов офлайн'}</span><span class="det-log-time">${kyivTime(ev.at)}</span></div>`; }).join('');
+    return `<div class="det-date-group"><div class="det-date-head"><span>${dateLabel(date)}</span></div>${rows}</div>`;
+  }).join('');
+}
+
 function renderCityList(){
   const el = document.getElementById('city-list');
   if(!allCities.length){ el.innerHTML='<div class="empty" style="padding:1.5rem 0"><div>Міст ще немає. Додай перше вище.</div></div>'; return; }
