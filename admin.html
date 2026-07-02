@@ -115,6 +115,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
 .mini-save{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;}
 .city-badge-off{font-size:.66rem;font-weight:800;color:var(--y2);background:rgba(245,158,11,.16);padding:2px 7px;border-radius:10px;margin-left:6px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:13px 22px;border-radius:30px;font-weight:700;font-size:.9rem;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .3s;z-index:100;max-width:90vw;text-align:center;}
+.photo-item{display:flex;gap:12px;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px;margin-bottom:10px;}
+.photo-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;background:var(--bg4);flex-shrink:0;cursor:pointer;}
+.photo-courier{font-weight:800;font-size:.9rem;}
+.photo-sub{font-size:.72rem;color:var(--muted);font-weight:700;margin-top:2px;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 </style>
 </head>
@@ -136,6 +140,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
   <div class="topbar">
     <div class="topbar-title">🛡️ <span>Кур'єри</span></div>
     <div class="topbar-actions">
+      <button class="icon-btn" onclick="openPhotos()">📸 Фото</button>
       <button class="icon-btn" onclick="openCities()">🏙️ Міста</button>
       <button class="icon-btn" onclick="loadList()">↻ Оновити</button>
       <button class="icon-btn" onclick="logout()">Вийти</button>
@@ -200,6 +205,17 @@ body{background:var(--bg);color:var(--text);min-height:100vh;}
   </div>
 </div>
 
+<div class="modal-bg" id="photos-modal">
+  <div class="modal">
+    <div class="modal-title">📸 Фото страв</div>
+    <div class="modal-sub">Кур'єри фотографують страву при заборі. Оновлюється автоматично.</div>
+    <div id="photos-grid"></div>
+    <div class="modal-actions">
+      <button class="secondary-btn" onclick="closePhotos()">Закрити</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -254,7 +270,7 @@ function enterAdmin(){
   loadCities();
   loadList();
   if(refreshTimer) clearInterval(refreshTimer);
-  refreshTimer = setInterval(()=>{ if(!document.getElementById('edit-modal').classList.contains('show') && !document.getElementById('city-modal').classList.contains('show')) loadList(true); }, 20000);
+  refreshTimer = setInterval(()=>{ if(!document.getElementById('edit-modal').classList.contains('show') && !document.getElementById('city-modal').classList.contains('show') && !document.getElementById('photos-modal').classList.contains('show')) loadList(true); }, 20000);
 }
 
 function logout(){ if(!confirm('Вийти з адмін-панелі?')) return; doLogoutLocal(); }
@@ -342,6 +358,33 @@ function activeCityNames(){ return allCities.filter(c=>c.active).map(c=>c.name);
 
 function openCities(){ renderCityList(); document.getElementById('city-modal').classList.add('show'); }
 function closeCities(){ document.getElementById('city-modal').classList.remove('show'); }
+
+// ── ФОТО СТРАВ ───────────────────────────────────────────────
+let photosTimer = null;
+function openPhotos(){
+  loadPhotos();
+  document.getElementById('photos-modal').classList.add('show');
+  if(photosTimer) clearInterval(photosTimer);
+  photosTimer = setInterval(loadPhotos, 5000);
+}
+function closePhotos(){
+  document.getElementById('photos-modal').classList.remove('show');
+  if(photosTimer){ clearInterval(photosTimer); photosTimer=null; }
+}
+async function loadPhotos(){
+  const res = await aFetch('/admin/photos','GET');
+  if(!res || !res.ok) return;
+  renderPhotos(res.data.photos || [], res.data.enabled);
+}
+function renderPhotos(photos, enabled){
+  const el = document.getElementById('photos-grid');
+  if(!enabled){ el.innerHTML='<div class="empty" style="padding:1.5rem 0"><div>Сховище фото ще не налаштоване на сервері (Supabase).</div></div>'; return; }
+  if(!photos.length){ el.innerHTML='<div class="empty" style="padding:1.5rem 0"><div class="empty-emoji">📷</div><div>Фото ще немає.</div></div>'; return; }
+  el.innerHTML = photos.map(p=>{
+    let time=''; try{ time=new Date(p.at).toLocaleString('uk-UA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}); }catch(e){}
+    return `<div class="photo-item"><img class="photo-thumb" src="${esc(p.url)}" onclick="window.open('${esc(p.url)}','_blank')" loading="lazy"><div class="photo-meta"><div class="photo-courier">${esc(p.fullName||p.login)}</div><div class="photo-sub">Чек #${esc(p.checkNum)}${p.city?' · '+esc(p.city):''} · ${time}</div></div></div>`;
+  }).join('');
+}
 function renderCityList(){
   const el = document.getElementById('city-list');
   if(!allCities.length){ el.innerHTML='<div class="empty" style="padding:1.5rem 0"><div>Міст ще немає. Додай перше вище.</div></div>'; return; }
