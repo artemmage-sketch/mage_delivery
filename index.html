@@ -559,7 +559,7 @@ function handleAuth(r) {
 }
 
 function forceLogout() {
-  stopTimer(); clearSession();
+  stopTimer(); clearSession(); stopLocationTracking();
   if (sseSource) { sseSource.close(); sseSource = null; }
   S = { user: null, fullName: null, transport: null, carBrand: null, plate: null,
         phone: null, isOnline: false, order: null,
@@ -741,6 +741,7 @@ function showApp() {
   refreshPushToken();
   connectSSE();
   initFirebase();
+  if (S.isOnline) startLocationTracking();
 }
 
 function doLogout() {
@@ -752,6 +753,43 @@ function doLogout() {
 // ============================================================
 // STATUS
 // ============================================================
+// ============================================================
+// ГЕОЛОКАЦІЯ (жива позиція для мапи керівника)
+// Працює лише поки застосунок відкритий на екрані — так влаштовані
+// веб-застосунки на телефонах. Надсилаємо не частіше ніж раз на 4с.
+// ============================================================
+let _geoWatchId = null;
+let _lastGeoSent = 0;
+let _geoDeniedWarned = false;
+function startLocationTracking() {
+  if (_geoWatchId !== null) return;
+  if (!('geolocation' in navigator)) return;
+  try {
+    _geoWatchId = navigator.geolocation.watchPosition(
+      pos => {
+        const now = Date.now();
+        if (now - _lastGeoSent < 4000) return;
+        _lastGeoSent = now;
+        const c = pos.coords || {};
+        if (S.user) apiPost('/courier/location', { lat: c.latitude, lng: c.longitude, accuracy: c.accuracy });
+      },
+      err => {
+        if (err && err.code === 1 && !_geoDeniedWarned) {   // PERMISSION_DENIED
+          _geoDeniedWarned = true;
+          toast('Дозволь геолокацію, щоб керівник бачив тебе на мапі');
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 }
+    );
+  } catch (e) { /* геолокація недоступна — не критично */ }
+}
+function stopLocationTracking() {
+  if (_geoWatchId !== null && navigator.geolocation) {
+    try { navigator.geolocation.clearWatch(_geoWatchId); } catch (e) {}
+  }
+  _geoWatchId = null;
+}
+
 function toggleOnline() {
   S.isOnline = !S.isOnline;
   updateStatusUI(); persistSession();
@@ -761,6 +799,7 @@ function toggleOnline() {
     _audio.play().catch(() => {});
     setTimeout(() => { _audio.volume = 1; }, 100);
   }
+  if (S.isOnline) startLocationTracking(); else stopLocationTracking();
   apiPost('/courier/online', { isOnline: S.isOnline });
 }
 function updateStatusUI() {
